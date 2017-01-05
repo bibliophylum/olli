@@ -23,8 +23,8 @@
 
 */
 
-//var demoApp = angular.module('testappModule',['ngRoute', 'ngAnimate']);
-var demoApp = angular.module('testappModule',['ngRoute']);
+//var demoApp = angular.module('olliModule',['ngRoute', 'ngAnimate']);
+var demoApp = angular.module('olliModule',['ngRoute']);
 
 demoApp.config(function ($routeProvider,$locationProvider) {
     $routeProvider
