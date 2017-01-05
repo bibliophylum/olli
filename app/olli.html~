@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en" ng-app="testappModule">
+  <head>
+    <meta charset="utf-8">
+    <base href="/">
+    <title>testapp</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/bootstrap/bootstrap-3.3.7-dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="/css/testapp.css" />
+    <script src="/js/jquery-3.1.1.min.js"></script>
+    <script src="/js/angular.min.js"></script>
+    <script src="/js/angular-route.min.js"></script> <!-- provides ngRoute -->
+    <script src="/js/angular-animate.js"></script>   <!-- provides ngAnimate -->
+    <script src="/js/SimpleController.js"></script>
+
+  </head>
+
+  <body>
+
+    <div id="main">
+      <div class="testapp-header">
+	<h1>Test Application</h1>
+      </div>
+
+      <div class="top-menu">
+	
+	<div class="container-fluid"> <!-- bootstrap -->
+	  
+	  <!-- The navigation menu will get the value of the "active" variable as a 
+	       class.
+	       The $event.preventDefault() stops the page from jumping when a link 
+	       is clicked. -->
+	  
+	  <nav class="{{active}}" ng-click="$event.preventDefault()">
+	    
+	    <!-- When a link in the menu is clicked, we set the active variable -->
+	    
+	    <a href="#" class="btn btn-primary" ng-click="active='home'">Home</a>
+	    <a href="#" class="btn btn-default" ng-click="active='projects'">Projects</a>
+	    <a href="#" class="btn btn-default" ng-click="active='services'">Services</a>
+	    <a href="#" class="btn btn-default" ng-click="active='contact'">Contact</a>
+	  </nav>
+	  
+	</div> <!-- container-fluid -->
+      </div> <!-- top-menu -->
+      
+      <div class="content-center">
+	<!-- ng-show will show an element if the value in the quotes is truthful,
+	     while ng-hide does the opposite. Because the active variable is not set
+	     initially, this will cause the first paragraph to be visible. -->
+	
+	<p ng-hide="active">Please click a menu item</p>
+	<p ng-show="active">You chose <b>{{active}}</b></p>
+
+      </div> <!-- content-center -->
+      
+    </div> <!-- main -->
+
+    <!-- placeholder for views -->
+    <div ng-view></div>
+    
+  </body>
+</html>
+
+

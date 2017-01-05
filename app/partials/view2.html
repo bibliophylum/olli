@@ -1,0 +1,11 @@
+<!-- view2.html -->
+
+<div class="container">
+  <h2>View 2</h2>
+  Name:<br />
+  <input type="text" ng-model="filter.city" />
+  <br />
+  <ul>  <!-- repeat is binding to $scope's customers property -->
+    <li ng-repeat="cust in customers |filter:filter.city">{{ cust.custName }} - {{ cust.city }}</li>
+  </ul>
+</div>

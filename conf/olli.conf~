@@ -1,0 +1,92 @@
+<VirtualHost *:80>
+	ServerName saiph.gotdns.org
+#	Redirect / https://saiph.gotdns.org/
+#</VirtualHost>
+#
+#<VirtualHost *:443>
+#	ServerName saiph.gotdns.org
+	# for perl to find my local modules
+	SetEnv PERL5LIB /opt/angular-olli/modules
+
+	# under mod_perl, taint mode is on... which means that PERL5LIB is ignored.
+	# Try this:
+	#PerlOptions +Parent
+	#PerlSwitches -I/home/dev1/lib/perl
+
+	# for C::A and H::T to find my templates
+#	SetEnv HTML_TEMPLATE_ROOT /opt/angular-olli/templates
+
+	# for scripts to use as the base dir for data files, uploads, etc.
+#	SetEnv EXTERNALS /opt/angular-olli/externals
+
+	# for DBI to find a database connection
+	# DBI_DSN and/or DBI_USER may also be defined here
+
+	# /index.html is no longer the default landing page...
+	RewriteEngine On
+	RewriteRule ^/?$ /angular-olli.html [R=302,L]
+
+	# see second answer at:
+	# http://stackoverflow.com/questions/15284038/rewrite-rules-for-apache-2-to-use-with-angular-js
+	FallbackResource /angular-olli.html
+
+	DocumentRoot /opt/angular-olli/htdocs/
+	<Directory />
+		Options FollowSymLinks
+		AllowOverride None
+	</Directory>
+	<Directory /opt/angular-olli/htdocs/>
+		Options Indexes FollowSymLinks MultiViews
+		AllowOverride None
+		# 2.2 way:
+		#Order allow,deny
+		#Allow from all
+		# 2.4 way:
+		Require all granted
+	</Directory>
+	<Directory /opt/angular-olli/api/>
+		# if we ever have an api for this, don't fallback to the app!
+		FallbackResource disabled
+	</Directory>
+
+        # log was filling up with "attempt to invoke directory as script".
+        # fix as per https://wiki.apache.org/httpd/DirectoryAsScript
+        #ScriptAlias /cgi-bin/ /opt/dsc/bin/
+        Alias /cgi-bin /opt/angular-olli/bin
+        <Directory /opt/angular-olli/bin>
+                AddHandler cgi-script cgi pl
+		AllowOverride None
+		Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+		# 2.2 way:
+		#Order allow,deny
+		#Allow from all
+		# 2.4 way:
+		Require all granted
+	</Directory>
+
+	ErrorLog "|/usr/bin/rotatelogs /opt/angular-olli/logs/error.log.%Y%m%d-%H%M%S 10M"
+
+	# Possible values include: debug, info, notice, warn, error, crit,
+	# alert, emerg.
+	LogLevel warn
+
+	CustomLog "|/usr/bin/rotatelogs /opt/angular-olli/logs/access.log.%Y%m%d-%H%M%S 5M" combined
+	ServerSignature On
+
+	# script log must be owned by apache user, and exist before apache starts
+	# see http://objectmix.com/apache/648407-script-log-not-logging.html
+	ScriptLog "/opt/angular-olli/logs/cgi_error_log"
+
+#	SSLEngine on	
+#        SSLCertificateFile /etc/ssl/certs/saiph.crt
+#        SSLCertificateKeyFile /etc/ssl/private/saiph.key 
+
+	<Proxy *>
+	   AddDefaultCharset off
+	   Order deny,allow
+	   Allow from all
+	</Proxy>
+
+	ProxyVia Off
+
+</VirtualHost>

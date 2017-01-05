@@ -1,0 +1,52 @@
+echo Disabling existing site...
+sudo a2dissite angular-olli.conf
+
+echo Unlinking angular-olli configuration...
+sudo unlink /etc/apache2/sites-available/angular-olli.conf
+
+echo Removing existing /opt/angular-olli...
+sudo rm -rf /opt/angular-olli/bin
+sudo rm -rf /opt/angular-olli/conf
+sudo rm -rf /opt/angular-olli/devdocs
+sudo rm -rf /opt/angular-olli/externals
+sudo rm -rf /opt/angular-olli/htdocs
+sudo rm -rf /opt/angular-olli/logs
+sudo rm -rf /opt/angular-olli/modules
+sudo rm -rf /opt/angular-olli/testing
+sudo rm -rf /opt/angular-olli/updates
+
+echo Creating new /opt/angular-olli...
+sudo mkdir /opt/angular-olli
+
+echo Changing ownership...
+sudo chown david:david /opt/angular-olli
+
+echo Copying from dev...
+cp -R bin /opt/angular-olli/bin
+cp -R conf /opt/angular-olli/conf
+cp -R devdocs /opt/angular-olli/devdocs
+cp -R externals /opt/angular-olli/externals
+cp -R htdocs /opt/angular-olli/htdocs
+cp -R logs /opt/angular-olli/logs
+cp -R modules /opt/angular-olli/modules
+cp -R testing /opt/angular-olli/testing
+cp -R updates /opt/angular-olli/updates
+
+#sudo chgrp -R devel /opt/angular-olli/*
+
+#echo Allowing write to message logs...
+sudo chgrp -R www-data /opt/angular-olli/logs
+sudo chmod g+w /opt/angular-olli/logs
+#sudo chmod ugo+w /opt/angular-olli/logs/messages.log
+
+#echo Allowing web server to write to htdocs/tmp
+#sudo chgrp www-data /opt/angular-olli/htdocs/tmp
+#sudo chmod g+w /opt/angular-olli/htdocs/tmp
+
+echo Creating symlink to apache sites-available
+sudo ln -s /opt/angular-olli/conf/angular-olli.conf /etc/apache2/sites-available/angular-olli.conf
+
+echo Enabling site...
+sudo a2ensite angular-olli.conf
+echo Reloading apache...
+sudo /etc/init.d/apache2 reload
