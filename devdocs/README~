@@ -1,0 +1,45 @@
+Olli - Our Library's Life [Information | Investigation | Intelligence | ...]
+----------------------------------------------------------------------------
+Olli is (will be) a single-page web application for exploring as much data
+as we can find regarding libraries in Manitoba.  It allows easy navigation
+between data sets and across years, enables identification and comparisons
+with peers selectable on various metrics, and generates reports suitable for
+library strategic planning, board meetings, and sector planning and health
+measurement.
+
+Current data sets:
+1. Library annual statistics (reported by libraries to Public Library Services)
+2. Statistics Canada municipality-level census data
+
+Possible future data sets:
+1. Rural Development Institute's Self-Contained Labour Areas
+2. Ecomonic Development Corporation data
+3. ...?
+
+Three components:
+1. PostgreSQL database
+   ./db
+2. AngularJS Single Page Application client
+   ./app
+3. RESTful server modules using Perl Apache2::REST
+   ./api
+
+Development notes
+=================
+REST api
+--------
+Install Apache2::REST
+$ sudo cpan -i Apache2::REST
+Hmm... fails.
+
+Try:
+sudo apt-get install libapache2-mod-perl2-dev
+sudo apt-get install libapache2-request-perl
+Reboot, and retry installing Apache2::REST
+
+
+Install libapreq (apache2 module) using muon or apt-get
+
+
+Olli client application
+-----------------------

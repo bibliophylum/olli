@@ -43,5 +43,5 @@ sudo ln -s /opt/olli/conf/olli.conf /etc/apache2/sites-available/olli.conf
 echo Enabling site...
 sudo a2ensite olli.conf
 echo Reloading apache...
-#sudo /etc/init.d/apache2 reload
-sudo service apache2 reload
+sudo /etc/init.d/apache2 reload
+#sudo service apache2 reload
