@@ -9,11 +9,10 @@ olliApp.config(function ($routeProvider,$locationProvider) {
 	    controller: 'MunicipalitiesController',
 	    templateUrl: 'partials/municipalities.html'
 	})
-/*        .when("/view2", {
+        .when("/view2", {
   	    controller: 'SimpleController', // could be different controller
 	    templateUrl: 'partials/view2.html'
         })
-*/
         .otherwise({ redirectTo: '/' });
 
     /* you can pass parameters to a route like this:
@@ -62,14 +61,15 @@ olliApp.controller('MunicipalitiesController', ['$scope', 'munFactory', function
     
     $scope.status;
     $scope.municipalities;
-    $scope.orders;
+//    $scope.orders;
 
     getMunicipalities();
 
     function getMunicipalities() {
         munFactory.getMunicipalities()
             .then(function (response) {
-                $scope.data = response.data;
+                $scope.municipalities = response.data.data.municipalities;
+		$scope.api_mess = response.data.data.api_mess;
             }, function (error) {
                 $scope.status = 'Unable to load municipalities data: ' + error.message;
             });
