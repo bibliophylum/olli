@@ -1,23 +1,14 @@
 <!-- view1.html -->
 
 <div class="container">
-  <h2>View 1</h2>
+  <h2>Municipalities</h2>
   Name:<br />
   <input type="text" ng-model="filter.name" /> {{ name }}
   <br />
-  <ul>  <!-- repeat is binding to $scope's customers property -->
-    <li ng-repeat="cust in customers |filter:filter.name">{{ cust.custName }} - {{ cust.city }}</li>
+  <ul>  <!-- repeat is binding to $scope's data property -->
+    <li ng-repeat="mun in municipalities |filter:filter.name">{{ mun.name }} - {{ mun.pop }}</li>
   </ul>
 
   <br />
-  Customer name:<br />
-  <input type="text" ng-model="newCustomer.name" /><br />
-  Customer city:<br />
-  <input type="text" ng-model="newCustomer.city" />
-
-  <br />
-  <button ng-click="addCustomer()">Add customer</button>
-
-  <br />
-  <a href="/view2">View 2</a>
+  <a href="/view1">View 1</a>
 </div>

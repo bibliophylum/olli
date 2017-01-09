@@ -69,7 +69,7 @@ olliApp.controller('MunicipalitiesController', ['$scope', 'munFactory', function
     function getMunicipalities() {
         munFactory.getMunicipalities()
             .then(function (response) {
-                $scope.municipalities = response.data;
+                $scope.data = response.data;
             }, function (error) {
                 $scope.status = 'Unable to load municipalities data: ' + error.message;
             });
