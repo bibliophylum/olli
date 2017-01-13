@@ -2,18 +2,29 @@
 
 <div class="container">
   <h2>Municipalities</h2>
-  Name:<br />
-  <input type="text" ng-model="filter.name" /> {{ name }}
+  Filter 1: <input type="text" ng-model="filter.filter1" /> {{ filter1 }}<br />
+  Filter 2: <input type="text" ng-model="filter.filter2" /> {{ filter2 }}<br />
   <br />
-  <table>
+  <table border="1" cellpadding="10">
     <thead>
-      <tr><th>Municipality</th><th>Population</th></tr>
+      <tr>
+	<th>ID</th>
+	<th>Year</th>
+	<th>Municipality</th>
+	<th>Population</th>
+	<th>Bilingual?</th>
+	<th>Northern?</th>
+      </tr>
     </thead>
     <tbody>
       <!-- repeat is binding to $scope's municipalities property ... is it? -->
-      <tr ng-repeat="mun in municipalities |filter:filter.name">
+      <tr ng-repeat="mun in municipalities |filter:filter.filter1 |filter:filter.filter2">
+	<td>{{ mun.id }}</td>
+	<td>{{ mun.year }}</td>
 	<td>{{ mun.name }}</td>
-	<td>{{ mun.pop }}</td>
+	<td>{{ mun.population }}</td>
+	<td>{{ mun.is_bilingual }}</td>
+	<td>{{ mun.is_northern }}</td>
       </tr>
     </tbody>
   </table>

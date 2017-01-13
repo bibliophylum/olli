@@ -15,3 +15,6 @@
 .top-menu {
     background: #f1da36;
 }
+
+table { border-spacing: 5px; } /* cellspacing */
+th, td { padding: 5px; } /* cellpadding */
