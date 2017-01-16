@@ -15,7 +15,7 @@ sub GET_dummy{
 	{name => "Bob", pop => "2345"},
 	{name => "Charlie", pop => "3456"}
 	);
-    $response->data()->{'api_mess'} = 'Hello, this is Olli REST API' ;
+    $response->data()->{'api_mess'} = 'Hello, this is Olli REST API: municipalities' ;
     $response->data()->{'municipalities'} = \@muns;
     return Apache2::Const::HTTP_OK ;
 }

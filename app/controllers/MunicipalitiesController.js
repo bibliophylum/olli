@@ -1,5 +1,5 @@
 // MunicipalitiesController.js
-
+/*
 var olliApp = angular.module('olliModule',['ngRoute']);
 
 //-----------------------------------------------------------------------
@@ -14,15 +14,11 @@ olliApp.config(function ($routeProvider,$locationProvider) {
 	    templateUrl: 'partials/view2.html'
         })
         .otherwise({ redirectTo: '/' });
-
-    /* you can pass parameters to a route like this:
-       .when("/customer/:customerID", { ... });
-    */
     
     // use the HTML5 History API
     $locationProvider.html5Mode(true);
 });	     
-
+*/
 //-----------------------------------------------------------------------
 olliApp.factory('munFactory', ['$http', function($http) {
 

@@ -3,6 +3,7 @@ use warnings ;
 use strict ;
 
 use Olli::REST::API::municipalities;
+use Olli::REST::API::libraries;
 
 use base qw/Apache2::REST::Handler/;
 
@@ -21,8 +22,13 @@ sub isAuth{
 
 sub buildNext{
     my ( $self , $frag , $req ) = @_ ;
-    
-    my $subh = Olli::REST::API::municipalities->new($self) ;
+
+    my $subh;
+    if ($frag eq "municipalities") {
+	$subh = Olli::REST::API::municipalities->new($self) ;
+    } elsif ($frag eq "libraries") {
+	$subh = Olli::REST::API::libraries->new($self) ;
+    }
 #    $subh->{'userid'} = $frag  ;
     return $subh ;
 }

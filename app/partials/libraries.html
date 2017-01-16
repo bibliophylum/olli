@@ -1,0 +1,48 @@
+<!-- libraries.html -->
+
+<div class="container">
+  <h2>Libraries</h2>
+  Filter 1: <input type="text" ng-model="filter.filter1" /> {{ filter1 }}<br />
+  Filter 2: <input type="text" ng-model="filter.filter2" /> {{ filter2 }}<br />
+  <br />
+  <table border="1" cellpadding="10">
+    <thead>
+      <tr>
+	<th>ID</th>
+	<th>Year</th>
+	<th>Library</th>
+	<th>Established</th>
+	<th>Non-res fee, single</th>
+	<th>Non-res fee, family</th>
+	<th>Is registered charity?</th>
+	<th>Has Access Copyright license?</th>
+	<th>Board minutes on web site?</th>
+	<th>Strategic plan start</th>
+	<th>Strategic plan end</th>
+	<th>Has technology plan?</th>
+	<th>Confirmed?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- repeat is binding to $scope's libraries property ... is it? -->
+      <tr ng-repeat="lib in libraries |filter:filter.filter1 |filter:filter.filter2">
+	<td>{{ lib.id }}</td>
+	<td>{{ lib.year }}</td>
+	<td>{{ lib.name }}</td>
+	<td>{{ lib.established }}</td>
+	<td>{{ lib.fee_nonresident_single }}</td>
+	<td>{{ lib.fee_nonresident_family }}</td>
+	<td>{{ lib.is_registered_charity }}</td>
+	<td>{{ lib.has_access_copyright_license }}</td>
+	<td>{{ lib.has_board_minutes_on_website }}</td>
+	<td>{{ lib.strategic_plan_start }}</td>
+	<td>{{ lib.strategic_plan_end }}</td>
+	<td>{{ lib.has_technology_plan }}</td>
+	<td>{{ lib.is_confirmed }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <br />
+  <a href="/">All municipalities list</a>
+</div>
