@@ -30,6 +30,22 @@
 
       <div class="top-menu">
 	
+	<div class="container-fluid"> <!-- bootstrap -->
+	  
+	  <!-- The navigation menu will get the value of the "active" variable as a 
+	       class.
+	       The $event.preventDefault() stops the page from jumping when a link 
+	       is clicked. -->
+	  
+<!--	  <nav class="{{active}}" ng-click="$event.preventDefault()">  -->
+	  <nav class="{{active}}">
+	    
+	    <a href="/municipalities" class="btn btn-primary" ng-click="active='municipalities'">Municipalities</a>
+	    <a href="/libraries" class="btn btn-default" ng-click="active='libraries'">Libraries</a>
+	  </nav>
+	  
+	</div> <!-- container-fluid -->
+
 	<div class="navbar" ng-controller="NavController">
 	  <ul class="nav navbar-nav">
 	    <li ng-class="navClass('home')"><a href='' ng-click="loadHome()">Home</a></li>
@@ -38,7 +54,18 @@
 	  </ul>
 	</div>
  
+	
       </div> <!-- top-menu -->
+      
+      <div class="content-center">
+	<!-- ng-show will show an element if the value in the quotes is truthful,
+	     while ng-hide does the opposite. Because the active variable is not set
+	     initially, this will cause the first paragraph to be visible. -->
+	
+	<p ng-hide="active">Please click a menu item</p>
+	<p ng-show="active">You chose <b>{{active}}</b></p>
+
+      </div> <!-- content-center -->
       
     </div> <!-- main -->
 
