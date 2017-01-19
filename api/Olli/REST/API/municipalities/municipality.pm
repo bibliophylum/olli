@@ -1,4 +1,4 @@
-package Olli::REST::API::municipalities ;
+package Olli::REST::API::municipalities::municipality ;
 use warnings ;
 use strict ;
 use base qw/Apache2::REST::Handler/;
@@ -21,14 +21,14 @@ sub GET {
     
     $dbh->do("SET TIMEZONE='America/Winnipeg'");
 
-    my $SQL = "select id, year, name, population, case when is_bilingual then 'bilingual' else '' end as is_bilingual, case when is_northern then 'northern' else '' end as is_northern from municipalities order by year, name";
-    my $aref = $dbh->selectall_arrayref($SQL, { Slice => {} });
+    # municipality id is in $self->munid() (from ../municipalities.pm's buildNext)
+    
+    my $SQL = "select id, year, name, population, case when is_bilingual then 'bilingual' else '' end as is_bilingual, case when is_northern then 'northern' else '' end as is_northern from municipalities where id=?";
+    my $aref = $dbh->selectall_arrayref($SQL, { Slice => {} }, $self->munid() );
     $dbh->disconnect;
     
-#    my $json =  to_json( { municipalities => $aref } );
-
     $response->data()->{'api_mess'} = 'Hello, this is Olli REST API' ;
-    $response->data()->{'municipalities'} = $aref;
+    $response->data()->{'municipalitiy'} = $aref;
     return Apache2::Const::HTTP_OK ;
 }
 
@@ -39,13 +39,13 @@ sub isAuth{
 }
 
 # eg: municipalities/600
-sub buildNext{
-    my ( $self , $frag , $req ) = @_ ;
-    
-    my $subh = Olli::REST::API::municipalities::municipality->new($self) ;
-    $subh->{'munid'} = $frag  ;
-    return $subh ;
-}
+#sub buildNext{
+#    my ( $self , $frag , $req ) = @_ ;
+#    
+#    my $subh = Apache2::REST::Handler::municipalities::municipality->new($self) ;
+#    $subh->{'munid'} = $frag  ;
+#    return $subh ;
+#}
 
 
 1 ;

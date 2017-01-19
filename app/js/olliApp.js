@@ -7,15 +7,23 @@ var olliApp = angular.module('olliModule',['ngRoute']);
 //-----------------------------------------------------------------------
 olliApp.config(function ($routeProvider,$locationProvider) {
     $routeProvider
-	.when('/', {
+	.when('/municipalities', {
 	    controller: 'MunicipalitiesController',
 	    templateUrl: 'partials/municipalities.html'
 	})
-	.when('/libraries', {
+	.when('/municipalities/:id', {
+	    controller: 'MunicipalitiesController',
+	    templateUrl: 'partials/municipality-details.html'
+	})
+/*	.when('/municipality-details', {
+	    controller: 'MunicipalitiesController',
+	    templateUrl: 'partials/municipality-details.html'
+	})
+*/	.when('/libraries', {
 	    controller: 'LibrariesController',
 	    templateUrl: 'partials/libraries.html'
 	})
-        .otherwise({ redirectTo: '/' });
+        .otherwise({ redirectTo: '/municipalities' });
 
     /* you can pass parameters to a route like this:
        .when("/customer/:customerID", { ... });

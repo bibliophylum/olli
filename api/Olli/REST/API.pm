@@ -3,6 +3,7 @@ use warnings ;
 use strict ;
 
 use Olli::REST::API::municipalities;
+use Olli::REST::API::municipalities::municipality;
 use Olli::REST::API::libraries;
 
 use base qw/Apache2::REST::Handler/;

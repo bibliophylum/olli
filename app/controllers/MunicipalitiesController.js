@@ -1,24 +1,6 @@
 // MunicipalitiesController.js
-/*
-var olliApp = angular.module('olliModule',['ngRoute']);
+// config & routing defined in js/olliApp.js
 
-//-----------------------------------------------------------------------
-olliApp.config(function ($routeProvider,$locationProvider) {
-    $routeProvider
-	.when('/', {
-	    controller: 'MunicipalitiesController',
-	    templateUrl: 'partials/municipalities.html'
-	})
-        .when("/view2", {
-  	    controller: 'SimpleController', // could be different controller
-	    templateUrl: 'partials/view2.html'
-        })
-        .otherwise({ redirectTo: '/' });
-    
-    // use the HTML5 History API
-    $locationProvider.html5Mode(true);
-});	     
-*/
 //-----------------------------------------------------------------------
 olliApp.factory('munFactory', ['$http', function($http) {
 
@@ -29,6 +11,11 @@ olliApp.factory('munFactory', ['$http', function($http) {
         return $http.get(urlBase);
     };
 
+    munFactory.getMunicipalityDetails = function (id) {
+        return $http.get(urlBase + '/' + id);
+    };
+
+/*    
     munFactory.getMunicipality = function (id) {
         return $http.get(urlBase + '/' + id);
     };
@@ -44,7 +31,7 @@ olliApp.factory('munFactory', ['$http', function($http) {
     munFactory.deleteMunicipality = function (id) {
         return $http.delete(urlBase + '/' + id);
     };
-
+*/
 /*    munFactory.getOrders = function (id) {
         return $http.get(urlBase + '/' + id + '/orders');
     };
@@ -57,6 +44,7 @@ olliApp.controller('MunicipalitiesController', ['$scope', 'munFactory', function
     
     $scope.status;
     $scope.municipalities;
+    $scope.municipalityDetails;
 //    $scope.orders;
 
     getMunicipalities();
@@ -71,6 +59,16 @@ olliApp.controller('MunicipalitiesController', ['$scope', 'munFactory', function
             });
     }
 
+    $scope.getMunicipalityDetails = function (id) {
+        munFactory.getMunicipalityDetails(id)
+            .then(function (response) {
+                $scope.municipalityDetails = response.data.data.municipalities;
+		$scope.api_mess = response.data.data.api_mess;
+            }, function (error) {
+                $scope.status = 'Unable to load municipality detail data: ' + error.message;
+            });
+    };
+/*
     $scope.updateMunicipality = function (id) {
         var mun;
         for (var i = 0; i < $scope.municipalities.length; i++) {
@@ -121,6 +119,7 @@ olliApp.controller('MunicipalitiesController', ['$scope', 'munFactory', function
             $scope.status = 'Unable to delete municipality: ' + error.message;
         });
     };
+*/
 /*
     $scope.getMunicipalityOrders = function (id) {
         munFactory.getOrders(id)
