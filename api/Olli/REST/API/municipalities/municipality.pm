@@ -24,11 +24,11 @@ sub GET {
     # municipality id is in $self->munid() (from ../municipalities.pm's buildNext)
     
     my $SQL = "select id, year, name, population, case when is_bilingual then 'bilingual' else '' end as is_bilingual, case when is_northern then 'northern' else '' end as is_northern from municipalities where id=?";
-    my $aref = $dbh->selectall_arrayref($SQL, { Slice => {} }, $self->munid() );
+    my $href = $dbh->selectrow_hashref($SQL, { Slice => {} }, $self->munid() );
     $dbh->disconnect;
     
     $response->data()->{'api_mess'} = 'Hello, this is Olli REST API' ;
-    $response->data()->{'municipalitiy'} = $aref;
+    $response->data()->{'municipality'} = $href;
     return Apache2::Const::HTTP_OK ;
 }
 

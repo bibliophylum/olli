@@ -11,15 +11,11 @@ olliApp.config(function ($routeProvider,$locationProvider) {
 	    controller: 'MunicipalitiesController',
 	    templateUrl: 'partials/municipalities.html'
 	})
-	.when('/municipalities/:id', {
-	    controller: 'MunicipalitiesController',
+	.when('/municipalities/:munID', {
+	    controller: 'MunicipalityController',
 	    templateUrl: 'partials/municipality-details.html'
 	})
-/*	.when('/municipality-details', {
-	    controller: 'MunicipalitiesController',
-	    templateUrl: 'partials/municipality-details.html'
-	})
-*/	.when('/libraries', {
+	.when('/libraries', {
 	    controller: 'LibrariesController',
 	    templateUrl: 'partials/libraries.html'
 	})
@@ -32,4 +28,42 @@ olliApp.config(function ($routeProvider,$locationProvider) {
     // use the HTML5 History API
     $locationProvider.html5Mode(true);
 });	     
+
+//-----------------------------------------------------------------------
+olliApp.factory('munFactory', ['$http', function($http) {
+
+    var urlBase = '/api/municipalities';
+    var munFactory = {};
+
+    munFactory.getMunicipalities = function () {
+        return $http.get(urlBase);
+    };
+
+    munFactory.getMunicipalityDetails = function (id) {
+        return $http.get(urlBase + '/' + id);
+    };
+
+/*    
+    munFactory.getMunicipality = function (id) {
+        return $http.get(urlBase + '/' + id);
+    };
+
+    munFactory.insertMunicipality = function (mun) {
+        return $http.post(urlBase, mun);
+    };
+
+    munFactory.updateMunicipality = function (mun) {
+        return $http.put(urlBase + '/' + mun.ID, mun)
+    };
+
+    munFactory.deleteMunicipality = function (id) {
+        return $http.delete(urlBase + '/' + id);
+    };
+*/
+/*    munFactory.getOrders = function (id) {
+        return $http.get(urlBase + '/' + id + '/orders');
+    };
+*/
+    return munFactory;
+}]);
 

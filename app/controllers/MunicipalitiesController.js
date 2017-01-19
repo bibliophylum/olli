@@ -2,44 +2,6 @@
 // config & routing defined in js/olliApp.js
 
 //-----------------------------------------------------------------------
-olliApp.factory('munFactory', ['$http', function($http) {
-
-    var urlBase = '/api/municipalities';
-    var munFactory = {};
-
-    munFactory.getMunicipalities = function () {
-        return $http.get(urlBase);
-    };
-
-    munFactory.getMunicipalityDetails = function (id) {
-        return $http.get(urlBase + '/' + id);
-    };
-
-/*    
-    munFactory.getMunicipality = function (id) {
-        return $http.get(urlBase + '/' + id);
-    };
-
-    munFactory.insertMunicipality = function (mun) {
-        return $http.post(urlBase, mun);
-    };
-
-    munFactory.updateMunicipality = function (mun) {
-        return $http.put(urlBase + '/' + mun.ID, mun)
-    };
-
-    munFactory.deleteMunicipality = function (id) {
-        return $http.delete(urlBase + '/' + id);
-    };
-*/
-/*    munFactory.getOrders = function (id) {
-        return $http.get(urlBase + '/' + id + '/orders');
-    };
-*/
-    return munFactory;
-}]);
-
-//-----------------------------------------------------------------------
 olliApp.controller('MunicipalitiesController', ['$scope', 'munFactory', function ($scope, munFactory) {
     
     $scope.status;
@@ -47,9 +9,10 @@ olliApp.controller('MunicipalitiesController', ['$scope', 'munFactory', function
     $scope.municipalityDetails;
 //    $scope.orders;
 
-    getMunicipalities();
+    init(); //getMunicipalities();
 
-    function getMunicipalities() {
+//    function getMunicipalities() {
+    function init() {
         munFactory.getMunicipalities()
             .then(function (response) {
                 $scope.municipalities = response.data.data.municipalities;
@@ -59,15 +22,6 @@ olliApp.controller('MunicipalitiesController', ['$scope', 'munFactory', function
             });
     }
 
-    $scope.getMunicipalityDetails = function (id) {
-        munFactory.getMunicipalityDetails(id)
-            .then(function (response) {
-                $scope.municipalityDetails = response.data.data.municipalities;
-		$scope.api_mess = response.data.data.api_mess;
-            }, function (error) {
-                $scope.status = 'Unable to load municipality detail data: ' + error.message;
-            });
-    };
 /*
     $scope.updateMunicipality = function (id) {
         var mun;
