@@ -65,47 +65,51 @@
       </thead>
       <tbody>
 	<tr ng-repeat="(topic, details) in census"> <!-- key, value -->
-	  <td>{{ topic }}</td>
+	  <td style="vertical-align:top"><a href ng-click="details.visible = !details.visible">{{ topic }}</a></td>
 	  <td>
-	    <table border="1" cellpadding="10">
-	      <thead>
-		<tr>
-		  <th>Ord</th>
-		  <th>Characteristic</th>
-		  <th>Format</th>
-		  <th>Census areas</th>
-		</tr>
-		<tbody>
-		  <tr ng-repeat="(ord, c) in details">
-		    <td>{{ ord }}</td>
-		    <td>{{ c.characteristic }}</td>
-		    <td>{{ c.format_mask }}</td>
-		    <td>
-		      <table border="1" cellpadding="10">
-			<thead>
-			  <tr>
-			    <th>Division</th>
-			    <th>Subdivision</th>
-			    <th>Type</th>
-			    <th>Total</th>
-			    <th>Male</th>
-			    <th>Female</th>
-			  </tr>
-			</thead>
-			<tbody>
-			  <tr ng-repeat="a in c.census_areas">
-			    <td>{{ a.division }}</td>
-			    <td>{{ a.subdivision }}</td>
-			    <td>{{ a.sd_type }}</td>
-			    <td>{{ a.total }}</td>
-			    <td>{{ a.male }}</td>
-			    <td>{{ a.female }}</td>
-			  </tr>
-			</tbody>
-		      </table>
-		    </td>
-		</tbody>
-	    </table>
+	    <div ng-show="details.visible">
+	      <table border="1" cellpadding="10">
+		<thead>
+		  <tr>
+		    <th>Ord</th>
+		    <th>Characteristic</th>
+		    <th>Format</th>
+		    <th>Census areas</th>
+		  </tr>
+		  <tbody>
+		    <tr ng-repeat="(ord, c) in details">
+		      <td style="vertical-align:top">{{ ord }}</td>
+		      <td style="vertical-align:top"><a href ng-click="c.visible = !c.visible">{{ c.characteristic }}</a></td>
+		      <td style="vertical-align:top">{{ c.format_mask }}</td>
+		      <td>
+			<div ng-show="c.visible">
+			  <table border="1" cellpadding="10">
+			    <thead>
+			      <tr>
+				<th>Division</th>
+				<th>Subdivision</th>
+				<th>Type</th>
+				<th>Total</th>
+				<th>Male</th>
+				<th>Female</th>
+			      </tr>
+			    </thead>
+			    <tbody>
+			      <tr ng-repeat="a in c.census_areas">
+				<td>{{ a.division }}</td>
+				<td>{{ a.subdivision }}</td>
+				<td>{{ a.sd_type }}</td>
+				<td>{{ a.total }}</td>
+				<td>{{ a.male }}</td>
+				<td>{{ a.female }}</td>
+			      </tr>
+			    </tbody>
+			  </table>
+			</div> <!-- show ord/characteristic details -->
+		      </td>
+		  </tbody>
+	      </table>
+	    </div> <!-- show topic details -->
 	  </td>
 	</tr>
       </tbody>
