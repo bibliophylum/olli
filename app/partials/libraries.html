@@ -28,7 +28,7 @@
       <tr ng-repeat="lib in libraries |filter:filter.filter1 |filter:filter.filter2">
 	<td>{{ lib.id }}</td>
 	<td>{{ lib.year }}</td>
-	<td>{{ lib.name }}</td>
+	<td><a href="/libraries/{{ lib.id }}">{{ lib.name }}</a></td>
 	<td>{{ lib.established }}</td>
 	<td>{{ lib.fee_nonresident_single }}</td>
 	<td>{{ lib.fee_nonresident_family }}</td>
