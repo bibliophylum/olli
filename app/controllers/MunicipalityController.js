@@ -6,6 +6,9 @@ olliApp.controller('MunicipalityController', ['$scope', '$routeParams', 'munFact
     
     $scope.status;
     $scope.municipalityDetails;
+    $scope.census_year;
+    $scope.contributions;
+    $scope.census;
 
     init();
 
@@ -17,6 +20,9 @@ olliApp.controller('MunicipalityController', ['$scope', '$routeParams', 'munFact
 		.then(function (response) {
                     $scope.municipalityDetails = response.data.data.municipality;
 		    $scope.api_mess = response.data.data.api_mess;
+		    $scope.census_year = response.data.data.census_year;
+		    $scope.contributions = response.data.data.contributions;
+		    $scope.census = response.data.data.census;
 		}, function (error) {
                     $scope.status = 'Unable to load municipalities data: ' + error.message;
 		});

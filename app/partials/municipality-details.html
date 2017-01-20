@@ -1,22 +1,116 @@
 <!-- municipality-details.html -->
 
+<!--
+"contributions":[
+  {"id":405,"name":"Reston & District Library","contribution":"$10,200.00"},
+  {"id":411,"name":"Southwestern Manitoba Regional - Main","contribution":"$37,850.00"}
+],
+-->
+
 <div class="container">
-  <h2>Municipality Details</h2>
-  <table border="1" cellpadding="10">
-    <thead>
-      <tr>
-	<th>Category</th>
-	<th>Detail</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td>ID</td><td>{{ municipalityDetails.id }}</td></tr>
-      <tr><td>Year</td><td>{{ municipalityDetails.year }}</td></tr>
-      <tr><td>Name</td><td>{{ municipalityDetails.name }}</td></tr>
-      <tr><td>Population</td><td>{{ municipalityDetails.population }}</td></tr>
-      <tr><td>Bilingual?</td><td>{{ municipalityDetails.is_bilingual }}</td></tr>
-      <tr><td>Northern?</td><td>{{ municipalityDetails.is_northern }}</td></tr>
-    </tbody>
-  </table>
+  <div id="municipality">
+    <h2>Municipality Details</h2>
+    <table border="1" cellpadding="10">
+      <thead>
+	<tr>
+	  <th>Category</th>
+	  <th>Detail</th>
+	</tr>
+      </thead>
+      <tbody>
+	<tr><td>ID</td><td>{{ municipalityDetails.id }}</td></tr>
+	<tr><td>Year</td><td>{{ municipalityDetails.year }}</td></tr>
+	<tr><td>Name</td><td>{{ municipalityDetails.name }}</td></tr>
+	<tr><td>Population</td><td>{{ municipalityDetails.population }}</td></tr>
+	<tr><td>Bilingual?</td><td>{{ municipalityDetails.is_bilingual }}</td></tr>
+	<tr><td>Northern?</td><td>{{ municipalityDetails.is_northern }}</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="contributions">
+    <h2>Contributions</h2>
+    <table border="1" cellpadding="10">
+      <thead>
+	<tr>
+	  <th>ID</th>
+	  <th>Library</th>
+	  <th>Contribution</th>
+	</tr>
+      </thead>
+      <tbody>
+	<tr ng-repeat="contrib in contributions | orderBy:'name'">
+	  <td>{{ contrib.id }}</td>
+	  <td>{{ contrib.name }}</td>
+	  <td>{{ contrib.contribution }}</td>
+	</tr>
+      </tbody>
+    </table>
+    
+  </div>
+
+  <div id="census_year">
+    <h2>Census year: {{ census_year.year }}</h2>
+    <p>{{ census_year.year }} is the most recent census year for "{{ municipalityDetails.name }}, {{ municipalityDetails.year }}"</p>
+  </div>
+
+  <div id="census">
+    <h2>Census data</h2>
+    <table border="1" cellpadding="10">
+      <thead>
+	<tr>
+	  <th>Topic</th>
+	  <th>Details</th>
+	</tr>
+      </thead>
+      <tbody>
+	<tr ng-repeat="(topic, details) in census"> <!-- key, value -->
+	  <td>{{ topic }}</td>
+	  <td>
+	    <table border="1" cellpadding="10">
+	      <thead>
+		<tr>
+		  <th>Ord</th>
+		  <th>Characteristic</th>
+		  <th>Format</th>
+		  <th>Census areas</th>
+		</tr>
+		<tbody>
+		  <tr ng-repeat="(ord, c) in details">
+		    <td>{{ ord }}</td>
+		    <td>{{ c.characteristic }}</td>
+		    <td>{{ c.format_mask }}</td>
+		    <td>
+		      <table border="1" cellpadding="10">
+			<thead>
+			  <tr>
+			    <th>Division</th>
+			    <th>Subdivision</th>
+			    <th>Type</th>
+			    <th>Total</th>
+			    <th>Male</th>
+			    <th>Female</th>
+			  </tr>
+			</thead>
+			<tbody>
+			  <tr ng-repeat="a in c.census_areas">
+			    <td>{{ a.division }}</td>
+			    <td>{{ a.subdivision }}</td>
+			    <td>{{ a.sd_type }}</td>
+			    <td>{{ a.total }}</td>
+			    <td>{{ a.male }}</td>
+			    <td>{{ a.female }}</td>
+			  </tr>
+			</tbody>
+		      </table>
+		    </td>
+		</tbody>
+	    </table>
+	  </td>
+	</tr>
+      </tbody>
+    </table>
+
+  </div>
 
 </div>
