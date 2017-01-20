@@ -39,4 +39,13 @@ sub isAuth{
     return $method eq 'GET';
 }
 
+# eg: libraries/600
+sub buildNext{
+    my ( $self , $frag , $req ) = @_ ;
+    
+    my $subh = Olli::REST::API::libraries::library->new($self) ;
+    $subh->{'libid'} = $frag  ;
+    return $subh ;
+}
+
 1 ;

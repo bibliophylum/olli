@@ -23,6 +23,7 @@ olliApp.controller('MunicipalityController', ['$scope', '$routeParams', 'munFact
 		    $scope.census_year = response.data.data.census_year;
 		    $scope.contributions = response.data.data.contributions;
 		    $scope.census = response.data.data.census;
+
 		    // set visibility of each subset
 		    angular.forEach( $scope.census, function(value, topic) {
 			$scope.census.topic.visible = false;
@@ -30,8 +31,9 @@ olliApp.controller('MunicipalityController', ['$scope', '$routeParams', 'munFact
 			    $scope.census.topic.ord.visible = false;
 			});
 		    });
+
 		}, function (error) {
-                    $scope.status = 'Unable to load municipalities data: ' + error.message;
+                    $scope.status = 'Unable to load municipality data: ' + error.message;
 		});
 	}
 	

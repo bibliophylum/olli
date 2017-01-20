@@ -41,7 +41,7 @@
       <tbody>
 	<tr ng-repeat="contrib in contributions | orderBy:'name'">
 	  <td>{{ contrib.id }}</td>
-	  <td>{{ contrib.name }}</td>
+	  <td><a href="/libraries/{{ contrib.id }}">{{ contrib.name }}</a></td>
 	  <td>{{ contrib.contribution }}</td>
 	</tr>
       </tbody>
@@ -64,6 +64,8 @@
 	</tr>
       </thead>
       <tbody>
+	<!-- hmm.  census is an object.  can't sort an object by properties.
+	     have to turn it into an array (but keep the key!) of objects. -->
 	<tr ng-repeat="(topic, details) in census"> <!-- key, value -->
 	  <td style="vertical-align:top"><a href ng-click="details.visible = !details.visible">{{ topic }}</a></td>
 	  <td>
@@ -73,14 +75,14 @@
 		  <tr>
 		    <th>Ord</th>
 		    <th>Characteristic</th>
-		    <th>Format</th>
+		    <!-- <th>Format</th> -->
 		    <th>Census areas</th>
 		  </tr>
 		  <tbody>
 		    <tr ng-repeat="(ord, c) in details">
 		      <td style="vertical-align:top">{{ ord }}</td>
 		      <td style="vertical-align:top"><a href ng-click="c.visible = !c.visible">{{ c.characteristic }}</a></td>
-		      <td style="vertical-align:top">{{ c.format_mask }}</td>
+		      <!-- <td style="vertical-align:top">{{ c.format_mask }}</td> -->
 		      <td>
 			<div ng-show="c.visible">
 			  <table border="1" cellpadding="10">
@@ -89,9 +91,9 @@
 				<th>Division</th>
 				<th>Subdivision</th>
 				<th>Type</th>
-				<th>Total</th>
 				<th>Male</th>
 				<th>Female</th>
+				<th>Total</th>
 			      </tr>
 			    </thead>
 			    <tbody>
@@ -99,9 +101,9 @@
 				<td>{{ a.division }}</td>
 				<td>{{ a.subdivision }}</td>
 				<td>{{ a.sd_type }}</td>
-				<td>{{ a.total }}</td>
 				<td>{{ a.male }}</td>
 				<td>{{ a.female }}</td>
+				<td>{{ a.total }}</td>
 			      </tr>
 			    </tbody>
 			  </table>

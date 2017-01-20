@@ -19,6 +19,10 @@ olliApp.config(function ($routeProvider,$locationProvider) {
 	    controller: 'LibrariesController',
 	    templateUrl: 'partials/libraries.html'
 	})
+	.when('/libraries/:libID', {
+	    controller: 'LibraryController',
+	    templateUrl: 'partials/library.html'
+	})
         .otherwise({ redirectTo: '/municipalities' });
 
     /* you can pass parameters to a route like this:
@@ -65,5 +69,38 @@ olliApp.factory('munFactory', ['$http', function($http) {
     };
 */
     return munFactory;
+}]);
+
+//-----------------------------------------------------------------------
+olliApp.factory('libFactory', ['$http', function($http) {
+
+    var urlBase = '/api/libraries';
+    var libFactory = {};
+
+    libFactory.getLibraries = function () {
+        return $http.get(urlBase);
+    };
+
+    libFactory.getLibrary = function (id) {
+        return $http.get(urlBase + '/' + id);
+    };
+/*
+    libFactory.insertLibrary = function (mun) {
+        return $http.post(urlBase, mun);
+    };
+
+    libFactory.updateLibrary = function (mun) {
+        return $http.put(urlBase + '/' + mun.ID, mun)
+    };
+
+    libFactory.deleteLibrary = function (id) {
+        return $http.delete(urlBase + '/' + id);
+    };
+
+    libFactory.getOrders = function (id) {
+        return $http.get(urlBase + '/' + id + '/orders');
+    };
+*/
+    return libFactory;
 }]);
 

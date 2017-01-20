@@ -1,0 +1,52 @@
+<!-- library.html -->
+
+<div class="container">
+  <div id="library">
+    <h2>Library Details</h2>
+    <table border="1" cellpadding="10">
+      <thead>
+	<tr>
+	  <th>Category</th>
+	  <th>Detail</th>
+	</tr>
+      </thead>
+      <tbody>
+	<tr><td>ID</td><td>{{ library.id }}</td></tr>
+	<tr><td>Year</td><td>{{ library.year }}</td></tr>
+	<tr><td>Library</td><td>{{ library.name }}</td></tr>
+	<tr><td>Established</td><td>{{ library.established }}</td></tr>
+	<tr><td>Non-res fee, single</td><td>{{ library.fee_nonresident_single }}</td></tr>
+	<tr><td>Non-res fee, family</td><td>{{ library.fee_nonresident_family }}</td></tr>
+	<tr><td>Is registered charity?</td><td>{{ library.is_registered_charity }}</td></tr>
+	<tr><td>Has Access Copyright license?</td><td>{{ library.has_access_copyright_license }}</td></tr>
+	<tr><td>Board minutes on web site?</td><td>{{ library.has_board_minutes_on_website }}</td></tr>
+	<tr><td>Strategic plan start</td><td>{{ library.strategic_plan_start }}</td></tr>
+	<tr><td>Strategic plan end</td><td>{{ library.strategic_plan_end }}</td></tr>
+	<tr><td>Has technology plan?</td><td>{{ library.has_technology_plan }}</td></tr>
+	<tr><td>Confirmed?</td><td>{{ library.is_confirmed }}</td></tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <div id="contributors">
+    <h2>Contributors</h2>
+    <table border="1" cellpadding="10">
+      <thead>
+	<tr>
+	  <th>ID</th>
+	  <th>Municipality</th>
+	  <th>Contribution</th>
+	</tr>
+      </thead>
+      <tbody>
+	<tr ng-repeat="contrib in contributors | orderBy:'name'">
+	  <td>{{ contrib.id }}</td>
+	  <td><a href="/municipalities/{{ contrib.id }}">{{ contrib.name }}</a></td>
+	  <td>{{ contrib.contribution }}</td>
+	</tr>
+      </tbody>
+    </table>
+    
+  </div>
+  
+</div>
