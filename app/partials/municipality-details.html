@@ -7,116 +7,128 @@
 ],
 -->
 
-<div class="container">
-  <div id="municipality">
-    <h2>Municipality Details</h2>
-    <table border="1" cellpadding="10">
-      <thead>
-	<tr>
-	  <th>Category</th>
-	  <th>Detail</th>
-	</tr>
-      </thead>
-      <tbody>
-	<tr><td>ID</td><td>{{ municipalityDetails.id }}</td></tr>
-	<tr><td>Year</td><td>{{ municipalityDetails.year }}</td></tr>
-	<tr><td>Name</td><td>{{ municipalityDetails.name }}</td></tr>
-	<tr><td>Population</td><td>{{ municipalityDetails.population }}</td></tr>
-	<tr><td>Bilingual?</td><td>{{ municipalityDetails.is_bilingual }}</td></tr>
-	<tr><td>Northern?</td><td>{{ municipalityDetails.is_northern }}</td></tr>
-      </tbody>
-    </table>
-  </div>
+<div class="container-fluid">
+  <div class="row"> <!-- bootstrap classes -->
+    <div class="col-md-2">
+      <div id="municipality">
+	<h2>Municipality</h2>
+	<table border="1" cellpadding="10">
+	  <thead>
+	    <tr>
+	      <th>Category</th>
+	      <th>Detail</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr><td>ID</td><td>{{ municipalityDetails.id }}</td></tr>
+	    <tr><td>Year</td><td>{{ municipalityDetails.year }}</td></tr>
+	    <tr><td>Name</td><td>{{ municipalityDetails.name }}</td></tr>
+	    <tr><td>Population</td><td>{{ municipalityDetails.population }}</td></tr>
+	    <tr><td>Bilingual?</td><td>{{ municipalityDetails.is_bilingual }}</td></tr>
+	    <tr><td>Northern?</td><td>{{ municipalityDetails.is_northern }}</td></tr>
+	  </tbody>
+	</table>
+      </div>
+    </div>
 
-  <div id="contributions">
-    <h2>Contributions</h2>
-    <table border="1" cellpadding="10">
-      <thead>
-	<tr>
-	  <th>ID</th>
-	  <th>Library</th>
-	  <th>Contribution</th>
-	</tr>
-      </thead>
-      <tbody>
-	<tr ng-repeat="contrib in contributions | orderBy:'name'">
-	  <td>{{ contrib.id }}</td>
-	  <td><a href="/libraries/{{ contrib.id }}">{{ contrib.name }}</a></td>
-	  <td>{{ contrib.contribution }}</td>
-	</tr>
-      </tbody>
-    </table>
-    
-  </div>
+    <div class="col-md-10">
+      <div id="contributions">
+	<h2>Contributions</h2>
+	<table border="1" cellpadding="10">
+	  <thead>
+	    <tr>
+	      <th>ID</th>
+	      <th>Library</th>
+	      <th>Contribution</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr ng-repeat="contrib in contributions | orderBy:'name'">
+	      <td>{{ contrib.id }}</td>
+	      <td><a href="/libraries/{{ contrib.id }}">{{ contrib.name }}</a></td>
+	      <td>{{ contrib.contribution }}</td>
+	    </tr>
+	  </tbody>
+	</table>
+	
+      </div>
+    </div>
+  </div><!-- row -->
+  
+  <div class="row">
+    <div class="col-md-2">
+      <div id="census_year">
+	<h2>Census year: {{ census_year.year }}</h2>
+	<p>{{ census_year.year }} is the most recent census year for "{{ municipalityDetails.name }}, {{ municipalityDetails.year }}"</p>
+      </div>
+    </div>
 
-  <div id="census_year">
-    <h2>Census year: {{ census_year.year }}</h2>
-    <p>{{ census_year.year }} is the most recent census year for "{{ municipalityDetails.name }}, {{ municipalityDetails.year }}"</p>
-  </div>
-
-  <div id="census">
-    <h2>Census data</h2>
-    <table border="1" cellpadding="10">
-      <thead>
-	<tr>
-	  <th>Topic</th>
-	  <th>Details</th>
-	</tr>
-      </thead>
-      <tbody>
-	<!-- hmm.  census is an object.  can't sort an object by properties.
-	     have to turn it into an array (but keep the key!) of objects. -->
-	<tr ng-repeat="(topic, details) in census"> <!-- key, value -->
-	  <td style="vertical-align:top"><a href ng-click="details.visible = !details.visible">{{ topic }}</a></td>
-	  <td>
-	    <div ng-show="details.visible">
-	      <table border="1" cellpadding="10">
-		<thead>
-		  <tr>
-		    <th>Ord</th>
-		    <th>Characteristic</th>
-		    <!-- <th>Format</th> -->
-		    <th>Census areas</th>
-		  </tr>
-		  <tbody>
-		    <tr ng-repeat="(ord, c) in details">
-		      <td style="vertical-align:top">{{ ord }}</td>
-		      <td style="vertical-align:top"><a href ng-click="c.visible = !c.visible">{{ c.characteristic }}</a></td>
-		      <!-- <td style="vertical-align:top">{{ c.format_mask }}</td> -->
-		      <td>
-			<div ng-show="c.visible">
-			  <table border="1" cellpadding="10">
-			    <thead>
-			      <tr>
-				<th>Division</th>
-				<th>Subdivision</th>
-				<th>Type</th>
-				<th>Male</th>
-				<th>Female</th>
-				<th>Total</th>
-			      </tr>
-			    </thead>
-			    <tbody>
-			      <tr ng-repeat="a in c.census_areas">
-				<td>{{ a.division }}</td>
-				<td>{{ a.subdivision }}</td>
-				<td>{{ a.sd_type }}</td>
-				<td>{{ a.male }}</td>
-				<td>{{ a.female }}</td>
-				<td>{{ a.total }}</td>
-			      </tr>
-			    </tbody>
-			  </table>
-			</div> <!-- show ord/characteristic details -->
-		      </td>
-		  </tbody>
-	      </table>
-	    </div> <!-- show topic details -->
-	  </td>
-	</tr>
-      </tbody>
-    </table>
-
-  </div>
-
+    <div class="col-md-10">
+      <div id="census">
+	<h2>Census data</h2>
+	<table border="1" cellpadding="10">
+	  <thead>
+	    <tr>
+	      <th>Topic</th>
+	      <th>Details</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <!-- hmm.  census is an object.  can't sort an object by properties.
+		 have to turn it into an array (but keep the key!) of objects. -->
+	    <tr ng-repeat="(topic, details) in census"> <!-- key, value -->
+	      <td style="vertical-align:top"><a href ng-click="details.visible = !details.visible">{{ topic }}</a></td>
+	      <td>
+		<div ng-show="details.visible">
+		  <table border="1" cellpadding="10">
+		    <thead>
+		      <tr>
+			<th>Ord</th>
+			<th>Characteristic</th>
+			<!-- <th>Format</th> -->
+			<th>Census areas</th>
+		      </tr>
+		      <tbody>
+			<tr ng-repeat="(ord, c) in details">
+			  <td style="vertical-align:top">{{ ord }}</td>
+			  <td style="vertical-align:top"><a href ng-click="c.visible = !c.visible">{{ c.characteristic }}</a></td>
+			  <!-- <td style="vertical-align:top">{{ c.format_mask }}</td> -->
+			  <td>
+			    <div ng-show="c.visible">
+			      <table border="1" cellpadding="10">
+				<thead>
+				  <tr>
+				    <th>Division</th>
+				    <th>Subdivision</th>
+				    <th>Type</th>
+				    <th>Male</th>
+				    <th>Female</th>
+				    <th>Total</th>
+				  </tr>
+				</thead>
+				<tbody>
+				  <tr ng-repeat="a in c.census_areas">
+				    <td>{{ a.division }}</td>
+				    <td>{{ a.subdivision }}</td>
+				    <td>{{ a.sd_type }}</td>
+				    <td>{{ a.male }}</td>
+				    <td>{{ a.female }}</td>
+				    <td>{{ a.total }}</td>
+				  </tr>
+				</tbody>
+			      </table>
+			    </div> <!-- show ord/characteristic details -->
+			  </td>
+		      </tbody>
+		  </table>
+		</div> <!-- show topic details -->
+	      </td>
+	    </tr>
+	  </tbody>
+	</table>
+	
+      </div>
+    </div>
+  </div><!-- row -->
+  
 </div>

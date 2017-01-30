@@ -6,6 +6,7 @@ var olliApp = angular.module('olliModule',['ngRoute']);
 
 //-----------------------------------------------------------------------
 olliApp.config(function ($routeProvider,$locationProvider) {
+    /* change ?v= to force cache update */
     $routeProvider
 	.when('/municipalities', {
 	    controller: 'MunicipalitiesController',
@@ -13,7 +14,7 @@ olliApp.config(function ($routeProvider,$locationProvider) {
 	})
 	.when('/municipalities/:munID', {
 	    controller: 'MunicipalityController',
-	    templateUrl: 'partials/municipality-details.html'
+	    templateUrl: 'partials/municipality-details.html?v=4'
 	})
 	.when('/libraries', {
 	    controller: 'LibrariesController',
