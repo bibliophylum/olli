@@ -14,7 +14,7 @@ olliApp.config(function ($routeProvider,$locationProvider) {
 	})
 	.when('/municipalities/:munID', {
 	    controller: 'MunicipalityController',
-	    templateUrl: 'partials/municipality-details.html?v=4'
+	    templateUrl: 'partials/municipality-details.html?v=7'
 	})
 	.when('/libraries', {
 	    controller: 'LibrariesController',

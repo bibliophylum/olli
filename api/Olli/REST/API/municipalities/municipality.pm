@@ -45,60 +45,29 @@ sub GET {
 	$muni->{'year'}
 	);
 
-    # There may be more than one census division/subdivision for a given municipality
-    # (especially on or after 2015 amalgamation)... so we need to handle that.
-    my $muncen = $dbh->selectall_arrayref(
-	"select census_division_id,census_subdivision_id from mun_cen where municipality_id=?",
+    my $c = $dbh->selectall_arrayref(
+	"select t.value as topic, ch.value as characteristic, c.ord as ord, sum(CAST(coalesce(nullif(c.male,   ''),'0') AS numeric)) as male, sum(CAST(coalesce(nullif(c.female, ''),'0') AS numeric)) as female, sum(CAST(coalesce(nullif(c.total,  ''),'0') AS numeric)) as total from census c  left join mun_cen mc on mc.census_subdivision_id = c.subdivision_id left join census_topic t on t.id=c.topic_id left join census_characteristics ch on ch.id=c.characteristics_id where mc.municipality_id = ? group by t.value, c.ord, ch.value order by t.value, c.ord, ch.value",
 	{ Slice => {} },
 	$self->munid()
 	);
 
     my @census;
-    foreach my $mc (@$muncen) {
-	my $census_details = $dbh->selectall_arrayref(
-	    "select y.value as year, d.value as division, s.value as subdivision, sdt.value as type, t.value as topic, c.ord as ord, ch.value as characteristic, ch.format_mask, c.total, c.male, c.female from census c left join census_year y on y.id=c.year_id left join census_division d on d.id=c.division_id left join census_subdivision s on s.id=c.subdivision_id left join census_subdivision_type sdt on sdt.id=s.sdtype_id left join census_topic t on t.id=c.topic_id left join census_characteristics ch on ch.id=c.characteristics_id where y.id=? and d.id=? and s.id=? order by year,division,subdivision,type,topic,ord,characteristic",
-	    { Slice => {} },
-	    $census_year->{id},
-	    $mc->{census_division_id},
-	    $mc->{census_subdivision_id}
-	    );
-	push @census, $census_details;
-    }
-    #    print Dumper($census[0]);
-
-    my %c = ();
-    my $c = \%c;
-    foreach my $cdarr (@census) {
-	foreach my $cd (@$cdarr) {
-	    if (!defined $c{ $cd->{topic} }) {
-		$c{ $cd->{topic} } = {};
-	    }
-	    if (!defined $c{ $cd->{topic} }->{ $cd->{ord} }) {
-		my @arr;
-		$c{ $cd->{topic} }->{ $cd->{ord} } = { 
-		    'characteristic' => $cd->{characteristic},
-		    'format_mask' => $cd->{format_mask},
-		    'census_areas' => \@arr
-		};
-	    }
-	    my $ca = { 'division' => $cd->{division},
-		       'subdivision' => $cd->{subdivision},
-		       'sd_type' => $cd->{type},
-		       'total' => $cd->{total},
-		       'male' => $cd->{male},
-		       'female' => $cd->{female}
-	    };
-	    push @{ $c{ $cd->{topic} }->{ $cd->{ord} }->{census_areas} }, $ca;
+    my $topic = { 'topic' => $c->[0]->{'topic'}, 'details' => [] };
+    foreach my $cen (@$c) {
+	if ($cen->{'topic'} ne $topic->{'topic'}) {
+	    push @census, { %$topic };
+	    $topic = { 'topic' => $cen->{'topic'}, 'details' => [] };
 	}
+	push @{ $topic->{'details'} }, $cen;
     }
-
+    
     $dbh->disconnect;
     
     $response->data()->{'api_mess'} = 'Hello, this is Olli REST API' ;
     $response->data()->{'municipality'} = $muni;
     $response->data()->{'contributions'} = $libs_aref;
     $response->data()->{'census_year'} = $census_year;
-    $response->data()->{'census'} = $c;
+    $response->data()->{'census'} = \@census;
 #    $response->data()->{'census'} = \@census;
     return Apache2::Const::HTTP_OK ;
 }
