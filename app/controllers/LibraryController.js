@@ -9,6 +9,7 @@ olliApp.controller('LibraryController', ['$scope', '$routeParams', 'libFactory',
     $scope.branches;
     $scope.hours;
     $scope.contacts;
+    $scope.financial;
     $scope.collections;
     $scope.circulations;
 
@@ -25,6 +26,7 @@ olliApp.controller('LibraryController', ['$scope', '$routeParams', 'libFactory',
 		    $scope.branches = response.data.data.branches;
 		    $scope.hours = response.data.data.hours;
 		    $scope.contacts = response.data.data.contacts;
+		    $scope.financial = response.data.data.financial;
 		    $scope.collections = response.data.data.collections;
 		    $scope.circulations = response.data.data.circulations;
 		    

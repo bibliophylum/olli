@@ -89,7 +89,7 @@
 	  </thead>
 	  <tbody>
 	    <tr ng-repeat="h in hours">
-	      <td>{{ h.branch }}</td>
+	      <td><a href="/branches/{{ h.branch_id }}">{{ h.branch }}</a></td>
 	      <td>{{ h.seasonal }}</td>
 	      <td>{{ h.season_begins }}</td>
 	      <td>{{ h.season_ends }}</td>
@@ -149,7 +149,7 @@
 	  </thead>
 	  <tbody>
 	    <tr ng-repeat="branch in branches">
-	      <td>{{ branch.branch }}</td>
+	      <td><a href="/branches/{{ branch.branch_id }}">{{ branch.branch }}</a></td>
 	      <td>{{ branch.symbol }}</td>
 	      <td><a href="/municipalities/{{ branch.municipality_id }}">{{ branch.located }}</a></td>
 	      <td>{{ branch.facility_owner }}</td>
@@ -160,6 +160,43 @@
 	      <td>{{ branch.nonresident_single_memberships }}</td>
 	      <td>{{ branch.nonresident_family_memberships }}</td>
 	    </tr>
+	  </tbody>
+	</table>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div id="financial-income">
+	<h2>Income</h2>
+	<table border="1" cellpadding="10">
+	  <thead></thead>
+	  <tbody>
+	    <tr><td>Municipal contribution</td><td style="text-align:right">{{ financial.income_municipal_contribution }}</td></tr>
+	    <tr><td>Provincial operating</td><td style="text-align:right">{{ financial.income_provincial_operating_grant }}</td></tr>
+	    <tr><td>Provincial collection development grant</td><td style="text-align:right">{{ financial.income_provincial_collection_development_grant }}</td></tr>
+	    <tr><td>Provincial establishment grant</td><td style="text-align:right">{{ financial.income_provincial_establishment_grant }}</td></tr>
+	    <tr><td>Other federal</td><td style="text-align:right">{{ financial.income_other_federal }}</td></tr>
+	    <tr><td>Other provincial</td><td style="text-align:right">{{ financial.income_other_provincial }}</td></tr>
+	    <tr><td>Other municipal</td><td style="text-align:right">{{ financial.income_other_municipal }}</td></tr>
+	    <tr><td>Other private</td><td style="text-align:right">{{ financial.income_other_private }}</td></tr>
+	    <tr><td>Other misc.</td><td style="text-align:right">{{ financial.income_other_miscellaneous }}</td></tr>
+	  </tbody>
+	</table>
+      </div>
+    </div>
+    
+    <div class="col-md-3">
+      <div id="financial-expense">
+	<h2>Expenses</h2>
+	<table border="1" cellpadding="10">
+	  <thead></thead>
+	  <tbody>
+	    <tr><td>Personnel</td><td style="text-align:right">{{ financial.expenditure_personnel }}</td></tr>
+	    <tr><td>Materials</td><td style="text-align:right">{{ financial.expenditure_materials }}</td></tr>
+	    <tr><td>Capital</td><td style="text-align:right">{{ financial.expenditure_capital }}</td></tr>
+	    <tr><td>Building</td><td style="text-align:right">{{ financial.expenditure_building }}</td></tr>
+	    <tr><td>Technology</td><td style="text-align:right">{{ financial.expenditure_technology }}</td></tr>
+	    <tr><td>Other</td><td style="text-align:right">{{ financial.expenditure_other }}</td></tr>
 	  </tbody>
 	</table>
       </div>
@@ -180,7 +217,7 @@
 	  </thead>
 	  <tbody>
 	    <tr ng-repeat="coll in collections">
-	      <td>{{ coll.branch }}</td>
+	      <td><a href="/branches/{{ coll.branch_id }}">{{ coll.branch }}</a></td>
 	      <td>{{ coll.english }}</td>
 	      <td>{{ coll.french }}</td>
 	      <td>{{ coll.other }}</td>
@@ -206,7 +243,7 @@
 	  </thead>
 	  <tbody>
 	    <tr ng-repeat="circ in circulations">
-	      <td>{{ circ.branch }}</td>
+	      <td><a href="/branches/{{ circ.branch_id }}">{{ circ.branch }}</a></td>
 	      <td>{{ circ.adult }}</td>
 	      <td>{{ circ.children }}</td>
 	      <td>{{ circ.audio_visual }}</td>

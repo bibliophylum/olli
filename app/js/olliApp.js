@@ -22,7 +22,7 @@ olliApp.config(function ($routeProvider,$locationProvider) {
 	})
 	.when('/libraries/:libID', {
 	    controller: 'LibraryController',
-	    templateUrl: 'partials/library.html?v=15'
+	    templateUrl: 'partials/library.html?v=19'
 	})
 	.when('/branches/:branchID', {
 	    controller: 'BranchController',
