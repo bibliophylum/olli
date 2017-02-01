@@ -6,6 +6,8 @@ use Olli::REST::API::municipalities;
 use Olli::REST::API::municipalities::municipality;
 use Olli::REST::API::libraries;
 use Olli::REST::API::libraries::library;
+use Olli::REST::API::branches;
+use Olli::REST::API::branches::branch;
 
 use base qw/Apache2::REST::Handler/;
 
@@ -30,7 +32,10 @@ sub buildNext{
 	$subh = Olli::REST::API::municipalities->new($self) ;
     } elsif ($frag eq "libraries") {
 	$subh = Olli::REST::API::libraries->new($self) ;
+    } elsif ($frag eq "branches") {
+	$subh = Olli::REST::API::branches->new($self) ;
     }
+
 #    $subh->{'userid'} = $frag  ;
     return $subh ;
 }

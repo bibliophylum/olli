@@ -32,6 +32,41 @@ sub GET {
         $self->libid()
         );
 
+    # Branches
+    my $branches_aref = $dbh->selectall_arrayref(
+	"select b.municipality_id, m.name as located, b.name as branch, b.symbol, b.facility_owner, b.annual_rent, b.floor_space, b.active_memberships, b.nonresident_single_memberships, b.nonresident_family_memberships, b.facility_term_expires, b.is_confirmed from branches b left join municipalities m on m.id=b.municipality_id where b.library_id=? order by b.name",
+	{ Slice => {} },
+	$self->libid()
+	);
+
+    # Hours of operation
+    my $hours_aref = $dbh->selectall_arrayref(
+	"select b.name as branch, h.seasonal, h.season_begins, h.season_ends, h.sunday, h.monday, h.tuesday, h.wednesday, h.thursday, h.friday, h.saturday, h.per_week, h.is_confirmed from hours_of_operation h left join branches b on b.id=h.branch_id where h.branch_id in (select id from branches where library_id=?) order by b.name, h.seasonal",
+	{ Slice => {} },
+	$self->libid()
+	);
+
+    # Contacts
+    my $contacts_aref = $dbh->selectall_arrayref(
+	"select b.id as branch_id, b.name as branch, c.librarian, c.phone, c.fax, c.email_general, c.email_admin, c.email_ill, c.street, c.box, c.town, c.province, c.postal_code, c.website, c.catalogue from contact c left join branches b on b.id=c.branch_id where c.branch_id in (select id from branches where library_id=?) order by b.name",
+	{ Slice => {} },
+	$self->libid()
+	);
+
+    # Collections
+    my $collections_aref = $dbh->selectall_arrayref(
+	"select b.name as branch, c.english, c.french, c.other, c.serial_subscriptions, c.is_confirmed from collections c left join branches b on b.id=c.branch_id where c.branch_id in (select id from branches where library_id=?) order by b.name",
+	{ Slice => {} },
+	$self->libid()
+	);
+
+    # Circulations
+    my $circulations_aref = $dbh->selectall_arrayref(
+	"select b.name as branch, c.adult, c.children, c.audio_visual, c.ebooks, c.is_confirmed from circulations c left join branches b on b.id=c.branch_id where c.branch_id in (select id from branches where library_id=?) order by b.name",
+	{ Slice => {} },
+	$self->libid()
+	);
+    
     $dbh->disconnect;
     
 #    my $json =  to_json( { municipalities => $aref } );
@@ -39,6 +74,11 @@ sub GET {
     $response->data()->{'api_mess'} = 'Hello, this is Olli REST API: libraries/:library' ;
     $response->data()->{'library'} = $lib;
     $response->data()->{'contributors'} = $muns_aref;
+    $response->data()->{'branches'} = $branches_aref;
+    $response->data()->{'hours'} = $hours_aref;
+    $response->data()->{'contacts'} = $contacts_aref;
+    $response->data()->{'collections'} = $collections_aref;
+    $response->data()->{'circulations'} = $circulations_aref;
     return Apache2::Const::HTTP_OK ;
 }
 

@@ -1,12 +1,11 @@
-// LibraryController.js
+// BranchController.js
 
 //-----------------------------------------------------------------------
-olliApp.controller('LibraryController', ['$scope', '$routeParams', 'libFactory', function ($scope, $routeParams, libFactory) {
+olliApp.controller('BranchController', ['$scope', '$routeParams', 'branchFactory', function ($scope, $routeParams, branchFactory) {
     
     $scope.status;
     $scope.library;
-    $scope.contributors;
-    $scope.branches;
+    $scope.branch;
     $scope.hours;
     $scope.contacts;
     $scope.collections;
@@ -15,14 +14,14 @@ olliApp.controller('LibraryController', ['$scope', '$routeParams', 'libFactory',
     init();
 
     function init() {
-	// grab library ID off the route
-	var libID = ($routeParams.libID ? parseInt($routeParams.libID) : 0);
-	if (libID > 0) {
-	    libFactory.getLibrary( libID )
+	// grab branch ID off the route
+	//var libID = ($routeParams.libID ? parseInt($routeParams.libID) : 0);
+	var branchID = ($routeParams.branchID ? parseInt($routeParams.branchID) : 0);
+	if (branchID > 0) {
+	    branchFactory.getBranch( branchID )
 		.then(function (response) {
 		    $scope.library = response.data.data.library;
-		    $scope.contributors = response.data.data.contributors;
-		    $scope.branches = response.data.data.branches;
+		    $scope.branch = response.data.data.branch;
 		    $scope.hours = response.data.data.hours;
 		    $scope.contacts = response.data.data.contacts;
 		    $scope.collections = response.data.data.collections;

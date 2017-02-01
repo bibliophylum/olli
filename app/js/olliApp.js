@@ -22,7 +22,11 @@ olliApp.config(function ($routeProvider,$locationProvider) {
 	})
 	.when('/libraries/:libID', {
 	    controller: 'LibraryController',
-	    templateUrl: 'partials/library.html'
+	    templateUrl: 'partials/library.html?v=15'
+	})
+	.when('/branches/:branchID', {
+	    controller: 'BranchController',
+	    templateUrl: 'partials/branch.html?v=11'
 	})
         .otherwise({ redirectTo: '/municipalities' });
 
@@ -85,23 +89,20 @@ olliApp.factory('libFactory', ['$http', function($http) {
     libFactory.getLibrary = function (id) {
         return $http.get(urlBase + '/' + id);
     };
-/*
-    libFactory.insertLibrary = function (mun) {
-        return $http.post(urlBase, mun);
-    };
 
-    libFactory.updateLibrary = function (mun) {
-        return $http.put(urlBase + '/' + mun.ID, mun)
-    };
-
-    libFactory.deleteLibrary = function (id) {
-        return $http.delete(urlBase + '/' + id);
-    };
-
-    libFactory.getOrders = function (id) {
-        return $http.get(urlBase + '/' + id + '/orders');
-    };
-*/
     return libFactory;
+}]);
+
+//-----------------------------------------------------------------------
+olliApp.factory('branchFactory', ['$http', function($http) {
+
+    var urlBase = '/api/branches';
+    var branchFactory = {};
+
+    branchFactory.getBranch = function (id) {
+        return $http.get(urlBase + '/' + id);
+    };
+
+    return branchFactory;
 }]);
 

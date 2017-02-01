@@ -33,6 +33,9 @@ sudo chgrp -R www-data /opt/olli/logs
 sudo chmod g+w /opt/olli/logs
 #sudo chmod ugo+w /opt/olli/logs/messages.log
 
+touch /opt/olli/logs/cgi_error_log
+sudo chgrp www-data /opt/olli/logs/cgi_error_log
+
 #echo Allowing web server to write to htdocs/tmp
 #sudo chgrp www-data /opt/olli/htdocs/tmp
 #sudo chmod g+w /opt/olli/htdocs/tmp

@@ -1,10 +1,14 @@
-<!-- library.html -->
+<!-- branch.html -->
+
+<h1>{{ branch.branch }}</h1>
+<a href="/libraries/{{ library.id }}">{{ library.year }} - {{ library.name }}</a>
 
 <div class="container-fluid">
   <div class="row"> <!-- bootstrap classes -->
+
     <div class="col-md-3">
-      <div id="library">
-	<h2>Library</h2>
+      <div id="branch">
+	<h2>Branch</h2>
 	<table border="1" cellpadding="10">
 	  <thead>
 	    <tr>
@@ -13,31 +17,26 @@
 	    </tr>
 	  </thead>
 	  <tbody>
-	    <tr><td>ID</td><td>{{ library.id }}</td></tr>
-	    <tr><td>Year</td><td>{{ library.year }}</td></tr>
-	    <tr><td>Library</td><td>{{ library.name }}</td></tr>
-	    <tr><td>Established</td><td>{{ library.established }}</td></tr>
-	    <tr><td>Non-res fee, single</td><td>{{ library.fee_nonresident_single }}</td></tr>
-	    <tr><td>Non-res fee, family</td><td>{{ library.fee_nonresident_family }}</td></tr>
-	    <tr><td>Is registered charity?</td><td>{{ library.is_registered_charity }}</td></tr>
-	    <tr><td>Has Access Copyright license?</td><td>{{ library.has_access_copyright_license }}</td></tr>
-	    <tr><td>Board minutes on web site?</td><td>{{ library.has_board_minutes_on_website }}</td></tr>
-	    <tr><td>Strategic plan start</td><td>{{ library.strategic_plan_start }}</td></tr>
-	    <tr><td>Strategic plan end</td><td>{{ library.strategic_plan_end }}</td></tr>
-	    <tr><td>Has technology plan?</td><td>{{ library.has_technology_plan }}</td></tr>
-	    <tr><td>Confirmed?</td><td>{{ library.is_confirmed }}</td></tr>
+	    <tr><td>Symbol</td><td>{{ branch.symbol }}</td></tr>
+	    <tr><td>Located</td><td><a href="/municipalities/{{ branch.municipality_id }}">{{ branch.located }}</a></td></tr>
+	    <tr><td>Facility owner</td><td>{{ branch.facility_owner }}</td></tr>
+	    <tr><td>Rent</td><td>{{ branch.annual_rent }}</td></tr>
+	    <tr><td>Facility term expires</td><td>{{ branch.facility_term_expires }}</td></tr>
+	    <tr><td>Sq.ft.</td><td>{{ branch.floor_space }}</td></tr>
+	    <tr><td>Active memberships</td><td>{{ branch.active_memberships }}</td></tr>
+	    <tr><td>Nonres Single</td><td>{{ branch.nonresident_single_memberships }}</td></tr>
+	    <tr><td>Nonres Family</td><td>{{ branch.nonresident_family_memberships }}</td></tr>
 	  </tbody>
 	</table>
       </div>
     </div>
-
+    
     <div class="col-md-9">
       <div id="contacts">
 	<h2>Contacts</h2>
 	<table border="1" cellpadding="10">
 	  <thead>
 	    <tr>
-	      <th>Branch</th>
 	      <th>Librarian</th>
 	      <th>Phone</th>
 	      <th>Email</th>
@@ -47,7 +46,6 @@
 	  </thead>
 	  <tbody>
 	    <tr ng-repeat="contact in contacts">
-	      <td><a href="/branches/{{ contact.branch_id }}">{{ contact.branch }}</a></td>
 	      <td>{{ contact.librarian }}</td>
 	      <td><strong>{{ contact.phone }}</strong><br />Fax: {{ contact.fax }}</td>
 	      <td>
@@ -73,7 +71,6 @@
 	<table border="1" cellpadding="10">
 	  <thead>
 	    <tr>
-	      <th>Branch</th>
 	      <th>Seasonal</th>
 	      <th>Starts</th>
 	      <th>Ends</th>
@@ -89,7 +86,6 @@
 	  </thead>
 	  <tbody>
 	    <tr ng-repeat="h in hours">
-	      <td>{{ h.branch }}</td>
 	      <td>{{ h.seasonal }}</td>
 	      <td>{{ h.season_begins }}</td>
 	      <td>{{ h.season_ends }}</td>
@@ -107,71 +103,12 @@
       </div>
     </div>
 
-    <div class="col-md-3">
-      <div id="contributors">
-	<h2>Contributors</h2>
-	<table border="1" cellpadding="10">
-	  <thead>
-	    <tr>
-	      <th>ID</th>
-	      <th>Municipality</th>
-	      <th>Contribution</th>
-	    </tr>
-	  </thead>
-	  <tbody>
-	    <tr ng-repeat="contrib in contributors | orderBy:'name'">
-	      <td>{{ contrib.id }}</td>
-	      <td><a href="/municipalities/{{ contrib.id }}">{{ contrib.name }}</a></td>
-	      <td>{{ contrib.contribution }}</td>
-	    </tr>
-	  </tbody>
-	</table>
-      </div>
-    </div>
-
-    <div class="col-md-9">
-      <div id="branches">
-	<h2>Branches</h2>
-	<table border="1" cellpadding="10">
-	  <thead>
-	    <tr>
-	      <th>Branch</th>
-	      <th>Symbol</th>
-	      <th>Located</th>
-	      <th>Facility owner</th>
-	      <th>Rent</th>
-	      <th>Facility term expires</th>
-	      <th>Sq.ft.</th>
-	      <th>Active memberships</th>
-	      <th>Nonres Single</th>
-	      <th>Nonres Family</th>
-	    </tr>
-	  </thead>
-	  <tbody>
-	    <tr ng-repeat="branch in branches">
-	      <td>{{ branch.branch }}</td>
-	      <td>{{ branch.symbol }}</td>
-	      <td><a href="/municipalities/{{ branch.municipality_id }}">{{ branch.located }}</a></td>
-	      <td>{{ branch.facility_owner }}</td>
-	      <td>{{ branch.annual_rent }}</td>
-	      <td>{{ branch.facility_term_expires }}</td>
-	      <td>{{ branch.floor_space }}</td>
-	      <td>{{ branch.active_memberships }}</td>
-	      <td>{{ branch.nonresident_single_memberships }}</td>
-	      <td>{{ branch.nonresident_family_memberships }}</td>
-	    </tr>
-	  </tbody>
-	</table>
-      </div>
-    </div>
-    
-    <div class="col-md-6">
+    <div class="col-md-5">
       <div id="collections">
 	<h2>Collections</h2>
 	<table border="1" cellpadding="10">
 	  <thead>
 	    <tr>
-	      <th>Branch</th>
 	      <th>English</th>
 	      <th>French</th>
 	      <th>Other</th>
@@ -180,7 +117,6 @@
 	  </thead>
 	  <tbody>
 	    <tr ng-repeat="coll in collections">
-	      <td>{{ coll.branch }}</td>
 	      <td>{{ coll.english }}</td>
 	      <td>{{ coll.french }}</td>
 	      <td>{{ coll.other }}</td>
@@ -191,13 +127,12 @@
       </div>
     </div>
     
-    <div class="col-md-6">
+    <div class="col-md-4">
       <div id="circulations">
 	<h2>Circulations</h2>
 	<table border="1" cellpadding="10">
 	  <thead>
 	    <tr>
-	      <th>Branch</th>
 	      <th>Adult</th>
 	      <th>Child</th>
 	      <th>A/V</th>
@@ -206,7 +141,6 @@
 	  </thead>
 	  <tbody>
 	    <tr ng-repeat="circ in circulations">
-	      <td>{{ circ.branch }}</td>
 	      <td>{{ circ.adult }}</td>
 	      <td>{{ circ.children }}</td>
 	      <td>{{ circ.audio_visual }}</td>

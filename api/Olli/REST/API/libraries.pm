@@ -42,10 +42,17 @@ sub isAuth{
 # eg: libraries/600
 sub buildNext{
     my ( $self , $frag , $req ) = @_ ;
-    
-    my $subh = Olli::REST::API::libraries::library->new($self) ;
-    $subh->{'libid'} = $frag  ;
+    print STDERR "libraries.pm buildNext [$frag]\n";
+    my $subh;
+    if ($frag eq "branches") {
+	$subh = Olli::REST::API::libraries::branches->new($self) ;
+    } else {
+	$subh = Olli::REST::API::libraries::library->new($self) ;
+	$subh->{'libid'} = $frag  ;
+    }
+
     return $subh ;
 }
 
 1 ;
+
