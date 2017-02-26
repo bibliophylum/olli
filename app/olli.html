@@ -10,6 +10,7 @@
     <title>Olli</title>
 
     <link rel="stylesheet" href="/libs/bootstrap/3.3.7/css/bootstrap.css" />
+    <link rel="stylesheet" href="/libs/leaflet/leaflet.css" />
     <link rel="stylesheet" href="/css/olli.css" />
     
     <script src="/libs/jquery/3.1.1/jquery-3.1.1.min.js"></script>
@@ -17,6 +18,7 @@
     <script src="/libs/angular/1.6.1/angular-route.min.js"></script> <!-- provides ngRoute -->
     <script src="/libs/angular/1.6.1/angular-animate.js"></script>   <!-- provides ngAnimate -->
     <script src="/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="/libs/leaflet/leaflet.js"></script>
     
     <script src="/js/olliApp.js"></script>
     <script src="/controllers/NavController.js"></script>
@@ -25,6 +27,10 @@
     <script src="/controllers/LibrariesController.js"></script>
     <script src="/controllers/LibraryController.js"></script>
     <script src="/controllers/BranchController.js"></script>
+
+    <script src="/geo/geoMunData.js"></script> <!-- defines geoMunData -->
+<!--    <script src="/geo/justPortage.js"></script> <!-- defines geoMunData -->
+    <script src="/js/olliMap.js"></script> <!-- configure leaflet map -->
 
   </head>
 
@@ -49,6 +55,8 @@
       
     </div> <!-- main -->
 
+    <div id="mapid"></div>
+    
     <!-- placeholder for views -->
     <div ng-view></div>
     

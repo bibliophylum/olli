@@ -10,9 +10,9 @@ sub GET {
     my ($self, $request, $response) = @_ ;
 
     # NOTE: "rld" should now be "olli" !!!
-    my $dbh = DBI->connect("dbi:Pg:database=rld;host=localhost;port=5432",
-			   "rld",
-			   "rld",
+    my $dbh = DBI->connect("dbi:Pg:database=olli;host=localhost;port=5432",
+			   "olli",
+			   "olli",
 			   {AutoCommit => 1, 
 			    RaiseError => 1, 
 			    PrintError => 0,

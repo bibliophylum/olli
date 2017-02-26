@@ -19,3 +19,4 @@
 table { border-spacing: 5px; } /* cellspacing */
 th, td { padding: 5px; } /* cellpadding */
 
+#mapid { height: 360px; }
