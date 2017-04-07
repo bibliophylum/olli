@@ -32,6 +32,9 @@ olliApp.controller('MunicipalityController', ['$scope', '$routeParams', 'munFact
 			});
 		    });
 
+		    // zoom the map to this municipality
+		    
+
 		}, function (error) {
                     $scope.status = 'Unable to load municipality data: ' + error.message;
 		});

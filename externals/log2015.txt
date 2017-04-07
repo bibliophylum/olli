@@ -1,0 +1,3356 @@
+
+Extracting...
+extracted municipality [Town of Gillam]
+
+
+Bette Winner Public Library
+------------------------------------------
+added, id 364
+symbol is [MGI]
+	adding municipality [Town of Gillam]:
+		municipality added, id 862
+		creating library/municipality relation
+	financials added, id 364
+
+	branch: Bette Winner Public Library [MGI]
+		...found in s2lm at [Town of Gillam]
+		...found municipality id: 1
+		...returning [726]
+	contact added, id 726
+	circulations added, id 726
+	collection added, id 726
+	hours added, id 726
+	technology added, id 726
+	activities added, id 726
+	ill added, id 726
+	ebook_circ added, id 726
+	social_media added, id 726
+	personnel added, id 726
+
+Extracting...
+extracted municipality [RM of Alexander]
+extracted municipality [RM of Victoria Beach]
+extracted municipality [Town of Powerview/Pine Falls]
+
+
+Bibliothèque Allard Regional Library
+------------------------------------------
+added, id 365
+symbol is [MSTG]
+	adding municipality [RM of Alexander]:
+		municipality added, id 863
+		creating library/municipality relation
+	adding municipality [RM of Victoria Beach]:
+		municipality added, id 864
+		creating library/municipality relation
+	adding municipality [Town of Powerview/Pine Falls]:
+		municipality added, id 865
+		creating library/municipality relation
+	financials added, id 365
+
+	branch: Bibliothèque Allard Regional Library [MSTG]
+		...found in s2lm at [RM of Alexander]
+		...found municipality id: 2
+		...returning [727]
+	contact added, id 727
+	circulations added, id 727
+	collection added, id 727
+	hours added, id 727
+	technology added, id 727
+	activities added, id 727
+	ill added, id 727
+	ebook_circ added, id 727
+	social_media added, id 727
+	personnel added, id 727
+
+	branch: Bibliothèque Allard - Beaches [MBBB]
+		...found in s2lm at [Town of Powerview/Pine Falls]
+		...found municipality id: 4
+		...returning [728]
+	contact added, id 728
+	circulations added, id 728
+	collection added, id 728
+	hours added, id 728
+	technology added, id 728
+	activities added, id 728
+	ill added, id 728
+	ebook_circ added, id 728
+	social_media added, id 728
+	personnel added, id 728
+
+	branch: Bibliothèque Allard - Victoria Beach [MVBB]
+		...found in s2lm at [RM of Victoria Beach]
+		...found municipality id: 3
+		...returning [729]
+	contact added, id 729
+	circulations added, id 729
+	collection added, id 729
+	hours added, id 729
+	technology added, id 729
+	activities added, id 729
+	ill added, id 729
+	ebook_circ added, id 729
+	social_media added, id 729
+	personnel added, id 729
+
+Extracting...
+extracted municipality [RM of Montcalm]
+
+
+Bibliothèque Montcalm Library
+------------------------------------------
+added, id 366
+symbol is [MSJB]
+	adding municipality [RM of Montcalm]:
+		municipality added, id 866
+		creating library/municipality relation
+	financials added, id 366
+
+	branch: Bibliothèque Montcalm Library [MSJB]
+		...found in s2lm at [RM of Montcalm]
+		...found municipality id: 5
+		...returning [730]
+	contact added, id 730
+	circulations added, id 730
+	collection added, id 730
+	hours added, id 730
+	technology added, id 730
+	activities added, id 730
+	ill added, id 730
+	ebook_circ added, id 730
+	social_media added, id 730
+	personnel added, id 730
+
+Extracting...
+extracted municipality [RM of Ritchot]
+
+
+Bibliothèque Ritchot Library
+------------------------------------------
+added, id 367
+symbol is [MIBR]
+	adding municipality [RM of Ritchot]:
+		municipality added, id 867
+		creating library/municipality relation
+	financials added, id 367
+
+	branch: Bibliothèque Ritchot Library [MIBR]
+		...found in s2lm at [RM of Ritchot]
+		...found municipality id: 7
+		...returning [731]
+	contact added, id 731
+	circulations added, id 731
+	collection added, id 731
+	hours added, id 731
+	technology added, id 731
+	activities added, id 731
+	ill added, id 731
+	ebook_circ added, id 731
+	social_media added, id 731
+	personnel added, id 731
+
+	branch: Bibliothèque Ritchot - St. Adolphe [MSAD]
+		...found in s2lm at [RM of Ritchot]
+		...found municipality id: 7
+		...returning [732]
+	contact added, id 732
+	circulations added, id 732
+	collection added, id 732
+	hours added, id 732
+	technology added, id 732
+	activities added, id 732
+	ill added, id 732
+	ebook_circ added, id 732
+	social_media added, id 732
+	personnel added, id 732
+
+	branch: Bibliothèque Ritchot Library [MSAG]
+		...found in s2lm at [RM of Ritchot]
+		...found municipality id: 7
+		...returning [733]
+	contact added, id 733
+	circulations added, id 733
+	collection added, id 733
+	hours added, id 733
+	technology added, id 733
+	activities added, id 733
+	ill added, id 733
+	ebook_circ added, id 733
+	social_media added, id 733
+	personnel added, id 733
+
+Extracting...
+extracted municipality [RM of La Broquerie]
+
+
+Bibliotheque Saint-Joachim Library
+------------------------------------------
+added, id 368
+symbol is [MLB]
+	adding municipality [RM of La Broquerie]:
+		municipality added, id 868
+		creating library/municipality relation
+	financials added, id 368
+
+	branch: Bibliotheque Saint-Joachim Library [MLB]
+		...found in s2lm at [RM of La Broquerie]
+		...found municipality id: 8
+		...returning [734]
+	contact added, id 734
+	circulations added, id 734
+	collection added, id 734
+	hours added, id 734
+	technology added, id 734
+	activities added, id 734
+	ill added, id 734
+	ebook_circ added, id 734
+	social_media added, id 734
+	personnel added, id 734
+
+Extracting...
+extracted municipality [RM of Grey]
+
+
+Bibliothèque St. Claude Library
+------------------------------------------
+added, id 369
+symbol is [MSCL]
+	adding municipality [RM of Grey]:
+		municipality added, id 869
+		creating library/municipality relation
+	financials added, id 369
+
+	branch: Bibliothèque St. Claude Library [MSCL]
+		...found in s2lm at [RM of Grey]
+		...found municipality id: 869
+		...returning [735]
+	contact added, id 735
+	circulations added, id 735
+	collection added, id 735
+	hours added, id 735
+	technology added, id 735
+	activities added, id 735
+	ill added, id 735
+	ebook_circ added, id 735
+	social_media added, id 735
+	personnel added, id 735
+
+Extracting...
+extracted municipality [Town of Ste. Anne]
+
+
+Bibliothèque Ste Anne Library
+------------------------------------------
+added, id 370
+symbol is [MSA]
+	adding municipality [Town of Ste. Anne]:
+		municipality added, id 870
+		creating library/municipality relation
+	financials added, id 370
+
+	branch: Bibliothèque Ste Anne Library [MSA]
+		...found in s2lm at [Town of Ste. Anne]
+		...found municipality id: 11
+		...returning [736]
+	contact added, id 736
+	circulations added, id 736
+	collection added, id 736
+	hours added, id 736
+	technology added, id 736
+	activities added, id 736
+	ill added, id 736
+	ebook_circ added, id 736
+	social_media added, id 736
+	personnel added, id 736
+
+Extracting...
+extracted municipality [RM of Tache]
+
+
+Bibliothèque Taché Library
+------------------------------------------
+added, id 371
+symbol is [MTPL]
+	adding municipality [RM of Tache]:
+		municipality added, id 871
+		creating library/municipality relation
+	financials added, id 371
+
+	branch: Bibliotheque Tache Library [MTPL]
+		...found in s2lm at [RM of Tache]
+		...found municipality id: 12
+		...returning [737]
+	contact added, id 737
+	circulations added, id 737
+	collection added, id 737
+	hours added, id 737
+	technology added, id 737
+	activities added, id 737
+	ill added, id 737
+	ebook_circ added, id 737
+	social_media added, id 737
+	personnel added, id 737
+
+Extracting...
+extracted municipality [Municipality of Boissevain-Morton]
+
+
+Boissevain and Morton Regional
+------------------------------------------
+added, id 372
+symbol is [MBOM]
+	adding municipality [Municipality of Boissevain-Morton]:
+		municipality added, id 872
+		creating library/municipality relation
+	financials added, id 372
+
+	branch: Boissevain and Morton Regional [MBOM]
+		...found in s2lm at [Municipality of Boissevain-Morton]
+		...found municipality id: 872
+		...returning [738]
+	contact added, id 738
+	circulations added, id 738
+	collection added, id 738
+	hours added, id 738
+	technology added, id 738
+	activities added, id 738
+	ill added, id 738
+	ebook_circ added, id 738
+	social_media added, id 738
+	personnel added, id 738
+
+Extracting...
+extracted municipality [Municipality of Ellice-Archie]
+extracted municipality [RM of Wallace-Woodworth]
+extracted municipality [Town of Virden]
+
+
+Border Regional Library
+------------------------------------------
+added, id 373
+symbol is [MVE]
+	adding municipality [Municipality of Ellice-Archie]:
+		municipality added, id 873
+		creating library/municipality relation
+	adding municipality [RM of Wallace-Woodworth]:
+		municipality added, id 874
+		creating library/municipality relation
+	adding municipality [Town of Virden]:
+		municipality added, id 875
+		creating library/municipality relation
+	financials added, id 373
+
+	branch: Border Regional Library [MVE]
+		...found in s2lm at [Town of Virden]
+		...found municipality id: 17
+		...returning [739]
+	contact added, id 739
+	circulations added, id 739
+	collection added, id 739
+	hours added, id 739
+	technology added, id 739
+	activities added, id 739
+	ill added, id 739
+	ebook_circ added, id 739
+	social_media added, id 739
+	personnel added, id 739
+
+	branch: Border Regional Library Elkhorn Branch [ME]
+		...found in s2lm at [RM of Wallace-Woodworth]
+		...found municipality id: 874
+		...returning [740]
+	contact added, id 740
+	circulations added, id 740
+	collection added, id 740
+	hours added, id 740
+	technology added, id 740
+	activities added, id 740
+	ill added, id 740
+	ebook_circ added, id 740
+	social_media added, id 740
+	personnel added, id 740
+
+	branch: Border Regional Library McAuley Branch [MMCA]
+		...found in s2lm at [Municipality of Ellice-Archie]
+		...found municipality id: 873
+		...returning [741]
+	contact added, id 741
+	circulations added, id 741
+	collection added, id 741
+	hours added, id 741
+	technology added, id 741
+	activities added, id 741
+	ill added, id 741
+	ebook_circ added, id 741
+	social_media added, id 741
+	personnel added, id 741
+
+Extracting...
+extracted municipality [RM of Dufferin]
+extracted municipality [Town of Carman]
+
+
+Boyne Regional Library
+------------------------------------------
+added, id 374
+symbol is [MCB]
+	adding municipality [RM of Dufferin]:
+		municipality added, id 876
+		creating library/municipality relation
+	adding municipality [Town of Carman]:
+		municipality added, id 877
+		creating library/municipality relation
+	financials added, id 374
+
+	branch: Boyne Regional Library [MCB]
+		...found in s2lm at [Town of Carman]
+		...found municipality id: 20
+		...returning [742]
+	contact added, id 742
+	circulations added, id 742
+	collection added, id 742
+	hours added, id 742
+	technology added, id 742
+	activities added, id 742
+	ill added, id 742
+	ebook_circ added, id 742
+	social_media added, id 742
+	personnel added, id 742
+
+Extracting...
+extracted municipality [RM of Brenda-Waskada]
+extracted municipality [Municipality of Deloraine-Winchester]
+
+
+Bren Del Win Centennial
+------------------------------------------
+added, id 375
+symbol is [MDB]
+	adding municipality [RM of Brenda-Waskada]:
+		municipality added, id 878
+		creating library/municipality relation
+	adding municipality [Municipality of Deloraine-Winchester]:
+		municipality added, id 879
+		creating library/municipality relation
+	financials added, id 375
+
+	branch: Bren Del Win Centennial [MDB]
+		...found in s2lm at [Municipality of Deloraine-Winchester]
+		...found municipality id: 879
+		...returning [743]
+	contact added, id 743
+	circulations added, id 743
+	collection added, id 743
+	hours added, id 743
+	technology added, id 743
+	activities added, id 743
+	ill added, id 743
+	ebook_circ added, id 743
+	social_media added, id 743
+	personnel added, id 743
+
+	branch: Waskada Branch [TWAS]
+		...found in s2lm at [RM of Brenda-Waskada]
+		...found municipality id: 878
+		...returning [744]
+	contact added, id 744
+	circulations added, id 744
+	collection added, id 744
+	hours added, id 744
+	technology added, id 744
+	activities added, id 744
+	ill added, id 744
+	ebook_circ added, id 744
+	social_media added, id 744
+	personnel added, id 744
+
+Extracting...
+extracted municipality [RM of Brokenhead]
+extracted municipality [Town of Beausejour]
+
+
+Brokenhead River Regional
+------------------------------------------
+added, id 376
+symbol is [MBBR]
+	adding municipality [RM of Brokenhead]:
+		municipality added, id 880
+		creating library/municipality relation
+	adding municipality [Town of Beausejour]:
+		municipality added, id 881
+		creating library/municipality relation
+	financials added, id 376
+
+	branch: Brokenhead River Regional [MBBR]
+		...found in s2lm at [Town of Beausejour]
+		...found municipality id: 26
+		...returning [745]
+	contact added, id 745
+	circulations added, id 745
+	collection added, id 745
+	hours added, id 745
+	technology added, id 745
+	activities added, id 745
+	ill added, id 745
+	ebook_circ added, id 745
+	social_media added, id 745
+	personnel added, id 745
+
+Extracting...
+extracted municipality [Town of Churchill]
+
+
+Churchill Public
+------------------------------------------
+added, id 377
+symbol is [MCH]
+	adding municipality [Town of Churchill]:
+		municipality added, id 882
+		creating library/municipality relation
+	financials added, id 377
+
+	branch: Churchill Public [MCH]
+		...found in s2lm at [Town of Churchill]
+		...found municipality id: 27
+		...returning [746]
+	contact added, id 746
+	circulations added, id 746
+	collection added, id 746
+	hours added, id 746
+	technology added, id 746
+	activities added, id 746
+	ill added, id 746
+	ebook_circ added, id 746
+	social_media added, id 746
+	personnel added, id 746
+
+Extracting...
+extracted municipality [Municipality of Emerson-Franklin]
+
+
+Emerson Public Library
+------------------------------------------
+added, id 378
+symbol is [MEPL]
+	adding municipality [Municipality of Emerson-Franklin]:
+		municipality added, id 883
+		creating library/municipality relation
+	financials added, id 378
+
+	branch: Emerson Public Library [MEPL]
+		...found in s2lm at [Municipality of Emerson-Franklin]
+		...found municipality id: 883
+		...returning [747]
+	contact added, id 747
+	circulations added, id 747
+	collection added, id 747
+	hours added, id 747
+	technology added, id 747
+	activities added, id 747
+	ill added, id 747
+	ebook_circ added, id 747
+	social_media added, id 747
+	personnel added, id 747
+
+Extracting...
+extracted municipality [RM of West Interlake]
+
+
+Eriksdale Public
+------------------------------------------
+added, id 379
+symbol is [MEL]
+	adding municipality [RM of West Interlake]:
+		municipality added, id 884
+		creating library/municipality relation
+	financials added, id 379
+
+	branch: Eriksdale Public [MEL]
+		...found in s2lm at [RM of West Interlake]
+		...found municipality id: 884
+		...returning [748]
+	contact added, id 748
+	circulations added, id 748
+	collection added, id 748
+	hours added, id 748
+	technology added, id 748
+	activities added, id 748
+	ill added, id 748
+	ebook_circ added, id 748
+	social_media added, id 748
+	personnel added, id 748
+
+Extracting...
+extracted municipality [RM of Bifrost-Riverton]
+extracted municipality [RM of Gimli]
+extracted municipality [Town of Arborg]
+
+
+Evergreen Regional Library - Main
+------------------------------------------
+added, id 380
+symbol is [MGE]
+	adding municipality [RM of Bifrost-Riverton]:
+		municipality added, id 885
+		creating library/municipality relation
+	adding municipality [RM of Gimli]:
+		municipality added, id 886
+		creating library/municipality relation
+	adding municipality [Town of Arborg]:
+		municipality added, id 887
+		creating library/municipality relation
+	financials added, id 380
+
+	branch: Evergreen Regional Library - Main [MGE]
+		...found in s2lm at [RM of Gimli]
+		...found municipality id: 31
+		...returning [749]
+	contact added, id 749
+	circulations added, id 749
+	collection added, id 749
+	hours added, id 749
+	technology added, id 749
+	activities added, id 749
+	ill added, id 749
+	ebook_circ added, id 749
+	social_media added, id 749
+	personnel added, id 749
+
+	branch: Evergreen Regional - Arborg Branch [MAB]
+		...found in s2lm at [Town of Arborg]
+		...found municipality id: 32
+		...returning [750]
+	contact added, id 750
+	circulations added, id 750
+	collection added, id 750
+	hours added, id 750
+	technology added, id 750
+	activities added, id 750
+	ill added, id 750
+	ebook_circ added, id 750
+	social_media added, id 750
+	personnel added, id 750
+
+	branch: Evergreen Regional - Riverton Branch [MRB]
+		...found in s2lm at [RM of Bifrost-Riverton]
+		...found municipality id: 885
+		...returning [751]
+	contact added, id 751
+	circulations added, id 751
+	collection added, id 751
+	hours added, id 751
+	technology added, id 751
+	activities added, id 751
+	ill added, id 751
+	ebook_circ added, id 751
+	social_media added, id 751
+	personnel added, id 751
+
+Extracting...
+extracted municipality [City of Flin Flon]
+extracted municipality [Flin Flon Extended Boundaries]
+
+
+Flin Flon Public Library
+------------------------------------------
+added, id 381
+symbol is [MFF]
+	adding municipality [City of Flin Flon]:
+		municipality added, id 888
+		creating library/municipality relation
+	adding municipality [Flin Flon Extended Boundaries]:
+		municipality added, id 889
+		creating library/municipality relation
+	financials added, id 381
+
+	branch: Flin Flon Public Library [MFF]
+		...found in s2lm at [City of Flin Flon]
+		...found municipality id: 34
+		...returning [752]
+	contact added, id 752
+	circulations added, id 752
+	collection added, id 752
+	hours added, id 752
+	technology added, id 752
+	activities added, id 752
+	ill added, id 752
+	ebook_circ added, id 752
+	social_media added, id 752
+	personnel added, id 752
+
+Extracting...
+extracted municipality [City of Selkirk]
+extracted municipality [RM of St. Andrews]
+extracted municipality [RM of St. Clements]
+
+
+Gaynor Family Regional Library
+------------------------------------------
+added, id 382
+symbol is [MSEL]
+	adding municipality [City of Selkirk]:
+		municipality added, id 890
+		creating library/municipality relation
+	adding municipality [RM of St. Andrews]:
+		municipality added, id 891
+		creating library/municipality relation
+	adding municipality [RM of St. Clements]:
+		municipality added, id 892
+		creating library/municipality relation
+	financials added, id 382
+
+	branch: Gaynor Family Regional Library [MSEL]
+		...found in s2lm at [City of Selkirk]
+		...found municipality id: 36
+		...returning [753]
+	contact added, id 753
+	circulations added, id 753
+	collection added, id 753
+	hours added, id 753
+	technology added, id 753
+	activities added, id 753
+	ill added, id 753
+	ebook_circ added, id 753
+	social_media added, id 753
+	personnel added, id 753
+
+Extracting...
+extracted municipality [Municipality of Souris-Glenwood]
+
+
+Glenwood & Souris Regional
+------------------------------------------
+added, id 383
+symbol is [MSOG]
+	adding municipality [Municipality of Souris-Glenwood]:
+		municipality added, id 893
+		creating library/municipality relation
+	financials added, id 383
+
+	branch: Glenwood & Souris Regional [MSOG]
+		...found in s2lm at [Municipality of Souris-Glenwood]
+		...found municipality id: 893
+		...returning [754]
+	contact added, id 754
+	circulations added, id 754
+	collection added, id 754
+	hours added, id 754
+	technology added, id 754
+	activities added, id 754
+	ill added, id 754
+	ebook_circ added, id 754
+	social_media added, id 754
+	personnel added, id 754
+
+Extracting...
+extracted municipality [RM of Headingley]
+
+
+Headingley Municipal
+------------------------------------------
+added, id 384
+symbol is [MHH]
+	adding municipality [RM of Headingley]:
+		municipality added, id 894
+		creating library/municipality relation
+	financials added, id 384
+
+	branch: Headingley Municipal [MHH]
+		...found in s2lm at [RM of Headingley]
+		...found municipality id: 41
+		...returning [755]
+	contact added, id 755
+	circulations added, id 755
+	collection added, id 755
+	hours added, id 755
+	technology added, id 755
+	activities added, id 755
+	ill added, id 755
+	ebook_circ added, id 755
+	social_media added, id 755
+	personnel added, id 755
+
+Extracting...
+extracted municipality [City of Steinbach]
+
+
+Jake Epp
+------------------------------------------
+added, id 385
+symbol is [MSTE]
+	adding municipality [City of Steinbach]:
+		municipality added, id 895
+		creating library/municipality relation
+	financials added, id 385
+
+	branch: Jake Epp [MSTE]
+		...found in s2lm at [City of Steinbach]
+		...found municipality id: 42
+		...returning [756]
+	contact added, id 756
+	circulations added, id 756
+	collection added, id 756
+	hours added, id 756
+	technology added, id 756
+	activities added, id 756
+	ill added, id 756
+	ebook_circ added, id 756
+	social_media added, id 756
+	personnel added, id 756
+
+Extracting...
+extracted municipality [RM of DeSalaberry]
+extracted municipality [Village of St. Pierre-Jolys]
+
+
+Jolys Regional - Main
+------------------------------------------
+added, id 386
+symbol is [MSTP]
+	adding municipality [RM of DeSalaberry]:
+		municipality added, id 896
+		creating library/municipality relation
+	adding municipality [Village of St. Pierre-Jolys]:
+		municipality added, id 897
+		creating library/municipality relation
+	financials added, id 386
+
+	branch: Jolys Regional - Main [MSTP]
+		...found in s2lm at [Village of St. Pierre-Jolys]
+		...found municipality id: 44
+		...returning [757]
+	contact added, id 757
+	circulations added, id 757
+	collection added, id 757
+	hours added, id 757
+	technology added, id 757
+	activities added, id 757
+	ill added, id 757
+	ebook_circ added, id 757
+	social_media added, id 757
+	personnel added, id 757
+
+	branch: Jolys Regional - St. Malo Branch [MSSM]
+		...found in s2lm at [RM of DeSalaberry]
+		...found municipality id: 43
+		...returning [758]
+	contact added, id 758
+	circulations added, id 758
+	collection added, id 758
+	hours added, id 758
+	technology added, id 758
+	activities added, id 758
+	ill added, id 758
+	ebook_circ added, id 758
+	social_media added, id 758
+	personnel added, id 758
+
+Extracting...
+extracted municipality [RM of Lac Du Bonnet]
+extracted municipality [Town of Lac Du Bonnet]
+
+
+Lac du Bonnet Regional Library
+------------------------------------------
+added, id 387
+symbol is [MLDB]
+	adding municipality [RM of Lac Du Bonnet]:
+		municipality added, id 898
+		creating library/municipality relation
+	adding municipality [Town of Lac Du Bonnet]:
+		municipality added, id 899
+		creating library/municipality relation
+	financials added, id 387
+
+	branch: Lac du Bonnet Regional Library [MLDB]
+		...found in s2lm at [Town of Lac Du Bonnet]
+		...found municipality id: 46
+		...returning [759]
+	contact added, id 759
+	circulations added, id 759
+	collection added, id 759
+	hours added, id 759
+	technology added, id 759
+	activities added, id 759
+	ill added, id 759
+	ebook_circ added, id 759
+	social_media added, id 759
+	personnel added, id 759
+
+Extracting...
+extracted municipality [Cartwright-Roblin Municipality]
+extracted municipality [RM of Killarney-Turtle Mountain]
+
+
+Lakeland Regional - Main
+------------------------------------------
+added, id 388
+symbol is [MKL]
+	adding municipality [Cartwright-Roblin Municipality]:
+		municipality added, id 900
+		creating library/municipality relation
+	adding municipality [RM of Killarney-Turtle Mountain]:
+		municipality added, id 901
+		creating library/municipality relation
+	financials added, id 388
+
+	branch: Lakeland Regional - Main [MKL]
+		...found in s2lm at [RM of Killarney-Turtle Mountain]
+		...found municipality id: 48
+		...returning [760]
+	contact added, id 760
+	circulations added, id 760
+	collection added, id 760
+	hours added, id 760
+	technology added, id 760
+	activities added, id 760
+	ill added, id 760
+	ebook_circ added, id 760
+	social_media added, id 760
+	personnel added, id 760
+
+	branch: Lakeland Regional - Cartwright Branch [MCCB]
+		...found in s2lm at [Cartwright-Roblin Municipality]
+		...found municipality id: 900
+		...returning [761]
+	contact added, id 761
+	circulations added, id 761
+	collection added, id 761
+	hours added, id 761
+	technology added, id 761
+	activities added, id 761
+	ill added, id 761
+	ebook_circ added, id 761
+	social_media added, id 761
+	personnel added, id 761
+
+Extracting...
+extracted municipality [Town of Leaf Rapids]
+
+
+Leaf Rapids Public
+------------------------------------------
+added, id 389
+symbol is [MLR]
+	adding municipality [Town of Leaf Rapids]:
+		municipality added, id 902
+		creating library/municipality relation
+	financials added, id 389
+
+	branch: Leaf Rapids Public [MLR]
+		...found in s2lm at [Town of Leaf Rapids]
+		...found municipality id: 50
+		...returning [762]
+	contact added, id 762
+	circulations added, id 762
+	collection added, id 762
+	hours added, id 762
+	technology added, id 762
+	activities added, id 762
+	ill added, id 762
+	ebook_circ added, id 762
+	social_media added, id 762
+	personnel added, id 762
+
+Extracting...
+extracted municipality [Municipality of Lorne]
+
+
+Lorne Library Services
+------------------------------------------
+added, id 390
+symbol is [MLLS]
+	adding municipality [Municipality of Lorne]:
+		municipality added, id 903
+		creating library/municipality relation
+	financials added, id 390
+
+	branch: Lorne Library Services [MLLS]
+		...found in s2lm at []
+		...returning [763]
+	contact added, id 763
+	circulations added, id 763
+	collection added, id 763
+	hours added, id 763
+	technology added, id 763
+	activities added, id 763
+	ill added, id 763
+	ebook_circ added, id 763
+	social_media added, id 763
+	personnel added, id 763
+
+	branch: Bibliothèque Pere Champagne [MNDP]
+		...found in s2lm at [Municipality of Lorne]
+		...found municipality id: 903
+		...returning [764]
+	contact added, id 764
+	circulations added, id 764
+	collection added, id 764
+	hours added, id 764
+	technology added, id 764
+	activities added, id 764
+	ill added, id 764
+	ebook_circ added, id 764
+	social_media added, id 764
+	personnel added, id 764
+
+	branch: Bibliotheque Somerset [MS]
+		...found in s2lm at [Municipality of Lorne]
+		...found municipality id: 903
+		...returning [765]
+	contact added, id 765
+	circulations added, id 765
+	collection added, id 765
+	hours added, id 765
+	technology added, id 765
+	activities added, id 765
+	ill added, id 765
+	ebook_circ added, id 765
+	social_media added, id 765
+	personnel added, id 765
+
+Extracting...
+extracted municipality [Municipality of Louise]
+
+
+Louise Public Library
+------------------------------------------
+added, id 391
+symbol is [MPM]
+	adding municipality [Municipality of Louise]:
+		municipality added, id 904
+		creating library/municipality relation
+	financials added, id 391
+
+	branch: Louise Public Library [MPM]
+		...found in s2lm at [Municipality of Louise]
+		...found municipality id: 904
+		...returning [766]
+	contact added, id 766
+	circulations added, id 766
+	collection added, id 766
+	hours added, id 766
+	technology added, id 766
+	activities added, id 766
+	ill added, id 766
+	ebook_circ added, id 766
+	social_media added, id 766
+	personnel added, id 766
+
+Extracting...
+extracted municipality [Town of Lynn Lake]
+
+
+Lynn Lake Centennial Public Library
+------------------------------------------
+added, id 392
+symbol is [MLLC]
+	adding municipality [Town of Lynn Lake]:
+		municipality added, id 905
+		creating library/municipality relation
+	financials added, id 392
+
+	branch: Lynn Lake Centennial Public Library [MLLC]
+		...found in s2lm at [Town of Lynn Lake]
+		...found municipality id: 52
+		...returning [767]
+	contact added, id 767
+	circulations added, id 767
+	collection added, id 767
+	hours added, id 767
+	technology added, id 767
+	activities added, id 767
+	ill added, id 767
+	ebook_circ added, id 767
+	social_media added, id 767
+	personnel added, id 767
+
+Extracting...
+extracted municipality [RM of Pembina]
+
+
+Manitou Regional Library
+------------------------------------------
+added, id 393
+symbol is [MMA]
+	adding municipality [RM of Pembina]:
+		municipality added, id 906
+		creating library/municipality relation
+	financials added, id 393
+
+	branch: Manitou Regional Library [MMA]
+		...found in s2lm at [RM of Pembina]
+		...found municipality id: 53
+		...returning [768]
+	contact added, id 768
+	circulations added, id 768
+	collection added, id 768
+	hours added, id 768
+	technology added, id 768
+	activities added, id 768
+	ill added, id 768
+	ebook_circ added, id 768
+	social_media added, id 768
+	personnel added, id 768
+
+Extracting...
+extracted municipality [RM of Minto-Odanah]
+extracted municipality [Town of Minnedosa]
+
+
+Minnedosa Regional
+------------------------------------------
+added, id 394
+symbol is [MMR]
+	adding municipality [RM of Minto-Odanah]:
+		municipality added, id 907
+		creating library/municipality relation
+	adding municipality [Town of Minnedosa]:
+		municipality added, id 908
+		creating library/municipality relation
+	financials added, id 394
+
+	branch: Minnedosa Regional [MMR]
+		...found in s2lm at [Town of Minnedosa]
+		...found municipality id: 57
+		...returning [769]
+	contact added, id 769
+	circulations added, id 769
+	collection added, id 769
+	hours added, id 769
+	technology added, id 769
+	activities added, id 769
+	ill added, id 769
+	ebook_circ added, id 769
+	social_media added, id 769
+	personnel added, id 769
+
+Extracting...
+extracted municipality [Municipality of North Norfolk]
+
+
+North Norfolk-MacGregor Library
+------------------------------------------
+added, id 395
+symbol is [MMNN]
+	adding municipality [Municipality of North Norfolk]:
+		municipality added, id 909
+		creating library/municipality relation
+	financials added, id 395
+
+	branch: North Norfolk-MacGregor Library [MMNN]
+		...found in s2lm at [Municipality of North Norfolk]
+		...found municipality id: 909
+		...returning [770]
+	contact added, id 770
+	circulations added, id 770
+	collection added, id 770
+	hours added, id 770
+	technology added, id 770
+	activities added, id 770
+	ill added, id 770
+	ebook_circ added, id 770
+	social_media added, id 770
+	personnel added, id 770
+
+Extracting...
+extracted municipality [Municipality of Swan Valley West]
+extracted municipality [Town of Swan River]
+
+
+North-West Regional Library
+------------------------------------------
+added, id 396
+symbol is [MSRN]
+	adding municipality [Municipality of Swan Valley West]:
+		municipality added, id 910
+		creating library/municipality relation
+	adding municipality [Town of Swan River]:
+		municipality added, id 911
+		creating library/municipality relation
+	financials added, id 396
+
+	branch: North-West Regional Library [MSRN]
+		...found in s2lm at [Town of Swan River]
+		...found municipality id: 61
+		...returning [771]
+	contact added, id 771
+	circulations added, id 771
+	collection added, id 771
+	hours added, id 771
+	technology added, id 771
+	activities added, id 771
+	ill added, id 771
+	ebook_circ added, id 771
+	social_media added, id 771
+	personnel added, id 771
+
+	branch: North-West Regional - Benito Branch [MBB]
+		...found in s2lm at [Municipality of Swan Valley West]
+		...found municipality id: 910
+		...returning [772]
+	contact added, id 772
+	circulations added, id 772
+	collection added, id 772
+	hours added, id 772
+	technology added, id 772
+	activities added, id 772
+	ill added, id 772
+	ebook_circ added, id 772
+	social_media added, id 772
+	personnel added, id 772
+
+Extracting...
+extracted municipality [Municipality of Clanwilliam-Erickson]
+extracted municipality [Municipality of Ellice-Archie]
+extracted municipality [Gilbert Plains Municipality]
+extracted municipality [Grandview Municipality]
+extracted municipality [Hamiota Municipality]
+extracted municipality [Hillsburg-Roblin-Shell River]
+extracted municipality [RM of Lakeshore]
+extracted municipality [RM of McCreary]
+extracted municipality [Municipality of Minitonas-Bowsman]
+extracted municipality [RM of Mossey River]
+extracted municipality [RM of Oakview]
+extracted municipality [Prairie View Municipality]
+extracted municipality [RM of Westlake-Gladstone]
+extracted municipality [RM of West Interlake]
+extracted municipality [RM of Yellowhead]
+extracted municipality [City of Dauphin]
+extracted municipality [RM of Dauphin]
+extracted municipality [RM of Grahamdale]
+extracted municipality [RM of Mountain]
+extracted municipality [Rossburn Municipality]
+
+
+Parkland Regional Library
+------------------------------------------
+added, id 397
+symbol is [MDP]
+	adding municipality [Municipality of Clanwilliam-Erickson]:
+		municipality added, id 912
+		creating library/municipality relation
+	adding municipality [Municipality of Ellice-Archie]:
+		municipality exists, id 873
+		creating library/municipality relation
+	adding municipality [Gilbert Plains Municipality]:
+		municipality added, id 913
+		creating library/municipality relation
+	adding municipality [Grandview Municipality]:
+		municipality added, id 914
+		creating library/municipality relation
+	adding municipality [Hamiota Municipality]:
+		municipality added, id 915
+		creating library/municipality relation
+	adding municipality [Hillsburg-Roblin-Shell River]:
+		municipality added, id 916
+		creating library/municipality relation
+	adding municipality [RM of Lakeshore]:
+		municipality added, id 917
+		creating library/municipality relation
+	adding municipality [RM of McCreary]:
+		municipality added, id 918
+		creating library/municipality relation
+	adding municipality [Municipality of Minitonas-Bowsman]:
+		municipality added, id 919
+		creating library/municipality relation
+	adding municipality [RM of Mossey River]:
+		municipality added, id 920
+		creating library/municipality relation
+	adding municipality [RM of Oakview]:
+		municipality added, id 921
+		creating library/municipality relation
+	adding municipality [Prairie View Municipality]:
+		municipality added, id 922
+		creating library/municipality relation
+	adding municipality [RM of Westlake-Gladstone]:
+		municipality added, id 923
+		creating library/municipality relation
+	adding municipality [RM of West Interlake]:
+		municipality exists, id 884
+		creating library/municipality relation
+	adding municipality [RM of Yellowhead]:
+		municipality added, id 924
+		creating library/municipality relation
+	adding municipality [City of Dauphin]:
+		municipality added, id 925
+		creating library/municipality relation
+	adding municipality [RM of Dauphin]:
+		municipality added, id 926
+		creating library/municipality relation
+	adding municipality [RM of Grahamdale]:
+		municipality added, id 927
+		creating library/municipality relation
+	adding municipality [RM of Mountain]:
+		municipality added, id 928
+		creating library/municipality relation
+	adding municipality [Rossburn Municipality]:
+		municipality added, id 929
+		creating library/municipality relation
+	financials added, id 397
+
+	loading parkland municipalities
+$VAR1 = undef;
+
+	lib id: 
+
+	branch: Rossburn Regional Library [MRO]
+		...found in s2lm at [Rossburn Municipality]
+		...found municipality id: 929
+		...returning [773]
+	contact added, id 773
+	circulations added, id 773
+	collection added, id 773
+	hours added, id 773
+	technology added, id 773
+	activities added, id 773
+	ill added, id 773
+	ebook_circ added, id 773
+	social_media added, id 773
+	personnel added, id 773
+
+	branch: Parkland Regional - Bookmobile [MNDPBK]
+		...found in s2lm at []
+		...returning [774]
+	contact added, id 774
+	circulations added, id 774
+	collection added, id 774
+	hours added, id 774
+	technology added, id 774
+	activities added, id 774
+	ill added, id 774
+	ebook_circ added, id 774
+	social_media added, id 774
+	personnel added, id 774
+extracted municipality [Municipality of Clanwilliam-Erickson]
+extracted municipality [Municipality of Ellice-Archie]
+extracted municipality [Gilbert Plains Municipality]
+extracted municipality [Grandview Municipality]
+extracted municipality [Hamiota Municipality]
+extracted municipality [Hillsburg-Roblin-Shell River]
+extracted municipality [RM of Lakeshore]
+extracted municipality [RM of McCreary]
+extracted municipality [Municipality of Minitonas-Bowsman]
+extracted municipality [RM of Mossey River]
+extracted municipality [RM of Oakview]
+extracted municipality [Prairie View Municipality]
+extracted municipality [RM of Westlake-Gladstone]
+extracted municipality [RM of West Interlake]
+extracted municipality [RM of Yellowhead]
+extracted municipality [City of Dauphin]
+extracted municipality [RM of Dauphin]
+extracted municipality [RM of Grahamdale]
+extracted municipality [RM of Mountain]
+extracted municipality [Rossburn Municipality]
+
+	loading parkland municipalities
+$VAR1 = {
+          'contribution' => '12122',
+          'is_bilingual' => 0,
+          'population' => 901,
+          'name' => 'Municipality of Clanwilliam-Erickson',
+          'year' => '2015',
+          'contribution_to' => '5825',
+          'is_northern' => 0
+        };
+
+	lib id: 397
+	adding municipality [Municipality of Clanwilliam-Erickson]:
+		municipality exists, id 912
+		creating library/municipality relation
+	adding municipality [Municipality of Ellice-Archie]:
+		municipality exists, id 873
+		creating library/municipality relation
+	adding municipality [Gilbert Plains Municipality]:
+		municipality exists, id 913
+		creating library/municipality relation
+	adding municipality [Grandview Municipality]:
+		municipality exists, id 914
+		creating library/municipality relation
+	adding municipality [Hamiota Municipality]:
+		municipality exists, id 915
+		creating library/municipality relation
+	adding municipality [Hillsburg-Roblin-Shell River]:
+		municipality exists, id 916
+		creating library/municipality relation
+	adding municipality [RM of Lakeshore]:
+		municipality exists, id 917
+		creating library/municipality relation
+	adding municipality [RM of McCreary]:
+		municipality exists, id 918
+		creating library/municipality relation
+	adding municipality [Municipality of Minitonas-Bowsman]:
+		municipality exists, id 919
+		creating library/municipality relation
+	adding municipality [RM of Mossey River]:
+		municipality exists, id 920
+		creating library/municipality relation
+	adding municipality [RM of Oakview]:
+		municipality exists, id 921
+		creating library/municipality relation
+	adding municipality [Prairie View Municipality]:
+		municipality exists, id 922
+		creating library/municipality relation
+	adding municipality [RM of Westlake-Gladstone]:
+		municipality exists, id 923
+		creating library/municipality relation
+	adding municipality [RM of West Interlake]:
+		municipality exists, id 884
+		creating library/municipality relation
+	adding municipality [RM of Yellowhead]:
+		municipality exists, id 924
+		creating library/municipality relation
+	adding municipality [City of Dauphin]:
+		municipality exists, id 925
+		creating library/municipality relation
+	adding municipality [RM of Dauphin]:
+		municipality exists, id 926
+		creating library/municipality relation
+	adding municipality [RM of Grahamdale]:
+		municipality exists, id 927
+		creating library/municipality relation
+	adding municipality [RM of Mountain]:
+		municipality exists, id 928
+		creating library/municipality relation
+	adding municipality [Rossburn Municipality]:
+		municipality exists, id 929
+		creating library/municipality relation
+
+	branch: Parkland Regional Library [MDP]
+		...found in s2lm at []
+		...returning [775]
+	contact added, id 775
+	circulations added, id 775
+	collection added, id 775
+	hours added, id 775
+	technology added, id 775
+	activities added, id 775
+	ill added, id 775
+	ebook_circ added, id 775
+	social_media added, id 775
+	personnel added, id 775
+extracted municipality [RM of Mountain]
+
+	loading parkland municipalities
+$VAR1 = {
+          'is_bilingual' => 0,
+          'contribution' => '0',
+          'population' => '0',
+          'name' => 'RM of Mountain',
+          'year' => '2015',
+          'contribution_to' => '5825',
+          'is_northern' => 0
+        };
+
+	lib id: 397
+	adding municipality [RM of Mountain]:
+		municipality exists, id 928
+		creating library/municipality relation
+
+	branch: Parkland Regional - Birch River Branch [MDPBR]
+		...found in s2lm at [RM of Mountain]
+		...found municipality id: 63
+		...returning [776]
+	contact added, id 776
+	circulations added, id 776
+	collection added, id 776
+	hours added, id 776
+	technology added, id 776
+	activities added, id 776
+	ill added, id 776
+	ebook_circ added, id 776
+	social_media added, id 776
+	personnel added, id 776
+extracted municipality [Prairie View Muncipality]
+
+	loading parkland municipalities
+$VAR1 = {
+          'population' => '0',
+          'name' => 'Prairie View Muncipality',
+          'is_bilingual' => 0,
+          'contribution' => '0',
+          'is_northern' => 0,
+          'year' => '2015',
+          'contribution_to' => '5825'
+        };
+
+	lib id: 397
+	adding municipality [Prairie View Muncipality]:
+		municipality added, id 930
+		creating library/municipality relation
+
+	branch: Parkland Regional - Birtle Branch [MDPBI]
+		...found in s2lm at [Prairie View Municipality]
+		...found municipality id: 922
+		...returning [777]
+	contact added, id 777
+	circulations added, id 777
+	collection added, id 777
+	hours added, id 777
+	technology added, id 777
+	activities added, id 777
+	ill added, id 777
+	ebook_circ added, id 777
+	social_media added, id 777
+	personnel added, id 777
+extracted municipality [Municipality of Minitonas-Bowsman]
+
+	loading parkland municipalities
+$VAR1 = {
+          'is_northern' => 0,
+          'year' => '2015',
+          'contribution_to' => '5825',
+          'population' => '0',
+          'name' => 'Municipality of Minitonas-Bowsman',
+          'is_bilingual' => 0,
+          'contribution' => '0'
+        };
+
+	lib id: 397
+	adding municipality [Municipality of Minitonas-Bowsman]:
+		municipality exists, id 919
+		creating library/municipality relation
+
+	branch: Parkland Regional - Bowsman Branch [MDPBO]
+		...found in s2lm at [Municipality of Minitonas-Bowsman]
+		...found municipality id: 919
+		...returning [778]
+	contact added, id 778
+	circulations added, id 778
+	collection added, id 778
+	hours added, id 778
+	technology added, id 778
+	activities added, id 778
+	ill added, id 778
+	ebook_circ added, id 778
+	social_media added, id 778
+	personnel added, id 778
+extracted municipality [City of Dauphin]
+extracted municipality [RM of Dauphin]
+
+	loading parkland municipalities
+$VAR1 = {
+          'is_northern' => 0,
+          'year' => '2015',
+          'contribution_to' => '5825',
+          'population' => '0',
+          'name' => 'City of Dauphin',
+          'contribution' => '0',
+          'is_bilingual' => 0
+        };
+
+	lib id: 397
+	adding municipality [City of Dauphin]:
+		municipality exists, id 925
+		creating library/municipality relation
+	adding municipality [RM of Dauphin]:
+		municipality exists, id 926
+		creating library/municipality relation
+
+	branch: Dauphin Public Library [MDA]
+		...found in s2lm at [City of Dauphin]
+		...found municipality id: 66
+		...returning [779]
+	contact added, id 779
+	circulations added, id 779
+	collection added, id 779
+	hours added, id 779
+	technology added, id 779
+	activities added, id 779
+	ill added, id 779
+	ebook_circ added, id 779
+	social_media added, id 779
+	personnel added, id 779
+extracted municipality [Municipality of Clanwilliam-Erickson]
+
+	loading parkland municipalities
+$VAR1 = {
+          'year' => '2015',
+          'contribution_to' => '5825',
+          'is_northern' => 0,
+          'is_bilingual' => 0,
+          'contribution' => '0',
+          'population' => '0',
+          'name' => 'Municipality of Clanwilliam-Erickson'
+        };
+
+	lib id: 397
+	adding municipality [Municipality of Clanwilliam-Erickson]:
+		municipality exists, id 912
+		creating library/municipality relation
+
+	branch: Parkland Regional - Erickson Branch [MDPER]
+		...found in s2lm at [Municipality of Clanwilliam-Erickson]
+		...found municipality id: 912
+		...returning [780]
+	contact added, id 780
+	circulations added, id 780
+	collection added, id 780
+	hours added, id 780
+	technology added, id 780
+	activities added, id 780
+	ill added, id 780
+	ebook_circ added, id 780
+	social_media added, id 780
+	personnel added, id 780
+extracted municipality [Prairie View Municipality]
+
+	loading parkland municipalities
+$VAR1 = {
+          'is_northern' => 0,
+          'contribution_to' => '5825',
+          'year' => '2015',
+          'name' => 'Prairie View Municipality',
+          'population' => '0',
+          'contribution' => '0',
+          'is_bilingual' => 0
+        };
+
+	lib id: 397
+	adding municipality [Prairie View Municipality]:
+		municipality exists, id 922
+		creating library/municipality relation
+
+	branch: Parkland Regional - Foxwarren Branch [MDPFO]
+		...found in s2lm at [Prairie View Municipality]
+		...found municipality id: 922
+		...returning [781]
+	contact added, id 781
+	circulations added, id 781
+	collection added, id 781
+	hours added, id 781
+	technology added, id 781
+	activities added, id 781
+	ill added, id 781
+	ebook_circ added, id 781
+	social_media added, id 781
+	personnel added, id 781
+extracted municipality [Gilbert Plains Municipality]
+
+	loading parkland municipalities
+$VAR1 = {
+          'is_bilingual' => 0,
+          'contribution' => '0',
+          'population' => '0',
+          'name' => 'Gilbert Plains Municipality',
+          'year' => '2015',
+          'contribution_to' => '5825',
+          'is_northern' => 0
+        };
+
+	lib id: 397
+	adding municipality [Gilbert Plains Municipality]:
+		municipality exists, id 913
+		creating library/municipality relation
+
+	branch: Parkland Regional - Gilbert Plains Branch [MDPGP]
+		...found in s2lm at [Gilbert Plains Municipality]
+		...found municipality id: 913
+		...returning [782]
+	contact added, id 782
+	circulations added, id 782
+	collection added, id 782
+	hours added, id 782
+	technology added, id 782
+	activities added, id 782
+	ill added, id 782
+	ebook_circ added, id 782
+	social_media added, id 782
+	personnel added, id 782
+extracted municipality [Municipality of WestLake-Gladstone]
+
+	loading parkland municipalities
+$VAR1 = {
+          'is_northern' => 0,
+          'year' => '2015',
+          'contribution_to' => '5825',
+          'population' => '0',
+          'name' => 'Municipality of WestLake-Gladstone',
+          'is_bilingual' => 0,
+          'contribution' => '0'
+        };
+
+	lib id: 397
+	adding municipality [Municipality of WestLake-Gladstone]:
+		municipality added, id 931
+		creating library/municipality relation
+
+	branch: Parkland Regional - Gladstone Branch [MDPGL]
+		...found in s2lm at [RM of Westlake-Gladstone]
+		...found municipality id: 923
+		...returning [783]
+	contact added, id 783
+	circulations added, id 783
+	collection added, id 783
+	hours added, id 783
+	technology added, id 783
+	activities added, id 783
+	ill added, id 783
+	ebook_circ added, id 783
+	social_media added, id 783
+	personnel added, id 783
+extracted municipality [Grandview Municipality]
+
+	loading parkland municipalities
+$VAR1 = {
+          'name' => 'Grandview Municipality',
+          'population' => '0',
+          'contribution' => '0',
+          'is_bilingual' => 0,
+          'is_northern' => 0,
+          'contribution_to' => '5825',
+          'year' => '2015'
+        };
+
+	lib id: 397
+	adding municipality [Grandview Municipality]:
+		municipality exists, id 914
+		creating library/municipality relation
+
+	branch: Parkland Regional - Grandview Branch [MDPGV]
+		...found in s2lm at [Grandview Municipality]
+		...found municipality id: 914
+		...returning [784]
+	contact added, id 784
+	circulations added, id 784
+	collection added, id 784
+	hours added, id 784
+	technology added, id 784
+	activities added, id 784
+	ill added, id 784
+	ebook_circ added, id 784
+	social_media added, id 784
+	personnel added, id 784
+extracted municipality [Hamiota Municipality]
+
+	loading parkland municipalities
+$VAR1 = {
+          'year' => '2015',
+          'contribution_to' => '5825',
+          'is_northern' => 0,
+          'is_bilingual' => 0,
+          'contribution' => '0',
+          'population' => '0',
+          'name' => 'Hamiota Municipality'
+        };
+
+	lib id: 397
+	adding municipality [Hamiota Municipality]:
+		municipality exists, id 915
+		creating library/municipality relation
+
+	branch: Parkland Regional - Hamiota Branch [MDPHA]
+		...found in s2lm at [Hamiota Municipality]
+		...found municipality id: 915
+		...returning [785]
+	contact added, id 785
+	circulations added, id 785
+	collection added, id 785
+	hours added, id 785
+	technology added, id 785
+	activities added, id 785
+	ill added, id 785
+	ebook_circ added, id 785
+	social_media added, id 785
+	personnel added, id 785
+extracted municipality [Municipality of WestLake-Gladstone]
+
+	loading parkland municipalities
+$VAR1 = {
+          'contribution' => '0',
+          'is_bilingual' => 0,
+          'name' => 'Municipality of WestLake-Gladstone',
+          'population' => '0',
+          'contribution_to' => '5825',
+          'year' => '2015',
+          'is_northern' => 0
+        };
+
+	lib id: 397
+	adding municipality [Municipality of WestLake-Gladstone]:
+		municipality exists, id 931
+		creating library/municipality relation
+
+	branch: Parkland Regional - Langruth Branch [MDPLA]
+		...found in s2lm at [RM of Westlake-Gladstone]
+		...found municipality id: 923
+		...returning [786]
+	contact added, id 786
+	circulations added, id 786
+	collection added, id 786
+	hours added, id 786
+	technology added, id 786
+	activities added, id 786
+	ill added, id 786
+	ebook_circ added, id 786
+	social_media added, id 786
+	personnel added, id 786
+extracted municipality [Municipality of McCreary]
+
+	loading parkland municipalities
+$VAR1 = {
+          'name' => 'Municipality of McCreary',
+          'population' => '0',
+          'contribution' => '0',
+          'is_bilingual' => 0,
+          'is_northern' => 0,
+          'contribution_to' => '5825',
+          'year' => '2015'
+        };
+
+	lib id: 397
+	adding municipality [Municipality of McCreary]:
+		municipality added, id 932
+		creating library/municipality relation
+
+	branch: Parkland Regional - McCreary Branch [MDPMC]
+		...found in s2lm at [Municipality of McCreary]
+		...found municipality id: 932
+		...returning [787]
+	contact added, id 787
+	circulations added, id 787
+	collection added, id 787
+	hours added, id 787
+	technology added, id 787
+	activities added, id 787
+	ill added, id 787
+	ebook_circ added, id 787
+	social_media added, id 787
+	personnel added, id 787
+extracted municipality [Municipality of Minitonas-Bowsman]
+
+	loading parkland municipalities
+$VAR1 = {
+          'contribution_to' => '5825',
+          'year' => '2015',
+          'is_northern' => 0,
+          'is_bilingual' => 0,
+          'contribution' => '0',
+          'name' => 'Municipality of Minitonas-Bowsman',
+          'population' => '0'
+        };
+
+	lib id: 397
+	adding municipality [Municipality of Minitonas-Bowsman]:
+		municipality exists, id 919
+		creating library/municipality relation
+
+	branch: Parkland Regional - Minitonas Branch [MDPMI]
+		...found in s2lm at [Municipality of Minitonas-Bowsman]
+		...found municipality id: 919
+		...returning [788]
+	contact added, id 788
+	circulations added, id 788
+	collection added, id 788
+	hours added, id 788
+	technology added, id 788
+	activities added, id 788
+	ill added, id 788
+	ebook_circ added, id 788
+	social_media added, id 788
+	personnel added, id 788
+extracted municipality [RM of Lakeshore]
+
+	loading parkland municipalities
+$VAR1 = {
+          'is_bilingual' => 0,
+          'contribution' => '0',
+          'name' => 'RM of Lakeshore',
+          'population' => '0',
+          'contribution_to' => '5825',
+          'year' => '2015',
+          'is_northern' => 0
+        };
+
+	lib id: 397
+	adding municipality [RM of Lakeshore]:
+		municipality exists, id 917
+		creating library/municipality relation
+
+	branch: Parkland Regional - Ochre River Branch [MDPOR]
+		...found in s2lm at [RM of Lakeshore]
+		...found municipality id: 917
+		...returning [789]
+	contact added, id 789
+	circulations added, id 789
+	collection added, id 789
+	hours added, id 789
+	technology added, id 789
+	activities added, id 789
+	ill added, id 789
+	ebook_circ added, id 789
+	social_media added, id 789
+	personnel added, id 789
+extracted municipality [Municipality of Roblin]
+
+	loading parkland municipalities
+$VAR1 = {
+          'population' => '0',
+          'name' => 'Municipality of Roblin',
+          'contribution' => '0',
+          'is_bilingual' => 0,
+          'is_northern' => 0,
+          'year' => '2015',
+          'contribution_to' => '5825'
+        };
+
+	lib id: 397
+	adding municipality [Municipality of Roblin]:
+		municipality added, id 933
+		creating library/municipality relation
+
+	branch: Parkland Regional - Roblin Branch [MDPRO]
+		...found in s2lm at [Hillsburg-Roblin-Shell River]
+		...found municipality id: 916
+		...returning [790]
+	contact added, id 790
+	circulations added, id 790
+	collection added, id 790
+	hours added, id 790
+	technology added, id 790
+	activities added, id 790
+	ill added, id 790
+	ebook_circ added, id 790
+	social_media added, id 790
+	personnel added, id 790
+extracted municipality [Municipality of Ellice-Archie]
+
+	loading parkland municipalities
+$VAR1 = {
+          'year' => '2015',
+          'contribution_to' => '5825',
+          'is_northern' => 0,
+          'contribution' => '0',
+          'is_bilingual' => 0,
+          'population' => '0',
+          'name' => 'Municipality of Ellice-Archie'
+        };
+
+	lib id: 397
+	adding municipality [Municipality of Ellice-Archie]:
+		municipality exists, id 873
+		creating library/municipality relation
+
+	branch: Parkland Regional - St. Lazare Branch [MDPSLA]
+		...found in s2lm at [RM of Ellice-Archie]
+		...returning [791]
+	contact added, id 791
+	circulations added, id 791
+	collection added, id 791
+	hours added, id 791
+	technology added, id 791
+	activities added, id 791
+	ill added, id 791
+	ebook_circ added, id 791
+	social_media added, id 791
+	personnel added, id 791
+extracted municipality [RM of Yellowhead]
+
+	loading parkland municipalities
+$VAR1 = {
+          'is_northern' => 0,
+          'contribution_to' => '5825',
+          'year' => '2015',
+          'name' => 'RM of Yellowhead',
+          'population' => '0',
+          'is_bilingual' => 0,
+          'contribution' => '0'
+        };
+
+	lib id: 397
+	adding municipality [RM of Yellowhead]:
+		municipality exists, id 924
+		creating library/municipality relation
+
+	branch: Parkland Regional - Shoal Lake Branch [MDPSL]
+		...found in s2lm at [RM of Yellowhead]
+		...found municipality id: 924
+		...returning [792]
+	contact added, id 792
+	circulations added, id 792
+	collection added, id 792
+	hours added, id 792
+	technology added, id 792
+	activities added, id 792
+	ill added, id 792
+	ebook_circ added, id 792
+	social_media added, id 792
+	personnel added, id 792
+extracted municipality [Municipality of West Interlake]
+extracted municipality [RM of Grahamdale]
+
+	loading parkland municipalities
+$VAR1 = {
+          'contribution_to' => '5825',
+          'year' => '2015',
+          'is_northern' => 0,
+          'is_bilingual' => 0,
+          'contribution' => '0',
+          'name' => 'Municipality of West Interlake',
+          'population' => '0'
+        };
+
+	lib id: 397
+	adding municipality [Municipality of West Interlake]:
+		municipality added, id 934
+		creating library/municipality relation
+	adding municipality [RM of Grahamdale]:
+		municipality exists, id 927
+		creating library/municipality relation
+
+	branch: Parkland Regional - Siglunes Branch [MDPSI]
+		...found in s2lm at [RM of West Interlake]
+		...found municipality id: 884
+		...returning [793]
+	contact added, id 793
+	circulations added, id 793
+	collection added, id 793
+	hours added, id 793
+	technology added, id 793
+	activities added, id 793
+	ill added, id 793
+	ebook_circ added, id 793
+	social_media added, id 793
+	personnel added, id 793
+extracted municipality [RM of Yellowhead]
+
+	loading parkland municipalities
+$VAR1 = {
+          'is_northern' => 0,
+          'contribution_to' => '5825',
+          'year' => '2015',
+          'name' => 'RM of Yellowhead',
+          'population' => '0',
+          'contribution' => '0',
+          'is_bilingual' => 0
+        };
+
+	lib id: 397
+	adding municipality [RM of Yellowhead]:
+		municipality exists, id 924
+		creating library/municipality relation
+
+	branch: Parkland Regional - Strathclair Branch [MDPST]
+		...found in s2lm at [RM of Yellowhead]
+		...found municipality id: 924
+		...returning [794]
+	contact added, id 794
+	circulations added, id 794
+	collection added, id 794
+	hours added, id 794
+	technology added, id 794
+	activities added, id 794
+	ill added, id 794
+	ebook_circ added, id 794
+	social_media added, id 794
+	personnel added, id 794
+extracted municipality [RM of Mossey River]
+
+	loading parkland municipalities
+$VAR1 = {
+          'population' => '0',
+          'name' => 'RM of Mossey River',
+          'contribution' => '0',
+          'is_bilingual' => 0,
+          'is_northern' => 0,
+          'year' => '2015',
+          'contribution_to' => '5825'
+        };
+
+	lib id: 397
+	adding municipality [RM of Mossey River]:
+		municipality exists, id 920
+		creating library/municipality relation
+
+	branch: Parkland Regional - Winnipegosis Branch [MDPWP]
+		...found in s2lm at [RM of Mossey River]
+		...found municipality id: 96
+		...returning [795]
+	contact added, id 795
+	circulations added, id 795
+	collection added, id 795
+	hours added, id 795
+	technology added, id 795
+	activities added, id 795
+	ill added, id 795
+	ebook_circ added, id 795
+	social_media added, id 795
+	personnel added, id 795
+
+Extracting...
+extracted municipality [RM of Coldwell]
+
+
+Pauline Johnson
+------------------------------------------
+added, id 398
+symbol is [MLPJ]
+	adding municipality [RM of Coldwell]:
+		municipality added, id 935
+		creating library/municipality relation
+	financials added, id 398
+
+	branch: Pauline Johnson [MLPJ]
+		...found in s2lm at [RM of Coldwell]
+		...found municipality id: 98
+		...returning [796]
+	contact added, id 796
+	circulations added, id 796
+	collection added, id 796
+	hours added, id 796
+	technology added, id 796
+	activities added, id 796
+	ill added, id 796
+	ebook_circ added, id 796
+	social_media added, id 796
+	personnel added, id 796
+
+Extracting...
+extracted municipality [Peguis First Nation]
+
+
+Peguis First Nation Public Library
+------------------------------------------
+added, id 399
+symbol is [MPFN]
+	adding municipality [Peguis First Nation]:
+		municipality added, id 936
+		creating library/municipality relation
+	financials added, id 399
+
+	branch: Peguis First Nation Public Library [MPFN]
+		...found in s2lm at [Peguis First Nation]
+		...found municipality id: 99
+		...returning [797]
+	contact added, id 797
+	circulations added, id 797
+	collection added, id 797
+	hours added, id 797
+	technology added, id 797
+	activities added, id 797
+	ill added, id 797
+	ebook_circ added, id 797
+	social_media added, id 797
+	personnel added, id 797
+
+Extracting...
+extracted municipality [LGD of Pinawa]
+
+
+Pinawa Public
+------------------------------------------
+added, id 400
+symbol is [MP]
+	adding municipality [LGD of Pinawa]:
+		municipality added, id 937
+		creating library/municipality relation
+	financials added, id 400
+
+	branch: Pinawa Public [MP]
+		...found in s2lm at [LGD of Pinawa]
+		...found municipality id: 100
+		...returning [798]
+	contact added, id 798
+	circulations added, id 798
+	collection added, id 798
+	hours added, id 798
+	technology added, id 798
+	activities added, id 798
+	ill added, id 798
+	ebook_circ added, id 798
+	social_media added, id 798
+	personnel added, id 798
+
+Extracting...
+extracted municipality [City of Portage La Prairie]
+extracted municipality [RM of Portage La Prairie]
+
+
+Portage La Prairie Regional
+------------------------------------------
+added, id 401
+symbol is [MPLP]
+	adding municipality [City of Portage La Prairie]:
+		municipality added, id 938
+		creating library/municipality relation
+	adding municipality [RM of Portage La Prairie]:
+		municipality added, id 939
+		creating library/municipality relation
+	financials added, id 401
+
+	branch: Portage La Prairie Regional [MPLP]
+		...found in s2lm at [City of Portage La Prairie]
+		...found municipality id: 101
+		...returning [799]
+	contact added, id 799
+	circulations added, id 799
+	collection added, id 799
+	hours added, id 799
+	technology added, id 799
+	activities added, id 799
+	ill added, id 799
+	ebook_circ added, id 799
+	social_media added, id 799
+	personnel added, id 799
+
+Extracting...
+extracted municipality [Riverdale Municipality]
+
+
+Prairie Crocus Regional Library
+------------------------------------------
+added, id 402
+symbol is [MRIP]
+	adding municipality [Riverdale Municipality]:
+		municipality added, id 940
+		creating library/municipality relation
+	financials added, id 402
+
+	branch: Prairie Crocus Regional Library [MRIP]
+		...found in s2lm at [Riverdale Municipality]
+		...found municipality id: 940
+		...returning [800]
+	contact added, id 800
+	circulations added, id 800
+	collection added, id 800
+	hours added, id 800
+	technology added, id 800
+	activities added, id 800
+	ill added, id 800
+	ebook_circ added, id 800
+	social_media added, id 800
+	personnel added, id 800
+
+Extracting...
+extracted municipality [RM of Argyle]
+
+
+R.M. of Argyle Public
+------------------------------------------
+added, id 403
+symbol is [MBA]
+	adding municipality [RM of Argyle]:
+		municipality added, id 941
+		creating library/municipality relation
+	financials added, id 403
+
+	branch: R.M. of Argyle Public [MBA]
+		...found in s2lm at [RM of Argyle]
+		...found municipality id: 105
+		...returning [801]
+	contact added, id 801
+	circulations added, id 801
+	collection added, id 801
+	hours added, id 801
+	technology added, id 801
+	activities added, id 801
+	ill added, id 801
+	ebook_circ added, id 801
+	social_media added, id 801
+	personnel added, id 801
+
+Extracting...
+extracted municipality [RM of Oakview]
+
+
+Rapid City Regional
+------------------------------------------
+added, id 404
+symbol is [MRA]
+	adding municipality [RM of Oakview]:
+		municipality exists, id 921
+		creating library/municipality relation
+	financials added, id 404
+
+	branch: Rapid City Regional [MRA]
+		...found in s2lm at [RM of Oakview]
+		...found municipality id: 921
+		...returning [802]
+	contact added, id 802
+	circulations added, id 802
+	collection added, id 802
+	hours added, id 802
+	technology added, id 802
+	activities added, id 802
+	ill added, id 802
+	ebook_circ added, id 802
+	social_media added, id 802
+	personnel added, id 802
+
+Extracting...
+extracted municipality [RM of Pipestone]
+extracted municipality [Municipality of Two Borders]
+
+
+Reston & District Library
+------------------------------------------
+added, id 405
+symbol is [MRP]
+	adding municipality [RM of Pipestone]:
+		municipality added, id 942
+		creating library/municipality relation
+	adding municipality [Municipality of Two Borders]:
+		municipality added, id 943
+		creating library/municipality relation
+	financials added, id 405
+
+	branch: Reston & District Library [MRP]
+		...found in s2lm at [RM of Pipestone]
+		...found municipality id: 109
+		...returning [803]
+	contact added, id 803
+	circulations added, id 803
+	collection added, id 803
+	hours added, id 803
+	technology added, id 803
+	activities added, id 803
+	ill added, id 803
+	ebook_circ added, id 803
+	social_media added, id 803
+	personnel added, id 803
+
+Extracting...
+
+
+Rossburn Regional
+------------------------------------------
+added, id 406
+symbol is [MRO]
+	financials added, id 406
+
+	loading parkland municipalities
+$VAR1 = undef;
+
+	lib id: 
+
+	branch: Rossburn Regional [MRO]
+		...found in s2lm at [Rossburn Municipality]
+		...found municipality id: 929
+		...returning [773]
+	contact added, id 804
+	circulations added, id 804
+	collection added, id 804
+	hours added, id 804
+	technology added, id 804
+	activities added, id 804
+	ill added, id 804
+	ebook_circ added, id 804
+	social_media added, id 804
+	personnel added, id 804
+
+Extracting...
+extracted municipality [Municipality of Russell-Binscarth]
+
+
+Russell & District Regional- Main
+------------------------------------------
+added, id 407
+symbol is [MRD]
+	adding municipality [Municipality of Russell-Binscarth]:
+		municipality added, id 944
+		creating library/municipality relation
+	financials added, id 407
+
+	branch: Russell & District Regional- Main [MRD]
+		...found in s2lm at [Municipality of Russell-Binscarth]
+		...found municipality id: 944
+		...returning [805]
+	contact added, id 805
+	circulations added, id 805
+	collection added, id 805
+	hours added, id 805
+	technology added, id 805
+	activities added, id 805
+	ill added, id 805
+	ebook_circ added, id 805
+	social_media added, id 805
+	personnel added, id 805
+
+	branch: Russell and District - Binscarth Branch [MBI]
+		...found in s2lm at [Municipality of Russell-Binscarth]
+		...found municipality id: 944
+		...returning [806]
+	contact added, id 806
+	circulations added, id 806
+	collection added, id 806
+	hours added, id 806
+	technology added, id 806
+	activities added, id 806
+	ill added, id 806
+	ebook_circ added, id 806
+	social_media added, id 806
+	personnel added, id 806
+
+Extracting...
+extracted municipality [Town of Snow Lake]
+
+
+Snow Lake Community
+------------------------------------------
+added, id 408
+symbol is [MSL]
+	adding municipality [Town of Snow Lake]:
+		municipality added, id 945
+		creating library/municipality relation
+	financials added, id 408
+
+	branch: Snow Lake Community [MSL]
+		...found in s2lm at [Town of Snow Lake]
+		...found municipality id: 116
+		...returning [807]
+	contact added, id 807
+	circulations added, id 807
+	collection added, id 807
+	hours added, id 807
+	technology added, id 807
+	activities added, id 807
+	ill added, id 807
+	ebook_circ added, id 807
+	social_media added, id 807
+	personnel added, id 807
+
+Extracting...
+extracted municipality [City of Winkler]
+extracted municipality [Municipality of Rhineland]
+extracted municipality [RM of Stanley]
+extracted municipality [RM of Thompson]
+extracted municipality [Town of Altona]
+extracted municipality [City of Morden]
+
+
+South Central Regional - Main
+------------------------------------------
+added, id 409
+symbol is [MWOWH]
+	adding municipality [City of Winkler]:
+		municipality added, id 946
+		creating library/municipality relation
+	adding municipality [Municipality of Rhineland]:
+		municipality added, id 947
+		creating library/municipality relation
+	adding municipality [RM of Stanley]:
+		municipality added, id 948
+		creating library/municipality relation
+	adding municipality [RM of Thompson]:
+		municipality added, id 949
+		creating library/municipality relation
+	adding municipality [Town of Altona]:
+		municipality added, id 950
+		creating library/municipality relation
+	adding municipality [City of Morden]:
+		municipality added, id 951
+		creating library/municipality relation
+	financials added, id 409
+
+	branch: South Central Regional - Main [MWOWH]
+		...found in s2lm at []
+		...returning [808]
+	contact added, id 808
+	circulations added, id 808
+	collection added, id 808
+	hours added, id 808
+	technology added, id 808
+	activities added, id 808
+	ill added, id 808
+	ebook_circ added, id 808
+	social_media added, id 808
+	personnel added, id 808
+
+	branch: South Central Regional - Altona Branch [MAOW]
+		...found in s2lm at [Town of Altona]
+		...found municipality id: 121
+		...returning [809]
+	contact added, id 809
+	circulations added, id 809
+	collection added, id 809
+	hours added, id 809
+	technology added, id 809
+	activities added, id 809
+	ill added, id 809
+	ebook_circ added, id 809
+	social_media added, id 809
+	personnel added, id 809
+
+	branch: Miami/Thompson Library [MMIOW]
+		...found in s2lm at [RM of Thompson]
+		...found municipality id: 120
+		...returning [810]
+	contact added, id 810
+	circulations added, id 810
+	collection added, id 810
+	hours added, id 810
+	technology added, id 810
+	activities added, id 810
+	ill added, id 810
+	ebook_circ added, id 810
+	social_media added, id 810
+	personnel added, id 810
+
+	branch: South Central Regional - Morden Branch [MMOW]
+		...found in s2lm at [City of Morden]
+		...found municipality id: 123
+		...returning [811]
+	contact added, id 811
+	circulations added, id 811
+	collection added, id 811
+	hours added, id 811
+	technology added, id 811
+	activities added, id 811
+	ill added, id 811
+	ebook_circ added, id 811
+	social_media added, id 811
+	personnel added, id 811
+
+	branch: South Central Regional - Winkler Branch [MWOW]
+		...found in s2lm at [City of Winkler]
+		...found municipality id: 117
+		...returning [812]
+	contact added, id 812
+	circulations added, id 812
+	collection added, id 812
+	hours added, id 812
+	technology added, id 812
+	activities added, id 812
+	ill added, id 812
+	ebook_circ added, id 812
+	social_media added, id 812
+	personnel added, id 812
+
+Extracting...
+extracted municipality [RM of Rockwood]
+extracted municipality [RM of Rosser]
+extracted municipality [Town of Stonewall]
+extracted municipality [Town of Teulon]
+
+
+South Interlake Regional - Main
+------------------------------------------
+added, id 410
+symbol is [MSTOS]
+	adding municipality [RM of Rockwood]:
+		municipality added, id 952
+		creating library/municipality relation
+	adding municipality [RM of Rosser]:
+		municipality added, id 953
+		creating library/municipality relation
+	adding municipality [Town of Stonewall]:
+		municipality added, id 954
+		creating library/municipality relation
+	adding municipality [Town of Teulon]:
+		municipality added, id 955
+		creating library/municipality relation
+	financials added, id 410
+
+	branch: Bookmobile [MSTOSBK]
+		...found in s2lm at []
+		...returning [813]
+	contact added, id 813
+	circulations added, id 813
+	collection added, id 813
+	hours added, id 813
+	technology added, id 813
+	activities added, id 813
+	ill added, id 813
+	ebook_circ added, id 813
+	social_media added, id 813
+	personnel added, id 813
+
+	branch: South Interlake Regional - Main [MSTOS]
+		...found in s2lm at [Town of Stonewall]
+		...found municipality id: 127
+		...returning [814]
+	contact added, id 814
+	circulations added, id 814
+	collection added, id 814
+	hours added, id 814
+	technology added, id 814
+	activities added, id 814
+	ill added, id 814
+	ebook_circ added, id 814
+	social_media added, id 814
+	personnel added, id 814
+
+	branch: South Interlake - Teulon Branch [MTSIR]
+		...found in s2lm at [Town of Teulon]
+		...found municipality id: 128
+		...returning [815]
+	contact added, id 815
+	circulations added, id 815
+	collection added, id 815
+	hours added, id 815
+	technology added, id 815
+	activities added, id 815
+	ill added, id 815
+	ebook_circ added, id 815
+	social_media added, id 815
+	personnel added, id 815
+
+Extracting...
+extracted municipality [Municipality of Two Borders]
+extracted municipality [Town of Melita]
+
+
+Southwestern Manitoba Regional - Main
+------------------------------------------
+added, id 411
+symbol is [MESM]
+	adding municipality [Municipality of Two Borders]:
+		municipality exists, id 943
+		creating library/municipality relation
+	adding municipality [Town of Melita]:
+		municipality added, id 956
+		creating library/municipality relation
+	financials added, id 411
+
+	branch: Southwestern Manitoba Regional - Main [MESM]
+		...found in s2lm at [Town of Melita]
+		...found municipality id: 131
+		...returning [816]
+	contact added, id 816
+	circulations added, id 816
+	collection added, id 816
+	hours added, id 816
+	technology added, id 816
+	activities added, id 816
+	ill added, id 816
+	ebook_circ added, id 816
+	social_media added, id 816
+	personnel added, id 816
+
+	branch: Southwestern Manitoba - Napinka Branch [MESMN]
+		...found in s2lm at [RM of Brenda-Waskada]
+		...found municipality id: 878
+		...returning [817]
+	contact added, id 817
+	circulations added, id 817
+	collection added, id 817
+	hours added, id 817
+	technology added, id 817
+	activities added, id 817
+	ill added, id 817
+	ebook_circ added, id 817
+	social_media added, id 817
+	personnel added, id 817
+
+	branch: Southwestern Manitoba - Pierson Branch [MESP]
+		...found in s2lm at [Municipality of Two Borders]
+		...found municipality id: 943
+		...returning [818]
+	contact added, id 818
+	circulations added, id 818
+	collection added, id 818
+	hours added, id 818
+	technology added, id 818
+	activities added, id 818
+	ill added, id 818
+	ebook_circ added, id 818
+	social_media added, id 818
+	personnel added, id 818
+
+Extracting...
+extracted municipality [RM of Springfield]
+
+
+Springfield Public Library
+------------------------------------------
+added, id 412
+symbol is [MDS]
+	adding municipality [RM of Springfield]:
+		municipality added, id 957
+		creating library/municipality relation
+	financials added, id 412
+
+	branch: Springfield Public Library [MDS]
+		...found in s2lm at [RM of Springfield]
+		...found municipality id: 132
+		...returning [819]
+	contact added, id 819
+	circulations added, id 819
+	collection added, id 819
+	hours added, id 819
+	technology added, id 819
+	activities added, id 819
+	ill added, id 819
+	ebook_circ added, id 819
+	social_media added, id 819
+	personnel added, id 819
+
+Extracting...
+extracted municipality [Municipality of Ste. Rose du Lac]
+
+
+Ste. Rose Regional Library
+------------------------------------------
+added, id 413
+symbol is [MSTR]
+	adding municipality [Municipality of Ste. Rose du Lac]:
+		municipality added, id 958
+		creating library/municipality relation
+	financials added, id 413
+extracted municipality [Municipality of Ste. Rose du Lac]
+
+	loading parkland municipalities
+$VAR1 = {
+          'is_northern' => 0,
+          'contribution_to' => '5840',
+          'year' => '2015',
+          'name' => 'Municipality of Ste. Rose du Lac',
+          'population' => 1794,
+          'contribution' => '43000',
+          'is_bilingual' => 1
+        };
+
+	lib id: 413
+	adding municipality [Municipality of Ste. Rose du Lac]:
+		municipality exists, id 958
+		creating library/municipality relation
+
+	branch: Ste. Rose Regional Library [MSTR]
+		...found in s2lm at [Municipality of Ste. Rose]
+		...returning [820]
+	contact added, id 820
+	circulations added, id 820
+	collection added, id 820
+	hours added, id 820
+	technology added, id 820
+	activities added, id 820
+	ill added, id 820
+	ebook_circ added, id 820
+	social_media added, id 820
+	personnel added, id 820
+
+Extracting...
+extracted municipality [RM of Kelsey]
+extracted municipality [Town of The Pas]
+
+
+The Pas Regional
+------------------------------------------
+added, id 414
+symbol is [MTP]
+	adding municipality [RM of Kelsey]:
+		municipality added, id 959
+		creating library/municipality relation
+	adding municipality [Town of The Pas]:
+		municipality added, id 960
+		creating library/municipality relation
+	financials added, id 414
+
+	branch: The Pas Regional [MTP]
+		...found in s2lm at [Town of The Pas]
+		...found municipality id: 136
+		...returning [821]
+	contact added, id 821
+	circulations added, id 821
+	collection added, id 821
+	hours added, id 821
+	technology added, id 821
+	activities added, id 821
+	ill added, id 821
+	ebook_circ added, id 821
+	social_media added, id 821
+	personnel added, id 821
+
+Extracting...
+extracted municipality [City of Thompson]
+
+
+Thompson Public
+------------------------------------------
+added, id 415
+symbol is [MTH]
+	adding municipality [City of Thompson]:
+		municipality added, id 961
+		creating library/municipality relation
+	financials added, id 415
+
+	branch: Thompson Public [MTH]
+		...found in s2lm at [City of Thompson]
+		...found municipality id: 137
+		...returning [822]
+	contact added, id 822
+	circulations added, id 822
+	collection added, id 822
+	hours added, id 822
+	technology added, id 822
+	activities added, id 822
+	ill added, id 822
+	ebook_circ added, id 822
+	social_media added, id 822
+	personnel added, id 822
+
+Extracting...
+extracted municipality [Chemawawin]
+
+
+UCN/Chemawawin Public Library
+------------------------------------------
+added, id 416
+symbol is [MEC]
+	adding municipality [Chemawawin]:
+		municipality added, id 962
+		creating library/municipality relation
+	financials added, id 416
+
+	branch: UCN/Chemawawin Public Library [MEC]
+		...found in s2lm at [Chemawawin]
+		...found municipality id: 138
+		...returning [823]
+	contact added, id 823
+	circulations added, id 823
+	collection added, id 823
+	hours added, id 823
+	technology added, id 823
+	activities added, id 823
+	ill added, id 823
+	ebook_circ added, id 823
+	social_media added, id 823
+
+Extracting...
+extracted municipality [Norway House]
+
+
+UCN/Norway House Public library
+------------------------------------------
+added, id 417
+symbol is [MNH]
+	adding municipality [Norway House]:
+		municipality added, id 963
+		creating library/municipality relation
+	financials added, id 417
+
+	branch: UCN/Norway House Public library [MNH]
+		...found in s2lm at [Norway House]
+		...found municipality id: 139
+		...returning [824]
+	contact added, id 824
+	circulations added, id 824
+	collection added, id 824
+	hours added, id 824
+	technology added, id 824
+	activities added, id 824
+	ill added, id 824
+	ebook_circ added, id 824
+	social_media added, id 824
+
+Extracting...
+extracted municipality [Pukatawagan]
+
+
+UCN/Pukatawagan Public Library
+------------------------------------------
+added, id 418
+symbol is [MPPL]
+	adding municipality [Pukatawagan]:
+		municipality added, id 964
+		creating library/municipality relation
+	financials added, id 418
+
+	branch: UCN/Pukatawagan Public Library [MPPL]
+		...found in s2lm at []
+		...returning [825]
+	contact added, id 825
+	circulations added, id 825
+	collection added, id 825
+	hours added, id 825
+	technology added, id 825
+	activities added, id 825
+	ill added, id 825
+	ebook_circ added, id 825
+	social_media added, id 825
+	personnel added, id 825
+
+Extracting...
+extracted municipality [RM of Morris]
+extracted municipality [Town of Morris]
+
+
+Valley Regional
+------------------------------------------
+added, id 419
+symbol is [MMVR]
+	adding municipality [RM of Morris]:
+		municipality added, id 965
+		creating library/municipality relation
+	adding municipality [Town of Morris]:
+		municipality added, id 966
+		creating library/municipality relation
+	financials added, id 419
+
+	branch: Valley Regional [MMVR]
+		...found in s2lm at [Town of Morris]
+		...found municipality id: 141
+		...returning [826]
+	contact added, id 826
+	circulations added, id 826
+	collection added, id 826
+	hours added, id 826
+	technology added, id 826
+	activities added, id 826
+	ill added, id 826
+	ebook_circ added, id 826
+	social_media added, id 826
+	personnel added, id 826
+
+Extracting...
+extracted municipality [RM of Victoria]
+
+
+Victoria Municipal
+------------------------------------------
+added, id 420
+symbol is [MHP]
+	adding municipality [RM of Victoria]:
+		municipality added, id 967
+		creating library/municipality relation
+	financials added, id 420
+
+	branch: Victoria Municipal [MHP]
+		...found in s2lm at [RM of Victoria]
+		...found municipality id: 142
+		...returning [827]
+	contact added, id 827
+	circulations added, id 827
+	collection added, id 827
+	hours added, id 827
+	technology added, id 827
+	activities added, id 827
+	ill added, id 827
+	ebook_circ added, id 827
+	social_media added, id 827
+	personnel added, id 827
+
+Extracting...
+extracted municipality [City of Brandon]
+extracted municipality [Municipality of Glenboro-South Cypress]
+extracted municipality [Municipality of Grassland]
+extracted municipality [Municipality of North Cypress-Langford]
+extracted municipality [Town of Carberry]
+extracted municipality [Town of Neepawa]
+
+
+Western Manitoba Regional Library - Main
+------------------------------------------
+added, id 421
+symbol is [MBW]
+	adding municipality [City of Brandon]:
+		municipality added, id 968
+		creating library/municipality relation
+	adding municipality [Municipality of Glenboro-South Cypress]:
+		municipality added, id 969
+		creating library/municipality relation
+	adding municipality [Municipality of Grassland]:
+		municipality added, id 970
+		creating library/municipality relation
+	adding municipality [Municipality of North Cypress-Langford]:
+		municipality added, id 971
+		creating library/municipality relation
+	adding municipality [Town of Carberry]:
+		municipality added, id 972
+		creating library/municipality relation
+	adding municipality [Town of Neepawa]:
+		municipality added, id 973
+		creating library/municipality relation
+	financials added, id 421
+
+	branch: Western Manitoba Regional Library - Main [MBW]
+		...found in s2lm at [City of Brandon]
+		...found municipality id: 143
+		...returning [828]
+	contact added, id 828
+	circulations added, id 828
+	collection added, id 828
+	hours added, id 828
+	technology added, id 828
+	activities added, id 828
+	ill added, id 828
+	ebook_circ added, id 828
+	social_media added, id 828
+	personnel added, id 828
+
+	branch: Western Manitoba - Carberry/North Cypress Branch [MCNC]
+		...found in s2lm at [Town of Carberry]
+		...found municipality id: 148
+		...returning [829]
+	contact added, id 829
+	circulations added, id 829
+	collection added, id 829
+	hours added, id 829
+	technology added, id 829
+	activities added, id 829
+	ill added, id 829
+	ebook_circ added, id 829
+	social_media added, id 829
+	personnel added, id 829
+
+	branch: Western Manitoba - Glenboro/South Cypress Branch [MGW]
+		...found in s2lm at [Municipality of Glenboro-South Cypress]
+		...found municipality id: 969
+		...returning [830]
+	contact added, id 830
+	circulations added, id 830
+	collection added, id 830
+	hours added, id 830
+	technology added, id 830
+	activities added, id 830
+	ill added, id 830
+	ebook_circ added, id 830
+	social_media added, id 830
+	personnel added, id 830
+
+	branch: Western Manitoba - Hartney Cameron Branch [MHW]
+		...found in s2lm at [Municipality of Grassland]
+		...found municipality id: 970
+		...returning [831]
+	contact added, id 831
+	circulations added, id 831
+	collection added, id 831
+	hours added, id 831
+	technology added, id 831
+	activities added, id 831
+	ill added, id 831
+	ebook_circ added, id 831
+	social_media added, id 831
+	personnel added, id 831
+
+	branch: Western Manitoba - Neepawa Branch [MNW]
+		...found in s2lm at [Town of Neepawa]
+		...found municipality id: 150
+		...returning [832]
+	contact added, id 832
+	circulations added, id 832
+	collection added, id 832
+	hours added, id 832
+	technology added, id 832
+	activities added, id 832
+	ill added, id 832
+	ebook_circ added, id 832
+	social_media added, id 832
+	personnel added, id 832
+
+Extracting...
+extracted municipality [Winnipeg]
+
+
+Winnipeg Public Library
+------------------------------------------
+added, id 422
+symbol is [MW]
+	adding municipality [Winnipeg]:
+		municipality added, id 974
+		creating library/municipality relation
+	financials added, id 422
+
+	branch: Millenium Library [MWMI]
+		...found in s2lm at [City of Winnipeg]
+		...found municipality id: 152
+		...returning [833]
+	contact added, id 833
+	circulations added, id 833
+	collection added, id 833
+	hours added, id 833
+	technology added, id 833
+	activities added, id 833
+	ill added, id 833
+	ebook_circ added, id 833
+	social_media added, id 833
+	personnel added, id 833
+
+	branch: Charleswood Branch [MWCH]
+		...found in s2lm at [City of Winnipeg]
+		...found municipality id: 152
+		...returning [834]
+	contact added, id 834
+	circulations added, id 834
+	collection added, id 834
+	hours added, id 834
+	technology added, id 834
+	activities added, id 834
+	ill added, id 834
+	ebook_circ added, id 834
+	social_media added, id 834
+	personnel added, id 834
+
+	branch: Cornish Branch [MWCO]
+		...found in s2lm at [City of Winnipeg]
+		...found municipality id: 152
+		...returning [835]
+	contact added, id 835
+	circulations added, id 835
+	collection added, id 835
+	hours added, id 835
+	technology added, id 835
+	activities added, id 835
+	ill added, id 835
+	ebook_circ added, id 835
+	social_media added, id 835
+	personnel added, id 835
+
+	branch: Fort Garry Branch [MWFG]
+		...found in s2lm at [City of Winnipeg]
+		...found municipality id: 152
+		...returning [836]
+	contact added, id 836
+	circulations added, id 836
+	collection added, id 836
+	hours added, id 836
+	technology added, id 836
+	activities added, id 836
+	ill added, id 836
+	ebook_circ added, id 836
+	social_media added, id 836
+	personnel added, id 836
+
+	branch: Henderson Branch [MWHE]
+		...found in s2lm at [City of Winnipeg]
+		...found municipality id: 152
+		...returning [837]
+	contact added, id 837
+	circulations added, id 837
+	collection added, id 837
+	hours added, id 837
+	technology added, id 837
+	activities added, id 837
+	ill added, id 837
+	ebook_circ added, id 837
+	social_media added, id 837
+	personnel added, id 837
+
+	branch: Louis Riel Branch [MWLR]
+		...found in s2lm at [City of Winnipeg]
+		...found municipality id: 152
+		...returning [838]
+	contact added, id 838
+	circulations added, id 838
+	collection added, id 838
+	hours added, id 838
+	technology added, id 838
+	activities added, id 838
+	ill added, id 838
+	ebook_circ added, id 838
+	social_media added, id 838
+	personnel added, id 838
+
+	branch: Munroe Branch [MWMU]
+		...found in s2lm at [City of Winnipeg]
+		...found municipality id: 152
+		...returning [839]
+	contact added, id 839
+	circulations added, id 839
+	collection added, id 839
+	hours added, id 839
+	technology added, id 839
+	activities added, id 839
+	ill added, id 839
+	ebook_circ added, id 839
+	social_media added, id 839
+	personnel added, id 839
+
+	branch: Pembina Trail Branch [MWPT]
+		...found in s2lm at [City of Winnipeg]
+		...found municipality id: 152
+		...returning [840]
+	contact added, id 840
+	circulations added, id 840
+	collection added, id 840
+	hours added, id 840
+	technology added, id 840
+	activities added, id 840
+	ill added, id 840
+	ebook_circ added, id 840
+	social_media added, id 840
+	personnel added, id 840
+
+	branch: Osborne Branch [MWOS]
+		...found in s2lm at [City of Winnipeg]
+		...found municipality id: 152
+		...returning [841]
+	contact added, id 841
+	circulations added, id 841
+	collection added, id 841
+	hours added, id 841
+	technology added, id 841
+	activities added, id 841
+	ill added, id 841
+	ebook_circ added, id 841
+	social_media added, id 841
+	personnel added, id 841
+
+	branch: Winnipeg Public Library [MW]
+		...found in s2lm at []
+		...returning [842]
+	contact added, id 842
+	circulations added, id 842
+	collection added, id 842
+	hours added, id 842
+	technology added, id 842
+	activities added, id 842
+	ill added, id 842
+	ebook_circ added, id 842
+	social_media added, id 842
+	personnel added, id 842
+
+	branch: River Heights Branch [MWRH]
+		...found in s2lm at [City of Winnipeg]
+		...found municipality id: 152
+		...returning [843]
+	contact added, id 843
+	circulations added, id 843
+	collection added, id 843
+	hours added, id 843
+	technology added, id 843
+	activities added, id 843
+	ill added, id 843
+	ebook_circ added, id 843
+	social_media added, id 843
+	personnel added, id 843
+
+	branch: Sir William Stephenson Branch [MWWS]
+		...found in s2lm at [City of Winnipeg]
+		...found municipality id: 152
+		...returning [844]
+	contact added, id 844
+	circulations added, id 844
+	collection added, id 844
+	hours added, id 844
+	technology added, id 844
+	activities added, id 844
+	ill added, id 844
+	ebook_circ added, id 844
+	social_media added, id 844
+	personnel added, id 844
+
+	branch: St. Boniface Branch [MWSB]
+		...found in s2lm at [City of Winnipeg]
+		...found municipality id: 152
+		...returning [845]
+	contact added, id 845
+	circulations added, id 845
+	collection added, id 845
+	hours added, id 845
+	technology added, id 845
+	activities added, id 845
+	ill added, id 845
+	ebook_circ added, id 845
+	social_media added, id 845
+	personnel added, id 845
+
+	branch: St. James-Assiniboia Branch [MWSJA]
+		...found in s2lm at [City of Winnipeg]
+		...found municipality id: 152
+		...returning [846]
+	contact added, id 846
+	circulations added, id 846
+	collection added, id 846
+	hours added, id 846
+	technology added, id 846
+	activities added, id 846
+	ill added, id 846
+	ebook_circ added, id 846
+	social_media added, id 846
+	personnel added, id 846
+
+	branch: St. John's Branch [MWSJ]
+		...found in s2lm at [City of Winnipeg]
+		...found municipality id: 152
+		...returning [847]
+	contact added, id 847
+	circulations added, id 847
+	collection added, id 847
+	hours added, id 847
+	technology added, id 847
+	activities added, id 847
+	ill added, id 847
+	ebook_circ added, id 847
+	social_media added, id 847
+	personnel added, id 847
+
+	branch: St. Vital Branch [MWSV]
+		...found in s2lm at [City of Winnipeg]
+		...found municipality id: 152
+		...returning [848]
+	contact added, id 848
+	circulations added, id 848
+	collection added, id 848
+	hours added, id 848
+	technology added, id 848
+	activities added, id 848
+	ill added, id 848
+	ebook_circ added, id 848
+	social_media added, id 848
+	personnel added, id 848
+
+	branch: Transcona Branch [MWTR]
+		...found in s2lm at [City of Winnipeg]
+		...found municipality id: 152
+		...returning [849]
+	contact added, id 849
+	circulations added, id 849
+	collection added, id 849
+	hours added, id 849
+	technology added, id 849
+	activities added, id 849
+	ill added, id 849
+	ebook_circ added, id 849
+	social_media added, id 849
+	personnel added, id 849
+
+	branch: West End Branch [MWWE]
+		...found in s2lm at [City of Winnipeg]
+		...found municipality id: 152
+		...returning [850]
+	contact added, id 850
+	circulations added, id 850
+	collection added, id 850
+	hours added, id 850
+	technology added, id 850
+	activities added, id 850
+	ill added, id 850
+	ebook_circ added, id 850
+	social_media added, id 850
+	personnel added, id 850
+
+	branch: West Kildonan Branch [MWWK]
+		...found in s2lm at [City of Winnipeg]
+		...found municipality id: 152
+		...returning [851]
+	contact added, id 851
+	circulations added, id 851
+	collection added, id 851
+	hours added, id 851
+	technology added, id 851
+	activities added, id 851
+	ill added, id 851
+	ebook_circ added, id 851
+	social_media added, id 851
+	personnel added, id 851
+
+	branch: Westwood Branch [MWWW]
+		...found in s2lm at [City of Winnipeg]
+		...found municipality id: 152
+		...returning [852]
+	contact added, id 852
+	circulations added, id 852
+	collection added, id 852
+	hours added, id 852
+	technology added, id 852
+	activities added, id 852
+	ill added, id 852
+	ebook_circ added, id 852
+	social_media added, id 852
+	personnel added, id 852
+
+	branch: Windsor Park Branch [MWWP]
+		...found in s2lm at [City of Winnipeg]
+		...found municipality id: 152
+		...returning [853]
+	contact added, id 853
+	circulations added, id 853
+	collection added, id 853
+	hours added, id 853
+	technology added, id 853
+	activities added, id 853
+	ill added, id 853
+	ebook_circ added, id 853
+	social_media added, id 853
+	personnel added, id 853

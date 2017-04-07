@@ -60,6 +60,14 @@ sub GET {
 	}
 	push @{ $topic->{'details'} }, $cen;
     }
+
+    # Ok... the mun_geo table holds all of the geo_municipality_gid entries for a given municipality (there may be more than one, due to amalgamation)
+    # We need to pull the geom data (and maybe some other stuff, for labels and such) for each, and then
+    # draw it on the map (in a highlight color)
+    #
+    # It would be cool to also have a second map, zoomed in to the municipalities neighbouring this one, which shows
+    # the municipal boundaries AND the road network....
+
     
     $dbh->disconnect;
     

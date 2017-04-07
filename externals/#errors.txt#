@@ -1,0 +1,32 @@
+	*** invalid : Parkland Regional - Bookmobile, MDPBK, 
+	*** invalid : Parkland Regional Library, MDP, 
+	*** invalid : Parkland Regional - Birch River Branch, MDPBR, RM of Mountain
+	*** invalid : Parkland Regional - Birtle Branch, MDPBI, Town of Birtle
+	*** invalid : Parkland Regional - Bowsman Branch, MDPBO, Village of Bowsman
+	*** invalid : Dauphin Public Library, MDA, City of Dauphin
+	*** invalid : Parkland Regional - Erickson Branch, MDPER, Town of Erickson
+	*** invalid : Parkland Regional - Foxwarren Branch, MDPFO, RM of Birtle
+	*** invalid : Parkland Regional - Gilbert Plains Branch, MDPGP, Town of Gilbert Plains
+	*** invalid : Parkland Regional - Gladstone Branch, MDPGL, Town of Gladstone
+	*** invalid : Parkland Regional - Grandview Branch, MDPGV, Town of Grandview
+	*** invalid : Parkland Regional - Hamiota Branch, MDPHA, Town of Hamiota
+	*** invalid : Parkland Regional - Langruth Branch, MDPLA, RM of Lakeview
+	*** invalid : Parkland Regional - McCreary Branch, MDPMC, Village of McCreary
+	*** invalid : Parkland Regional - Minitonas Branch, MDPMI, Town of Minitonas
+	*** invalid : Parkland Regional - Ochre River Branch, MDPOR, RM of Ochre River
+	*** invalid : Parkland Regional - Roblin Branch, MDPRO, Town of Roblin
+	*** invalid : Parkland Regional - St. Lazare Branch, MDPSLA, Village of St. Lazare
+	*** invalid : Parkland Regional - Shoal Lake Branch, MDPSL, RM of Shoal Lake
+	*** invalid : Parkland Regional - Siglunes Branch, MDPSI, RM of Siglunes
+	*** invalid : Parkland Regional - Strathclair Branch, MDPST, RM of Strathclair
+	*** invalid : Parkland Regional - Winnipegosis Branch, MDPWP, Village of Winnipegosis
+	*** invalid : Prairie Crocus Regional Library, MRIP, Riverdale Municipality
+	*** invalid : South Central Regional - Main, MWOWH, 
+Wide character in print at ./rld-load-year.pl line 1252.
+Wide character in print at ./rld-load-year.pl line 1267.
+	*** invalid : South Interlake – Bookmobile, MSTOSBK, 
+	*** invalid : Ste. Rose Regional Library, MSTR, Town of Ste.Rose du Lac
+insert into personnel aborted because DBD::Pg::db do failed: ERROR:  invalid input syntax for integer: "0.3" at ./rld-load-year.pl line 1596.
+insert into personnel aborted because DBD::Pg::db do failed: ERROR:  invalid input syntax for integer: "0.2" at ./rld-load-year.pl line 1596.
+	*** invalid : Victoria Municipal, , 
+	*** invalid : Winnipeg Public Library, MW, 

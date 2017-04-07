@@ -1,0 +1,49 @@
+After installing postgis:
+
+$ sudo su -
+# su - postgres
+$ psql
+
+# \connect olli
+olli=# CREATE EXTENSION postgis;
+olli=# CREATE EXTENSION fuzzystrmatch;
+olli=# grant all on geometry_columns to olli;
+olli=# grant all on geography_columns to olli;
+olli=# grant all on raster_columns to olli;
+olli=# grant all on raster_overviews to olli;
+olli=# grant all on spatial_ref_sys to olli;
+
+Get back to being yourself, get into psql as olli, and:
+olli=> select postgis_full_version();
+...to verify that olli has access to postgis functions.
+
+You NEED to do this:
+olli=> INSERT into spatial_ref_sys (srid, auth_name, auth_srid, proj4text, srtext) values ( 97082, 'sr-org', 7082, '+proj=longlat +ellps=GRS80 +no_defs ', 'GEOGCS["GCS_North_American_1983_CSRS98",DATUM["D_North_American_1983_CSRS98",SPHEROID["GRS_1980",6378137,298.257222101]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199432955]]');
+
+...from http://spatialreference.org/ref/sr-org/7082/, PostGIS spatial ref sys INSERT statement.  This corresponds to the shapefile .prj data for muni_mb_gdf8_shp_eng
+
+You can later get the srid by:
+select srid, srtext, proj4text from spatial_ref_sys where srtext ILIKE '%GCS_North_American_1983_CSRS98%';
+
+
+Import GIS data from shapefiles:
+--------------------------------
+
+$ shp2pgsql-gui
+
+See the tutorial at http://www.bostongis.com/?content_name=postgis_tut01
+
+I typically rename the tables (click on the table name in the gui) to start with "geo_", and make the rest something simple.
+
+So:
+muni_mb_gdf8_shp_eng  =>  geo_municipality_boundaries
+manitoba_administrative  => geo_manitoba_boundary
+simple_lakes_and_water  =>  geo_simple_lakes_and_water
+manitoba_highway  =>  geo_manitoba_highway
+
+Then you can do things like:
+olli=> select ST_Extent(geom) from geo_manitoba_boundary;
+or
+olli=> SELECT ST_Area(ST_Union(geom)) FROM geo_municipality_boundaries where commoname1='Ethelbert';
+
+QGIS can access postgresql tables....

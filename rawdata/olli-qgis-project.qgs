@@ -9,7 +9,7 @@
     <layer-tree-layer expanded="1" checked="Qt::Checked" id="manitoba_administrative20170225175808156" name="manitoba_administrative">
       <customproperties/>
     </layer-tree-layer>
-    <layer-tree-layer expanded="1" checked="Qt::Checked" id="AL_TA_MB_2_82_CONFIRMED_eng20170225183131061" name="AL_TA_MB_2_82_CONFIRMED_eng">
+    <layer-tree-layer expanded="1" checked="Qt::Unchecked" id="AL_TA_MB_2_82_CONFIRMED_eng20170225183131061" name="AL_TA_MB_2_82_CONFIRMED_eng">
       <customproperties/>
     </layer-tree-layer>
     <layer-tree-layer expanded="1" checked="Qt::Checked" id="manitoba_coastline20170225182454954" name="manitoba_coastline">
@@ -58,10 +58,12 @@
       <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:4326" srcDatumTransform="-1" destDatumTransform="-1" layerid="manitoba_natural20170225180925894"/>
       <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:4140" srcDatumTransform="-1" destDatumTransform="-1" layerid="AL_TA_MB_2_82_CONFIRMED_eng20170225183131061"/>
       <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:3347" srcDatumTransform="-1" destDatumTransform="-1" layerid="PD_A20170225184002135"/>
+      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:4140" srcDatumTransform="-1" destDatumTransform="-1" layerid="Output_layer_with_selected_features20170226103404998"/>
       <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:4326" srcDatumTransform="-1" destDatumTransform="-1" layerid="manitoba_administrative20170225175808156"/>
       <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:4326" srcDatumTransform="-1" destDatumTransform="-1" layerid="manitoba_highway20170225180919206"/>
       <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:4326" srcDatumTransform="-1" destDatumTransform="-1" layerid="manitoba_water20170225180952959"/>
       <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:4267" srcDatumTransform="-1" destDatumTransform="-1" layerid="simple_lakes_and_water20170225191607051"/>
+      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:4140" srcDatumTransform="-1" destDatumTransform="-1" layerid="Output_layer_with_selected_features20170226103808104"/>
       <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:4326" srcDatumTransform="-1" destDatumTransform="-1" layerid="manitoba_poi20170225180948349"/>
     </layer_coordinate_transform_info>
   </mapcanvas>
@@ -89,9 +91,9 @@
         <legendlayerfile isInOverview="0" layerid="manitoba_administrative20170225175808156" visible="1"/>
       </filegroup>
     </legendlayer>
-    <legendlayer drawingOrder="-1" open="true" checked="Qt::Checked" name="AL_TA_MB_2_82_CONFIRMED_eng" showFeatureCount="0">
+    <legendlayer drawingOrder="-1" open="true" checked="Qt::Unchecked" name="AL_TA_MB_2_82_CONFIRMED_eng" showFeatureCount="0">
       <filegroup open="true" hidden="false">
-        <legendlayerfile isInOverview="0" layerid="AL_TA_MB_2_82_CONFIRMED_eng20170225183131061" visible="1"/>
+        <legendlayerfile isInOverview="0" layerid="AL_TA_MB_2_82_CONFIRMED_eng20170225183131061" visible="0"/>
       </filegroup>
     </legendlayer>
     <legendlayer drawingOrder="-1" open="true" checked="Qt::Checked" name="manitoba_coastline" showFeatureCount="0">
@@ -2137,10 +2139,10 @@
         <multilineenabled fieldname="" on=""/>
         <selectedonly on=""/>
       </labelattributes>
-      <editform></editform>
+      <editform>.</editform>
       <editforminit/>
       <featformsuppress>0</featformsuppress>
-      <annotationform></annotationform>
+      <annotationform>.</annotationform>
       <editorlayout>generatedlayout</editorlayout>
       <excludeAttributesWMS/>
       <excludeAttributesWFS/>

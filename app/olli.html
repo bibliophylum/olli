@@ -29,6 +29,9 @@
     <script src="/controllers/BranchController.js"></script>
 
     <script src="/geo/geoMunData.js"></script> <!-- defines geoMunData -->
+    <script src="/geo/geoProvBoundary.js"></script>
+    <script src="/geo/geoSimpleWater.js"></script>
+<!--    <script src="/geo/geoRoads.js"></script>
 <!--    <script src="/geo/justPortage.js"></script> <!-- defines geoMunData -->
     <script src="/js/olliMap.js"></script> <!-- configure leaflet map -->
 
@@ -55,10 +58,14 @@
       
     </div> <!-- main -->
 
-    <div id="mapid"></div>
-    
-    <!-- placeholder for views -->
-    <div ng-view></div>
+    <div id="leftpane">
+      <div id="mapid"></div>
+    </div>
+
+    <div id="rightpane">
+      <!-- placeholder for views -->
+      <div ng-view></div>
+    </div>
     
   </body>
 </html>

@@ -1,0 +1,30 @@
+		*** invalid municipality: Parkland Regional - Bookmobile, MDPBK, 
+>>>>MDP, Parkland Regional Library<<<<
+		*** invalid municipality: Parkland Regional Library, MDP, 
+>>>>MDPBR, Parkland Regional Library<<<<
+>>>>MDPBI, Parkland Regional Library<<<<
+>>>>MDPBO, Parkland Regional Library<<<<
+>>>>MDA, Parkland Regional Library<<<<
+>>>>MDPER, Parkland Regional Library<<<<
+>>>>MDPFO, Parkland Regional Library<<<<
+>>>>MDPGP, Parkland Regional Library<<<<
+>>>>MDPGL, Parkland Regional Library<<<<
+>>>>MDPGV, Parkland Regional Library<<<<
+>>>>MDPHA, Parkland Regional Library<<<<
+>>>>MDPLA, Parkland Regional Library<<<<
+>>>>MDPMC, Parkland Regional Library<<<<
+>>>>MDPMI, Parkland Regional Library<<<<
+>>>>MDPOR, Parkland Regional Library<<<<
+>>>>MDPRO, Parkland Regional Library<<<<
+>>>>MDPSLA, Parkland Regional Library<<<<
+>>>>MDPSL, Parkland Regional Library<<<<
+>>>>MDPSI, Parkland Regional Library<<<<
+>>>>MDPST, Parkland Regional Library<<<<
+>>>>MDPWP, Parkland Regional Library<<<<
+		*** invalid municipality: South Central Regional - Main, MWOWH, 
+		*** invalid municipality: South Interlake – Bookmobile, MSTOSBK, 
+	insert into personnel aborted because DBD::Pg::db do failed: ERROR:  invalid input syntax for integer: "0.3" at ./rld-load-year.pl line 1644.
+, trying minimal at ./rld-load-year.pl line 1649.
+	insert into personnel aborted because DBD::Pg::db do failed: ERROR:  invalid input syntax for integer: "0.2" at ./rld-load-year.pl line 1644.
+, trying minimal at ./rld-load-year.pl line 1649.
+		*** invalid municipality: Winnipeg Public Library, MW, 

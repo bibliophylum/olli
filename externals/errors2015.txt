@@ -1,0 +1,189 @@
+		*** invalid municipality: Lorne Library Services, MLLS, 
+>>>>MRO, Parkland Regional Library<<<<
+		*** invalid municipality: Parkland Regional - Bookmobile, MNDPBK, 
+>>>>MDP, Parkland Regional Library<<<<
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 912) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x24d23e0)) called at ./rld-load-year.pl line 674
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 873) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x24d23e0)) called at ./rld-load-year.pl line 674
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 913) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x24d23e0)) called at ./rld-load-year.pl line 674
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 914) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x24d23e0)) called at ./rld-load-year.pl line 674
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 915) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x24d23e0)) called at ./rld-load-year.pl line 674
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 916) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x24d23e0)) called at ./rld-load-year.pl line 674
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 917) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x24d23e0)) called at ./rld-load-year.pl line 674
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 918) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x24d23e0)) called at ./rld-load-year.pl line 674
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 919) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x24d23e0)) called at ./rld-load-year.pl line 674
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 920) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x24d23e0)) called at ./rld-load-year.pl line 674
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 921) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x24d23e0)) called at ./rld-load-year.pl line 674
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 922) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x24d23e0)) called at ./rld-load-year.pl line 674
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 923) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x24d23e0)) called at ./rld-load-year.pl line 674
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 884) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x24d23e0)) called at ./rld-load-year.pl line 674
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 924) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x24d23e0)) called at ./rld-load-year.pl line 674
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 925) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x24d23e0)) called at ./rld-load-year.pl line 674
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 926) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x24d23e0)) called at ./rld-load-year.pl line 674
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 927) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x24d23e0)) called at ./rld-load-year.pl line 674
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 928) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x24d23e0)) called at ./rld-load-year.pl line 674
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 929) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x24d23e0)) called at ./rld-load-year.pl line 674
+		*** invalid municipality: Parkland Regional Library, MDP, 
+>>>>MDPBR, Parkland Regional Library<<<<
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 928) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x201b1c8)) called at ./rld-load-year.pl line 674
+>>>>MDPBI, Parkland Regional Library<<<<
+>>>>MDPBO, Parkland Regional Library<<<<
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 919) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x2d08960)) called at ./rld-load-year.pl line 674
+>>>>MDA, Parkland Regional Library<<<<
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 925) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x2d08c78)) called at ./rld-load-year.pl line 674
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 926) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x2d08c78)) called at ./rld-load-year.pl line 674
+>>>>MDPER, Parkland Regional Library<<<<
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 912) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x2cfdf88)) called at ./rld-load-year.pl line 674
+>>>>MDPFO, Parkland Regional Library<<<<
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 922) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x2d0fcf8)) called at ./rld-load-year.pl line 674
+>>>>MDPGP, Parkland Regional Library<<<<
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 913) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x2d096b0)) called at ./rld-load-year.pl line 674
+>>>>MDPGL, Parkland Regional Library<<<<
+>>>>MDPGV, Parkland Regional Library<<<<
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 914) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x2d104c0)) called at ./rld-load-year.pl line 674
+>>>>MDPHA, Parkland Regional Library<<<<
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 915) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x2d0fe18)) called at ./rld-load-year.pl line 674
+>>>>MDPLA, Parkland Regional Library<<<<
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 931) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x2d08df8)) called at ./rld-load-year.pl line 674
+>>>>MDPMC, Parkland Regional Library<<<<
+>>>>MDPMI, Parkland Regional Library<<<<
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 919) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x24d2560)) called at ./rld-load-year.pl line 674
+>>>>MDPOR, Parkland Regional Library<<<<
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 917) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x2d0fff8)) called at ./rld-load-year.pl line 674
+>>>>MDPRO, Parkland Regional Library<<<<
+>>>>MDPSLA, Parkland Regional Library<<<<
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 873) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x2d08858)) called at ./rld-load-year.pl line 674
+		*** invalid municipality: Parkland Regional - St. Lazare Branch, MDPSLA, RM of Ellice-Archie
+>>>>MDPSL, Parkland Regional Library<<<<
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 924) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x2d10070)) called at ./rld-load-year.pl line 674
+>>>>MDPSI, Parkland Regional Library<<<<
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 927) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x2cf3108)) called at ./rld-load-year.pl line 674
+>>>>MDPST, Parkland Regional Library<<<<
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 924) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x2d0fe18)) called at ./rld-load-year.pl line 674
+>>>>MDPWP, Parkland Regional Library<<<<
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(397, 920) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x2d09338)) called at ./rld-load-year.pl line 674
+>>>>MRO, Parkland Regional Library<<<<
+		*** invalid municipality: South Central Regional - Main, MWOWH, 
+		*** invalid municipality: Bookmobile, MSTOSBK, 
+>>>>MSTR, Parkland Regional Library<<<<
+		insert into libmun aborted because DBD::Pg::db do failed: ERROR:  duplicate key value violates unique constraint "libmun_pkey"
+DETAIL:  Key (library_id, municipality_id)=(413, 958) already exists. at ./rld-load-year.pl line 1277.
+could not create library/municipality relation at ./rld-load-year.pl line 1175.
+	main::load_parkland_municipalities(ARRAY(0x2d0fc68)) called at ./rld-load-year.pl line 674
+		*** invalid municipality: Ste. Rose Regional Library, MSTR, Municipality of Ste. Rose
+	insert into personnel aborted because DBD::Pg::db do failed: ERROR:  invalid input syntax for integer: "0.2" at ./rld-load-year.pl line 1681.
+, trying minimal at ./rld-load-year.pl line 1686.
+	insert into personnel aborted because DBD::Pg::db do failed: ERROR:  invalid input syntax for integer: "0.2" at ./rld-load-year.pl line 1681.
+, trying minimal at ./rld-load-year.pl line 1686.
+		*** invalid municipality: UCN/Pukatawagan Public Library, MPPL, 
+		*** invalid municipality: Winnipeg Public Library, MW, 
