@@ -26,6 +26,16 @@ Three components:
 
 Development notes
 =================
+
+Local host name for development
+-------------------------------
+In your /etc/hosts, set up a line for your (local) host.  Eg:
+127.0.0.1	    saiph.gotdns.org
+
+Then edit the project directory's conf/olli.conf to match:
+ServerName saiph.gotdns.org
+
+
 REST api
 --------
 Install libapreq (apache2 module) using muon or apt-get
