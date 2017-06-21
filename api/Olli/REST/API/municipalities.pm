@@ -21,7 +21,18 @@ sub GET {
     
     $dbh->do("SET TIMEZONE='America/Winnipeg'");
 
-    my $SQL = "select id, year, name, population, case when is_bilingual then 'bilingual' else '' end as is_bilingual, case when is_northern then 'northern' else '' end as is_northern from municipalities order by year, name";
+    my $SQL = "select id, year, name, population, case
+	when is_bilingual
+		then 'bilingual'
+	else
+		''
+	end as is_bilingual, case
+	when is_northern
+		then 'northern'
+	else
+		''
+	end as is_northern from municipalities
+	order by year, name";
     my $aref = $dbh->selectall_arrayref($SQL, { Slice => {} });
     $dbh->disconnect;
     
