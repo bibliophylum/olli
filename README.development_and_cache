@@ -1,0 +1,6 @@
+NOTE:
+
+When doing development, changes to views/partials may not be shown when you view the page.
+Your browser is likely caching the old version.
+
+In chrome, open the dev tools (CTRL-SHIFT-I), find the Network tab, and check the "Disable cache" box.

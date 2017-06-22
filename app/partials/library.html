@@ -107,7 +107,7 @@
       </div>
     </div>
 
-    <div class="col-md-3">
+    <div class="col-md-4">
       <div id="contributors">
 	<h2>Contributors</h2>
 	<table border="1" cellpadding="10">
@@ -116,6 +116,7 @@
 	      <th>ID</th>
 	      <th>Municipality</th>
 	      <th>Contribution</th>
+	      <th>Per capita</th>
 	    </tr>
 	  </thead>
 	  <tbody>
@@ -123,6 +124,7 @@
 	      <td>{{ contrib.id }}</td>
 	      <td><a href="/municipalities/{{ contrib.id }}">{{ contrib.name }}</a></td>
 	      <td>{{ contrib.contribution }}</td>
+	      <td>{{ contrib.percapita }}</td>
 	    </tr>
 	  </tbody>
 	</table>
