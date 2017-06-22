@@ -1,4 +1,5 @@
-#Installs required 
+#Installs needed prerequisites
+#Installs apache2
 
 echo Updating repositories...
 sudo apt -qq update
@@ -22,14 +23,10 @@ done
 OrigDir=$PWD
 cd $apache2DownDir
 
-
-#/home/itinerant/Downloads/httpd-2.4.25
-echo Configuring, compiling, and installing Apache
+printf "\nConfiguring, compiling, and installing Apache...\n"
 sudo ./configure -q
 sudo make -s
 sudo make -s install
-
-#sleep 2
 
 sudo apt -qq install libapache2-mod-perl2
 
