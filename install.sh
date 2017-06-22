@@ -16,7 +16,10 @@ echo Creating new /opt/olli...
 sudo mkdir /opt/olli
 
 echo Changing ownership...
-sudo chown itinerant:itinerant /opt/olli
+echo Enter username: 
+read username
+#sudo chown david:david /opt/olli
+sudo chown $username:$username /opt/olli
 
 echo Copying from dev...
 cp -R app /opt/olli/app
@@ -45,6 +48,10 @@ sudo ln -s /opt/olli/conf/olli.conf /etc/apache2/sites-available/olli.conf
 
 echo Enabling site...
 sudo a2ensite olli.conf
+
+echo Enabling reverse proxy...
+sudo a2enmod proxy_http
+
 echo Reloading apache...
 sudo /etc/init.d/apache2 reload
 #sudo service apache2 reload
