@@ -27,7 +27,7 @@ sub GET {
 
     # Municipalities contributing to this library
     my $muns_aref = $dbh->selectall_arrayref(
-        "select m.id, m.name, lm.contribution from libmun lm left join municipalities m on m.id=lm.municipality_id where lm.library_id=?",
+        "select m.id, m.name, lm.contribution, lm.contribution / m.population as percapita from libmun lm left join municipalities m on m.id=lm.municipality_id where lm.library_id=?",
         { Slice => {} },
         $self->libid()
         );
