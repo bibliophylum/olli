@@ -52,6 +52,9 @@ sudo a2ensite olli.conf
 echo Enabling reverse proxy...
 sudo a2enmod proxy_http
 
+echo Enabling rewrite...
+sudo a2enmod rewrite
+
 echo Reloading apache...
 sudo /etc/init.d/apache2 reload
 #sudo service apache2 reload
