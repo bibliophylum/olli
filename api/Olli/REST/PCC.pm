@@ -37,6 +37,13 @@
 			- Filtering on year has been disabled, must be handled correctly (not all tables have a year field).
 			- Not all fields of all tables are seen, later versions will process all.
 			- Must handle some special cases with greater elegance.
+			- Only pairs columns that are of type (integer, money, or numeric).
+
+	V06 (2017.07.13):
+		- Correctly finds and filters by year, if available.
+			- if both tables have years, filter both tables by year
+			- if either table has year, filter by that
+			- if neither has year, don't attempt to filter by year
 
 =end comment
 =cut
@@ -47,6 +54,7 @@ use strict;
 use base qw/Apache2::REST::Handler/;
 use DBI;
 use List::MoreUtils qw(firstidx);
+use vars qw/$validYear/;
 
 
 my $SQL;
@@ -55,6 +63,9 @@ my $dbh;
 my @output;
 my @validOutput;
 my $numValidOutput;
+# Filter on the year of $xt's tuples (filtering is by substring, you may include any year however you want.)
+# Example: $validYear = '2013_,asdf20142015' would give valid records from 2013 through 2015.
+my $validYear = '2015';
 # GET();
 allPairs();
 
@@ -248,6 +259,7 @@ sub allPairs{
 		determinePairPCC(\@pairList, $iter, \@output);
 
 		if($output[$iter][0][1] != -1){
+			$validOutput[$numValidOutput][@{$output[$iter]}+1][0] = $iter;
 			for(my $i = 0; $i < @{$output[$iter]}; $i++){
 				# print "output[$i] = " . $output[$iter][$i][1] . "\n";
 				# printf "%s: %.3f\n", $output[$iter][$i][0], $output[$iter][$i][1];
@@ -259,11 +271,14 @@ sub allPairs{
 	}
 
 	print "\n\nALL VALID OUTPUT:\n\n";
+	my @origPair;
 
 	for(my $valiter = 0; $valiter < $numValidOutput; $valiter++){
+		@origPair = @{$pairList[$validOutput[$valiter][@{$output[0]}+1][0]]};
+		print $origPair[0] . "." . $origPair[1] . " &\n" . $origPair[2] . "." . $origPair[3] . "\n";
 		for(my $i = 0; $i < @{$output[$valiter]}; $i++){
 			# print "output[$i] = " . $output[$iter][$i][1] . "\n";
-			printf "%s: %.3f\n", $validOutput[$valiter][$i][0], $validOutput[$valiter][$i][1];
+			printf "\t%s: %.3f\n", $validOutput[$valiter][$i][0], $validOutput[$valiter][$i][1];
 		}
 		print "\n";
 	}
@@ -271,11 +286,10 @@ sub allPairs{
 	print "Number valid output pairs: $numValidOutput\n";
 
 	$dbh->disconnect;
-	print "\nEnd of script\n";
+	print "\nEnd of script.\n";
 }
 
 sub determinePairPCC{
-
 	my ($refPairList, $pairListIdx, $refOutput) = @_;
 	my @pairList = @{$refPairList};
 	my $output = @$refOutput;
@@ -308,9 +322,6 @@ sub determinePairPCC{
 	# 	print "Not same tables\n";
 	# }
 
-	# Filter on the year of $xt's tuples
-	my $validYear = 2015;
-
 	# Foreign key sample from municipalities:
 	#table_schema |        constraint_name        | table_name |   column_name   | foreign_table_name | foreign_column_name
 	#public       | branches_municipality_id_fkey | branches   | municipality_id | municipalities     | id
@@ -339,16 +350,43 @@ sub determinePairPCC{
 	my $foreign_ytTableIdx = firstidx { $_ eq 'foreign_table_name' } @$foreignArrNames;
 	my $foreign_ytColIdx = firstidx { $_ eq 'foreign_column_name' } @$foreignArrNames;
 
+	# Gets field names of table $xt
+	$SQL = "Select * from $xt where false";
+	$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
+	$sth->execute() or die "Execute exception: $DBI::errstr";
+	my $xtNames = $sth->{NAME};
+	$sth->finish();
+
+	my $xt_yearIdx = firstidx { $_ eq 'year' } @$xtNames;
+
+	# Gets field names of table $yt
+	$SQL = "Select * from $yt where false";
+	$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
+	$sth->execute() or die "Execute exception: $DBI::errstr";
+	my $ytNames = $sth->{NAME};
+	$sth->finish();
+
+	my $yt_yearIdx = firstidx { $_ eq 'year' } @$ytNames;
+
 	# Obtains array reference to $xt fields
 	if($xt_yt_same){
-		$SQL = "SELECT CAST($xfield as decimal(10,2)) as x_$xfield,"
-		#. " $xt.year as x_year,"
-		. " $xt.id as x_id, CAST($yfield as decimal(10,2)) FROM $xt";
+		# Is year field
+		if($xt_yearIdx != -1){
+			$SQL = "SELECT CAST($xfield as decimal(10,2)) as x_$xfield,"
+			. " $xt.year as x_year,"
+			. " $xt.id as x_id, CAST($yfield as decimal(10,2)) FROM $xt";
+		}
+		# No year field
+		else{		
+			$SQL = "SELECT CAST($xfield as decimal(10,2)) as x_$xfield,"
+			#. " $xt.year as x_year,"
+			. " $xt.id as x_id, CAST($yfield as decimal(10,2)) FROM $xt";
+		}
 	}
 	# Obtains array reference to join of $xt and $yt
 	else{
 		if(@$foreignArr != 1){
-			print "ERROR: NO DIRECT FOREIGN KEY RELATIONSHIP BETWEEN $xt AND $yt\n";
+			print "ERROR: NO DIRECT KEY RELATIONSHIP BETWEEN $xt AND $yt\n";
 			errorOutput($xt, $xfield, $yt, $yfield, $pairListIdx, \@output);
 			return;
 		}
@@ -375,25 +413,59 @@ sub determinePairPCC{
 			# print "foreign_ytTableIdx = $foreign_ytTableIdx, $foreignArr->[0][$foreign_ytTableIdx]\n";
 			# print "foreign_ytColIdx = $foreign_ytColIdx, $yt.$foreignArr->[0][$foreign_ytColIdx]\n\n";
 
-			# $SQL = #"SELECT CAST($xfield as decimal(10,2)) as x_$xfield,"
+			my $startSQL = "select cast($xfield as decimal(10,2)) as x_$xfield,";
+			my $joinSQL;
 
-			# if foreign key from $xt, continue
+			# if foreign key from $xt:
 			if($xt eq $foreignArr->[0][$foreign_xtTableIdx]){
-				$SQL = "SELECT CAST($xfield as decimal(10,2)) as x_$xfield,"
-					#"SELECT $xfield as x_$xfield,"
-					#. " $xt.year as x_year,"
-					. " $xt.id as x_id,"
-					. " CAST($yfield as decimal(10,2)), $yt.* FROM $xt INNER JOIN $yt"
-					. " on $xt.$foreignArr->[0][$foreign_xtColIdx] = $yt.$foreignArr->[0][$foreign_ytColIdx]";
+				$joinSQL = " inner join $yt on $xt.$foreignArr->[0][$foreign_xtColIdx] = $yt.$foreignArr->[0][$foreign_ytColIdx]";
 			}
-			# if foreign key from $yt, swap table names
+			# if foreign key from $yt:
 			else{
-				$SQL = "SELECT CAST($xfield as decimal(10,2)) as x_$xfield,"
-					#"SELECT $xfield as x_$xfield,"
-					#. " $xt.year as x_year,"
+				$joinSQL = " inner join $yt on $yt.$foreignArr->[0][$foreign_xtColIdx] = $xt.$foreignArr->[0][$foreign_ytColIdx]";
+			}
+
+			# Both tables $xt and $yt have year fields
+			# Will match years as well
+			if($xt_yearIdx != -1 && $yt_yearIdx != -1){
+				print "Both have year\n";
+				$SQL = $startSQL
+					. " $xt.year as x_year,"
+					. " $yt.year as y_year,"
 					. " $xt.id as x_id,"
-					. " CAST($yfield as decimal(10,2)), $yt.* FROM $xt INNER JOIN $yt"
-					. " on $yt.$foreignArr->[0][$foreign_xtColIdx] = $xt.$foreignArr->[0][$foreign_ytColIdx]";
+					. " CAST($yfield as decimal(10,2)), $yt.* FROM $xt"
+					. $joinSQL
+					. " where $xt.year = $yt.year and '$validYear' like '%' || $xt.year || '%'";
+			}
+			# Only table $xt has year field
+			elsif($xt_yearIdx != -1){
+				print "$xt has year\n";
+				$SQL = $startSQL
+					. " $xt.year as x_year,"
+					. " $xt.id as x_id,"
+					. " CAST($yfield as decimal(10,2)), $yt.* FROM $xt"
+					. $joinSQL
+					. " where '$validYear' like '%' || $xt.year || '%'";
+
+			}
+			# Only table $yt has year field
+			elsif($yt_yearIdx != -1){
+				print "$yt has year\n";
+				$SQL = $startSQL
+					. " $yt.year as y_year,"
+					. " $xt.id as x_id,"
+					. " CAST($yfield as decimal(10,2)), $yt.* FROM $xt"
+					. $joinSQL
+					. " where '$validYear' like '%' || $yt.year || '%'";
+
+			}
+			# Neither tables $xt or $yt have year fields
+			else{
+				print "Neither has year\n";
+				$SQL = $startSQL
+					. " $xt.id as x_id,"
+					. " CAST($yfield as decimal(10,2)), $yt.* FROM $xt"
+					. $joinSQL;
 			}
 			# print "\nSQL: $SQL\n\n";
 		}
@@ -409,7 +481,9 @@ sub determinePairPCC{
 	# }
 
 	my $resRows = @$res;
+	# print "rows = $resRows\n";
 	my $resCols = @{$res->[0]};
+	# print "cols = $resCols\n";
 	# print "\nresRows = $resRows\n";
 	# print "resCols = $resCols\n";
 
@@ -439,7 +513,7 @@ sub determinePairPCC{
 	}
 
 	if($resNumValidTuples == 0){
-		print "\tERROR: NO VALID TUPLES\n";
+		print "ERROR: NO VALID TUPLES\n";
 		errorOutput($xt, $xfield, $yt, $yfield, $pairListIdx, \@output);
 		return;
 	}
