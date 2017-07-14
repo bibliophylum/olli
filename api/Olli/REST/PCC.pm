@@ -41,9 +41,18 @@
 
 	V06 (2017.07.13):
 		- Correctly finds and filters by year, if available.
-			- if both tables have years, filter both tables by year
-			- if either table has year, filter by that
-			- if neither has year, don't attempt to filter by year
+			- if both tables have years, filter both tables by year.
+			- if either table has year, filter by that.
+			- if neither has year, don't attempt to filter by year.
+
+	V07 (2017.07.14):
+		- 'determinePCC' sub name changed to 'pairAnalysis'.
+			- now calls 'computeAvgSD' sub to calculate $xfield and $yfield averages and Standard Deviation.
+			- now calls 'computePCC' sub to calculate PCC, using results from 'computeAvgSD' sub.
+		- Set up for easy "Plug 'n Play'" of algorithms in other subroutines.
+		- Added ability to not filter by year by leaving $validYears = ''.
+		- Less unnecessary memory allocation (variable/array duplication in subs), making better use of referencing.
+
 
 =end comment
 =cut
@@ -54,7 +63,6 @@ use strict;
 use base qw/Apache2::REST::Handler/;
 use DBI;
 use List::MoreUtils qw(firstidx);
-use vars qw/$validYear/;
 
 
 my $SQL;
@@ -63,9 +71,11 @@ my $dbh;
 my @output;
 my @validOutput;
 my $numValidOutput;
+
 # Filter on the year of $xt's tuples (filtering is by substring, you may include any year however you want.)
-# Example: $validYear = '2013_,asdf20142015' would give valid records from 2013 through 2015.
-my $validYear = '2015';
+# Example: $validYears = '2013_,asdf20142015' would give valid records from 2013 through 2015.
+my $validYears = '';
+
 # GET();
 allPairs();
 
@@ -113,7 +123,7 @@ sub GET {
 		);
 
 	for(my $iter = 0; $iter < @pairList; $iter++){
-		determinePairPCC(\@pairList, $iter, \@output);
+		pairAnalysis(\@pairList, $iter, \@output);
 
 		for(my $i = 0; $i < @{$output[$iter]}; $i++){
 			# print "output[$i] = " . $output[$iter][$i][1] . "\n";
@@ -216,6 +226,7 @@ sub allPairs{
 		# print "n = $n\n";
 		for(my $m = 0; defined $dbStructure[$n][1] && $m < @{$dbStructure[$n][1]}; $m++){
 			# print "\tm = $m\n";
+
 			# Pairs each column with each other column within the same table, no duplication
 			for(my $m2 = $m + 1; $m2 < @{$dbStructure[$n][1]}; $m2++){
 				$pairList[$pairIdx++] = 
@@ -256,9 +267,9 @@ sub allPairs{
 
 	$numValidOutput = 0;
 	for(my $iter = 0; $iter < @pairList; $iter++){
-		determinePairPCC(\@pairList, $iter, \@output);
+		pairAnalysis(\@pairList, $iter, \@output);
 
-		if($output[$iter][0][1] != -1){
+		if($output[$iter][0][1] != -2){
 			$validOutput[$numValidOutput][@{$output[$iter]}+1][0] = $iter;
 			for(my $i = 0; $i < @{$output[$iter]}; $i++){
 				# print "output[$i] = " . $output[$iter][$i][1] . "\n";
@@ -289,32 +300,22 @@ sub allPairs{
 	print "\nEnd of script.\n";
 }
 
-sub determinePairPCC{
-	my ($refPairList, $pairListIdx, $refOutput) = @_;
-	my @pairList = @{$refPairList};
-	my $output = @$refOutput;
+sub pairAnalysis{
+	my ($pairList, $pairListIdx, $refOutput) = @_;
+	# my @pairList = @$refPairList;
+	# my $output = @$refOutput;
 
-	my $xt = $pairList[$pairListIdx][0];
-	my $xfield = $pairList[$pairListIdx][1];
+	my $xt = $pairList->[$pairListIdx][0];
+	my $xfield = $pairList->[$pairListIdx][1];
 
-	my $yt = $pairList[$pairListIdx][2];
-	my $yfield = $pairList[$pairListIdx][3];
+	my $yt = $pairList->[$pairListIdx][2];
+	my $yfield = $pairList->[$pairListIdx][3];
 	
-	print "\n($pairListIdx) determinePairPCC of $xt.$xfield & $yt.$yfield\n";
+	print "\n($pairListIdx) pairAnalysis of $xt.$xfield & $yt.$yfield\n";
 
 	my $xt_yt_same = ($xt eq $yt);
 
-	my $xfieldVal;
-	my $xfieldSum = 0;
-	my $xfieldAvg = 0;
-	my $xfieldSD = 0;
-	my @xfieldArr;
 
-	my $yfieldVal;
-	my $yfieldSum = 0;
-	my $yfieldAvg = 0;
-	my $yfieldSD = 0;
-	my @yfieldArr;
 	# if($xt_yt_same){
 	# 	print "Same tables\n";
 	# }
@@ -328,6 +329,11 @@ sub determinePairPCC{
 
 	my $foreignArr;
 	my $foreignArrNames;
+
+	my $foreign_xtTableIdx;
+	my $foreign_xtColIdx;
+	my $foreign_ytTableIdx;
+	my $foreign_ytColIdx;
 
 	if(!$xt_yt_same){
 		$SQL = "SELECT DISTINCT tc.table_schema, tc.constraint_name, tc.table_name, kcu.column_name, ccu.table_name
@@ -343,12 +349,12 @@ sub determinePairPCC{
 
 		$foreignArr = $sth->fetchall_arrayref();
 		$foreignArrNames = $sth->{NAME};
-	}
 
-	my $foreign_xtTableIdx = firstidx { $_ eq 'table_name' } @$foreignArrNames;
-	my $foreign_xtColIdx = firstidx { $_ eq 'column_name' } @$foreignArrNames;
-	my $foreign_ytTableIdx = firstidx { $_ eq 'foreign_table_name' } @$foreignArrNames;
-	my $foreign_ytColIdx = firstidx { $_ eq 'foreign_column_name' } @$foreignArrNames;
+		$foreign_xtTableIdx = firstidx { $_ eq 'table_name' } @$foreignArrNames;
+		$foreign_xtColIdx = firstidx { $_ eq 'column_name' } @$foreignArrNames;
+		$foreign_ytTableIdx = firstidx { $_ eq 'foreign_table_name' } @$foreignArrNames;
+		$foreign_ytColIdx = firstidx { $_ eq 'foreign_column_name' } @$foreignArrNames;
+	}
 
 	# Gets field names of table $xt
 	$SQL = "Select * from $xt where false";
@@ -371,7 +377,7 @@ sub determinePairPCC{
 	# Obtains array reference to $xt fields
 	if($xt_yt_same){
 		# Is year field
-		if($xt_yearIdx != -1){
+		if(!($validYears eq '') && $xt_yearIdx != -1){
 			$SQL = "SELECT CAST($xfield as decimal(10,2)) as x_$xfield,"
 			. " $xt.year as x_year,"
 			. " $xt.id as x_id, CAST($yfield as decimal(10,2)) FROM $xt";
@@ -413,7 +419,7 @@ sub determinePairPCC{
 			# print "foreign_ytTableIdx = $foreign_ytTableIdx, $foreignArr->[0][$foreign_ytTableIdx]\n";
 			# print "foreign_ytColIdx = $foreign_ytColIdx, $yt.$foreignArr->[0][$foreign_ytColIdx]\n\n";
 
-			my $startSQL = "select cast($xfield as decimal(10,2)) as x_$xfield,";
+			my $startSQL = "select cast($xfield as decimal(10,2)) as x_$xfield";
 			my $joinSQL;
 
 			# if foreign key from $xt:
@@ -427,44 +433,58 @@ sub determinePairPCC{
 
 			# Both tables $xt and $yt have year fields
 			# Will match years as well
-			if($xt_yearIdx != -1 && $yt_yearIdx != -1){
+			if(!($validYears eq '') && $xt_yearIdx != -1 && $yt_yearIdx != -1){
 				print "Both have year\n";
 				$SQL = $startSQL
-					. " $xt.year as x_year,"
-					. " $yt.year as y_year,"
-					. " $xt.id as x_id,"
-					. " CAST($yfield as decimal(10,2)), $yt.* FROM $xt"
+					. " ,$xt.year as x_year"
+					. " ,$yt.year as y_year"
+					. " ,$xt.id as x_id"
+					. " ,$yt.id as y_id"
+					. " ,CAST($yfield as decimal(10,2))"
+					#. " ,$yt.*"
+					. " FROM $xt"
 					. $joinSQL
-					. " where $xt.year = $yt.year and '$validYear' like '%' || $xt.year || '%'";
+					. " where $xt.year = $yt.year and '$validYears' like '%' || $xt.year || '%'";
 			}
 			# Only table $xt has year field
-			elsif($xt_yearIdx != -1){
+			elsif(!($validYears eq '') && $xt_yearIdx != -1){
 				print "$xt has year\n";
 				$SQL = $startSQL
-					. " $xt.year as x_year,"
-					. " $xt.id as x_id,"
-					. " CAST($yfield as decimal(10,2)), $yt.* FROM $xt"
+					. " ,$xt.year as x_year"
+					. " ,$xt.id as x_id"
+					. " ,$yt.id as y_id"
+					. " ,CAST($yfield as decimal(10,2))"
+					#. " ,$yt.*"
+					. " FROM $xt"
 					. $joinSQL
-					. " where '$validYear' like '%' || $xt.year || '%'";
+					. " where '$validYears' like '%' || $xt.year || '%'";
 
 			}
 			# Only table $yt has year field
-			elsif($yt_yearIdx != -1){
+			elsif(!($validYears eq '') && $yt_yearIdx != -1){
 				print "$yt has year\n";
 				$SQL = $startSQL
-					. " $yt.year as y_year,"
-					. " $xt.id as x_id,"
-					. " CAST($yfield as decimal(10,2)), $yt.* FROM $xt"
+					. " ,$yt.year as y_year"
+					. " ,$xt.id as x_id"
+					. " ,$yt.id as y_id"
+					. " ,CAST($yfield as decimal(10,2))"
+					#. " ,$yt.*"
+					. " FROM $xt"
 					. $joinSQL
-					. " where '$validYear' like '%' || $yt.year || '%'";
+					. " where '$validYears' like '%' || $yt.year || '%'";
 
 			}
 			# Neither tables $xt or $yt have year fields
 			else{
-				print "Neither has year\n";
+				if(!($validYears eq '')){
+					print "Neither has year\n";
+				}
 				$SQL = $startSQL
-					. " $xt.id as x_id,"
-					. " CAST($yfield as decimal(10,2)), $yt.* FROM $xt"
+					. " ,$xt.id as x_id"
+					. " ,$yt.id as y_id"
+					. " ,CAST($yfield as decimal(10,2))"
+					. " from $xt"
+					# . " $yt.* FROM $xt"
 					. $joinSQL;
 			}
 			# print "\nSQL: $SQL\n\n";
@@ -473,16 +493,16 @@ sub determinePairPCC{
 
 	$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
 	$sth->execute() or die "Execute exception: $DBI::errstr";
-	my $res = $sth->fetchall_arrayref();
+	my @res = @{$sth->fetchall_arrayref()};
 	my $resNames = $sth->{NAME};
 
 	# for(my $n = 0; $n < @$resNames; $n++){
 	# 	print $resNames->[$n] . "\n";
 	# }
 
-	my $resRows = @$res;
+	my $resRows = @res;
 	# print "rows = $resRows\n";
-	my $resCols = @{$res->[0]};
+	my $resCols = @{$res[0]};
 	# print "cols = $resCols\n";
 	# print "\nresRows = $resRows\n";
 	# print "resCols = $resCols\n";
@@ -498,10 +518,10 @@ sub determinePairPCC{
 
 	for (my $n = 0; $n < $resRows; $n++){
 		# Notes which tuples hold valid values
-		if (#$res->[$n][$res_xtYearIdx] == $validYear &&
-		defined $res->[$n][$res_ytIDIdx]
-		&& defined $res->[$n][$res_xfieldIdx]
-		&& defined $res->[$n][$res_yfieldIdx]){# && $res->[$n][$res_xfieldIdx] > 0 && $res->[$n][$res_yfieldIdx] > 0){
+		if (#$res->[$n][$res_xtYearIdx] == $validYears &&
+		defined $res[$n][$res_ytIDIdx]
+		&& defined $res[$n][$res_xfieldIdx]
+		&& defined $res[$n][$res_yfieldIdx]){# && $res->[$n][$res_xfieldIdx] > 0 && $res->[$n][$res_yfieldIdx] > 0){
 			$resValidTuples[$n] = 1;
 			$resNumValidTuples++;
 			#print "Defined\n";
@@ -518,14 +538,48 @@ sub determinePairPCC{
 		return;
 	}
 
+	my @xfieldArr;
+	my @yfieldArr;
+
+	computeAvgSD($xt, $xfield, $yt, $yfield,
+			\@res,
+			$res_xtIDIdx, $res_xfieldIdx, $res_yfieldIdx,
+			\@xfieldArr, \@yfieldArr,
+			\@resValidTuples, $resNumValidTuples,
+			$pairListIdx, \@output);
+
+	computePCC(\@res,
+			\@xfieldArr, \@yfieldArr,
+			\@resValidTuples, $resNumValidTuples,
+			$pairListIdx, \@output);
+}
+
+sub computeAvgSD{
+	my ($xt, $xfield, $yt, $yfield,
+		$res,
+		$res_xtIDIdx, $res_xfieldIdx, $res_yfieldIdx,
+		$xfieldArr, $yfieldArr,
+		$resValidTuples, $resNumValidTuples,
+		$pairListIdx, $output) = @_;
+
+	my $resRows = @$res;
+
+	my $xfieldSum = 0;
+	my $xfieldAvg = 0;
+	my $xfieldSD = 0;
+
+	my $yfieldSum = 0;
+	my $yfieldAvg = 0;
+	my $yfieldSD = 0;
+
 	# Sums $xfield and appropriate $yfield values for later averaging
 	for (my $n = 0; $n < $resRows; $n++){
-		if($resValidTuples[$n]){
-			$xfieldArr[$n] = $res->[$n][$res_xfieldIdx];
-			$xfieldSum += $xfieldArr[$n];
+		if($resValidTuples->[$n]){
+			$xfieldArr->[$n] = $res->[$n][$res_xfieldIdx];
+			$xfieldSum += $xfieldArr->[$n];
 			
-			$yfieldArr[$n] = $res->[$n][$res_yfieldIdx];
-			$yfieldSum += $yfieldArr[$n];
+			$yfieldArr->[$n] = $res->[$n][$res_yfieldIdx];
+			$yfieldSum += $yfieldArr->[$n];
 
 			#print "x_id: $res->[$n][$res_xtIDIdx],\t$xfield: $xfieldArr[$n],\t$yfield: $yfieldArr[$n]\n";
 		}
@@ -536,10 +590,10 @@ sub determinePairPCC{
 
 	# Computation of Standard Deviations of both $xfield and appropriate $yfield
 	for (my $n = 0; $n < $resRows; $n++){
-		if($resValidTuples[$n]){
+		if($resValidTuples->[$n]){
 			# print "$n\n";
-			$xfieldSD += ($xfieldArr[$n]-$xfieldAvg)**2;
-			$yfieldSD += ($yfieldArr[$n]-$yfieldAvg)**2;
+			$xfieldSD += ($xfieldArr->[$n]-$xfieldAvg)**2;
+			$yfieldSD += ($yfieldArr->[$n]-$yfieldAvg)**2;
 		}
 	}
 
@@ -549,39 +603,72 @@ sub determinePairPCC{
 	$yfieldSD /= $resNumValidTuples;
 	$yfieldSD = sqrt($yfieldSD);
 
+	my $outputElemIdx;
+	if(defined $output[$pairListIdx]){
+		$outputElemIdx = @{$output[$pairListIdx]};
+	}
+	else{
+		$outputElemIdx = 0;
+	} 
+
+	# Descriptors for each output value
+	$output[$pairListIdx][$outputElemIdx][0] = $xt . "." . $xfield . '_Avg';
+	$output[$pairListIdx][$outputElemIdx+1][0] = $xt . "." . $xfield . '_SD';
+	$output[$pairListIdx][$outputElemIdx+2][0] = $yt . "." . $yfield . '_Avg';
+	$output[$pairListIdx][$outputElemIdx+3][0] = $yt . "." . $yfield . '_SD';
+
+	# Actual output values
+	$output[$pairListIdx][$outputElemIdx][1] = $xfieldAvg;
+	$output[$pairListIdx][$outputElemIdx+1][1] = $xfieldSD;
+	$output[$pairListIdx][$outputElemIdx+2][1] = $yfieldAvg;
+	$output[$pairListIdx][$outputElemIdx+3][1] = $yfieldSD;
+}
+
+sub computePCC{
+	my ($res,
+		$xfieldArr, $yfieldArr,
+		$resValidTuples, $resNumValidTuples,
+		$pairListIdx, $output) = @_;
+
+	my $resRows = @$res;
+
+	my $xfieldAvg = $output[$pairListIdx][0][1];
+	my $xfieldSD = $output[$pairListIdx][1][1];
+
+	my $yfieldAvg = $output[$pairListIdx][2][1];
+	my $yfieldSD = $output[$pairListIdx][3][1];
+
 	# Computation of Pearson's Correlation Coefficient
 	my $PCC;
 	my $PCCsum = 0;
 	for (my $n = 0; $n < $resRows; $n++){
-		if($resValidTuples[$n]){
+		if($resValidTuples->[$n]){
 			if($xfieldSD != 0 && $yfieldSD != 0){
-				$PCC = (($xfieldArr[$n]-$xfieldAvg)*($yfieldArr[$n]-$yfieldAvg))/($xfieldSD*$yfieldSD);
+				$PCC = (($xfieldArr->[$n]-$xfieldAvg)*($yfieldArr->[$n]-$yfieldAvg))/($xfieldSD*$yfieldSD);
 				$PCCsum += $PCC;
 			}
-
-			#print "PCC = $PCC\n";
-			#<STDIN>
 		}
 	}
 	my $PCCavg = $PCCsum/$resNumValidTuples;
 
 	print "Number valid tuples: $resNumValidTuples\n";
 
+	my $outputElemIdx;
+	if(defined $output[$pairListIdx]){
+		$outputElemIdx = @{$output[$pairListIdx]};
+	}
+	else{
+		$outputElemIdx = 0;
+	} 
+
 	# Descriptors for each output value
-	$output[$pairListIdx][0][0] = $xt . "." . $xfield . '_Avg';
-	$output[$pairListIdx][1][0] = $xt . "." . $xfield . '_SD';
-	$output[$pairListIdx][2][0] = $yt . "." . $yfield . '_Avg';
-	$output[$pairListIdx][3][0] = $yt . "." . $yfield . '_SD';
-	$output[$pairListIdx][4][0] = 'PCC_Avg';
+	$output[$pairListIdx][$outputElemIdx][0] = 'PCC_Avg';
 
 	# Actual output values
-	$output[$pairListIdx][0][1] = $xfieldAvg;
-	$output[$pairListIdx][1][1] = $xfieldSD;
-	$output[$pairListIdx][2][1] = $yfieldAvg;
-	$output[$pairListIdx][3][1] = $yfieldSD;
-	$output[$pairListIdx][4][1] = $PCCavg;
+	$output[$pairListIdx][$outputElemIdx][1] = $PCCavg;
 }
 
+# Stores values that are interpreted as invalid.
 sub errorOutput{
 	my ($xt, $xfield, $yt, $yfield, $pairListIdx, $refOutput) = @_;
 	my $output = @$refOutput;
@@ -592,10 +679,10 @@ sub errorOutput{
 	$output[$pairListIdx][3][0] = $yt . "." . $yfield . '_SD';
 	$output[$pairListIdx][4][0] = 'PCC_Avg';
 
-	$output[$pairListIdx][0][1] = -1;
-	$output[$pairListIdx][1][1] = -1;
-	$output[$pairListIdx][2][1] = -1;
-	$output[$pairListIdx][3][1] = -1;
+	$output[$pairListIdx][0][1] = -2;
+	$output[$pairListIdx][1][1] = -2;
+	$output[$pairListIdx][2][1] = -2;
+	$output[$pairListIdx][3][1] = -2;
 	$output[$pairListIdx][4][1] = 0;
 }
 
