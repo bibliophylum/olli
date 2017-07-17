@@ -41,18 +41,25 @@
 
 	V06 (2017.07.13):
 		- Correctly finds and filters by year, if available.
-			- if both tables have years, filter both tables by year.
-			- if either table has year, filter by that.
-			- if neither has year, don't attempt to filter by year.
+			- If both tables have years, filter both tables by year.
+			- If either table has year, filter by that.
+			- If neither has year, don't attempt to filter by year.
 
 	V07 (2017.07.14):
 		- 'determinePCC' sub name changed to 'pairAnalysis'.
-			- now calls 'computeAvgSD' sub to calculate $xfield and $yfield averages and Standard Deviation.
-			- now calls 'computePCC' sub to calculate PCC, using results from 'computeAvgSD' sub.
+			- Now calls 'computeAvgSD' sub to calculate $xfield and $yfield averages and Standard Deviation.
+			- Now calls 'computePCC' sub to calculate PCC, using results from 'computeAvgSD' sub.
 		- Set up for easy "Plug 'n Play'" of algorithms in other subroutines.
 		- Added ability to not filter by year by leaving $validYears = ''.
 		- Less unnecessary memory allocation (variable/array duplication in subs), making better use of referencing.
 
+	V08 (2017.07.17):
+		- Added 'computeSpearmanRCC' sub, computes Spearman Rank Correlation Coefficient.
+			- This puts a lesser weight on the tail-ends of each value set, as each value is now only seen as its rank amongst all other values in the set.
+			- Winnipeg's values don't affect this value nearly as much as they do with PCC.
+			- When Winnipeg's values are similar to all others, RCC should be similar to PCC.
+			- Ranking is handled in a simple manner, in which all values have a distinct rank, even if many/all values are equal.
+				- This may be changed to a different ranking system in the future.
 
 =end comment
 =cut
@@ -63,6 +70,10 @@ use strict;
 use base qw/Apache2::REST::Handler/;
 use DBI;
 use List::MoreUtils qw(firstidx);
+# use Heap::Binary;
+# use Array::Heap;
+# use Heap::Elem::Num;
+use Heap::Simple;
 
 
 my $SQL;
@@ -74,7 +85,7 @@ my $numValidOutput;
 
 # Filter on the year of $xt's tuples (filtering is by substring, you may include any year however you want.)
 # Example: $validYears = '2013_,asdf20142015' would give valid records from 2013 through 2015.
-my $validYears = '';
+my $validYears = '2015';
 
 # GET();
 allPairs();
@@ -222,6 +233,7 @@ sub allPairs{
 	# print "\nnumTables: $numTables\n";
 	
 	my $pairIdx = 0;
+	my $numPairs = 0;
 	for(my $n = 0; $n < $numTables; $n++){
 		# print "n = $n\n";
 		for(my $m = 0; defined $dbStructure[$n][1] && $m < @{$dbStructure[$n][1]}; $m++){
@@ -236,6 +248,7 @@ sub allPairs{
 						$dbStructure[$n][0],
 						$dbStructure[$n][1][$m2]
 					];
+				$numPairs++;
 				# print "\t\tpairIdx = $pairIdx\n";
 				# print "\t\t$dbStructure[$n][0]\n";
 				# print "\t\t$dbStructure[$n][1][$m]\n";
@@ -255,6 +268,7 @@ sub allPairs{
 							$dbStructure[$n2][0],
 							$dbStructure[$n2][1][$m2]
 						];
+					$numPairs++;
 					# print "\t\tpairIdx = $pairIdx\n";
 					# print "\t\t$dbStructure[$n][0]\n";
 					# print "\t\t$dbStructure[$n][1][$m]\n";
@@ -267,7 +281,7 @@ sub allPairs{
 
 	$numValidOutput = 0;
 	for(my $iter = 0; $iter < @pairList; $iter++){
-		pairAnalysis(\@pairList, $iter, \@output);
+		pairAnalysis(\@pairList, $numPairs, $iter, \@output);
 
 		if($output[$iter][0][1] != -2){
 			$validOutput[$numValidOutput][@{$output[$iter]}+1][0] = $iter;
@@ -287,7 +301,7 @@ sub allPairs{
 	for(my $valiter = 0; $valiter < $numValidOutput; $valiter++){
 		@origPair = @{$pairList[$validOutput[$valiter][@{$output[0]}+1][0]]};
 		print $origPair[0] . "." . $origPair[1] . " &\n" . $origPair[2] . "." . $origPair[3] . "\n";
-		for(my $i = 0; $i < @{$output[$valiter]}; $i++){
+		for(my $i = 0; $i < @{$output[$validOutput[$valiter][@{$output[0]}+1][0]]}; $i++){
 			# print "output[$i] = " . $output[$iter][$i][1] . "\n";
 			printf "\t%s: %.3f\n", $validOutput[$valiter][$i][0], $validOutput[$valiter][$i][1];
 		}
@@ -301,7 +315,7 @@ sub allPairs{
 }
 
 sub pairAnalysis{
-	my ($pairList, $pairListIdx, $refOutput) = @_;
+	my ($pairList, $numPairs, $pairListIdx, $refOutput) = @_;
 	# my @pairList = @$refPairList;
 	# my $output = @$refOutput;
 
@@ -310,8 +324,8 @@ sub pairAnalysis{
 
 	my $yt = $pairList->[$pairListIdx][2];
 	my $yfield = $pairList->[$pairListIdx][3];
-	
-	print "\n($pairListIdx) pairAnalysis of $xt.$xfield & $yt.$yfield\n";
+
+	printf "\n(%d/%d) pairAnalysis of %s.%s & %s.%s\n", $pairListIdx, $numPairs, $xt, $xfield, $yt, $yfield;
 
 	my $xt_yt_same = ($xt eq $yt);
 
@@ -552,8 +566,15 @@ sub pairAnalysis{
 			\@xfieldArr, \@yfieldArr,
 			\@resValidTuples, $resNumValidTuples,
 			$pairListIdx, \@output);
+
+	my @results;
+	computeSpearmanRCC(\@xfieldArr, \@yfieldArr,
+			\@results,
+			\@resValidTuples, $resNumValidTuples,
+			$pairListIdx, \@output);
 }
 
+# Computes averages and Standard Deviation of a pair of value-sets, appends values to output array.
 sub computeAvgSD{
 	my ($xt, $xfield, $yt, $yfield,
 		$res,
@@ -624,6 +645,7 @@ sub computeAvgSD{
 	$output[$pairListIdx][$outputElemIdx+3][1] = $yfieldSD;
 }
 
+# Computes Pearson Correlation Coefficient of value-set pair, appends values to output array.
 sub computePCC{
 	my ($res,
 		$xfieldArr, $yfieldArr,
@@ -668,6 +690,85 @@ sub computePCC{
 	$output[$pairListIdx][$outputElemIdx][1] = $PCCavg;
 }
 
+# Computes Spearman Rank Correlation Coefficient of value-set pair, appends value to output array.
+sub computeSpearmanRCC{
+	my ($xfieldArr, $yfieldArr,
+		$results,
+		$resValidTuples, $resNumValidTuples,
+		$pairListIdx, $output) = @_;
+
+	# Each heap is a max heap, with the largest element on top
+	my $xheap = Heap::Simple->new(elements => "Array", order => ">");
+	my $yheap = Heap::Simple->new(elements => "Array", order => ">");
+
+	my $size = @$xfieldArr;
+	print "size: $size\n";
+
+	my $xAvgRank = $size/2;
+	my $yAvgRank = $size/2;
+
+
+	for(my $n = 0; $n < $size; $n++){
+		if($resValidTuples->[$n]){
+			$xheap->insert([$xfieldArr->[$n], $n]);
+			$yheap->insert([$yfieldArr->[$n], $n]);
+		}
+	}
+	for(my $rank = 0; $rank < $resNumValidTuples; $rank++){
+		my $xelem = $xheap->extract_top;
+		push (@$xelem, $rank);
+		my $yelem = $yheap->extract_top;
+		push (@$yelem, $rank);
+		# print "$xelem->[1],\t$yelem->[1]\t\t$xelem->[0]\t $yelem->[0]\n";
+
+		$results->[$xelem->[1]][0] = [$xelem->[0], $rank];
+		$results->[$yelem->[1]][1] = [$yelem->[0], $rank];
+	}
+	for(my $n = 0; $n < $resNumValidTuples; $n++){
+		# print "$results->[$n][0][0], $results->[$n][0][1]\t$results->[$n][1][0], $results->[$n][1][1]\n";
+	}
+
+	my $covariance = 0;
+	my $xrankSD = 0;
+	my $yrankSD = 0;
+
+	# Computation of Standard Deviations of both $xfield and appropriate $yfield
+	for (my $n = 0; $n < $resNumValidTuples; $n++){
+		if($resValidTuples->[$n]){
+			# print "$n\n";
+			$covariance += (($results->[$n][0][1]-$xAvgRank)*($results->[$n][1][1]-$yAvgRank));
+			$xrankSD += ($results->[$n][0][1]-$xAvgRank)**2;
+			$yrankSD += ($results->[$n][1][1]-$yAvgRank)**2;
+		}
+	}
+	$covariance /= $resNumValidTuples;
+
+	$xrankSD /= $resNumValidTuples;
+	$xrankSD = sqrt($xrankSD);
+
+	$yrankSD /= $resNumValidTuples;
+	$yrankSD = sqrt($yrankSD);
+
+	my $RCC = $covariance/($xrankSD*$yrankSD);
+
+	my $outputElemIdx;
+	if(defined $output[$pairListIdx]){
+		$outputElemIdx = @{$output[$pairListIdx]};
+	}
+	else{
+		$outputElemIdx = 0;
+	} 
+
+	if ($outputElemIdx == 0){
+		print "ERROR (computeSpearmanRCC): outputElemIdx == 0, does not see other output values\n";
+		<STDIN>;
+	}
+
+	# Appending RCC value to output array
+	$output[$pairListIdx][$outputElemIdx][0] = "SpearmanRCC";
+	$output[$pairListIdx][$outputElemIdx][1] = $RCC;
+}
+
 # Stores values that are interpreted as invalid.
 sub errorOutput{
 	my ($xt, $xfield, $yt, $yfield, $pairListIdx, $refOutput) = @_;
@@ -678,12 +779,14 @@ sub errorOutput{
 	$output[$pairListIdx][2][0] = $yt . "." . $yfield . '_Avg';
 	$output[$pairListIdx][3][0] = $yt . "." . $yfield . '_SD';
 	$output[$pairListIdx][4][0] = 'PCC_Avg';
+	$output[$pairListIdx][5][0] = 'RCC';
 
 	$output[$pairListIdx][0][1] = -2;
 	$output[$pairListIdx][1][1] = -2;
 	$output[$pairListIdx][2][1] = -2;
 	$output[$pairListIdx][3][1] = -2;
 	$output[$pairListIdx][4][1] = 0;
+	$output[$pairListIdx][5][1] = 0;
 }
 
 # Authorize the GET method.
