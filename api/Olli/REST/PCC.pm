@@ -76,6 +76,20 @@
 		- 'linkLibsMuns' sub takes output of 'munCensusSorting' sub and links each library_id to the appropriate municipality/census rows.
 			- We currently do not have valid database entries to test or make use of this subroutine.
 
+	V11 (2017.07.24):
+		- 'calculateAvgMunPops' sub calculates the average population from valid municipalities given in the array from 'munCensusSorting' sub.
+		- 'censusCalcAvgChars' sub calculates the average of each census characteristic's (Total, Male, Female) values given in the array from 'munCensusSorting' sub.
+		- 'normalizeCensusValues' sub takes array given by 'munCensusSorting' sub, calls calculateAvgMunPops and censusCalcAvgChars, creates new array holding normalized census characteristic values for each municipality.
+			- For municipality m,
+				census characteristic c,
+				inner characteristic indicator inner,
+				averaged characteristic indicator innerCharAvg,
+				and average population avgPop:
+
+					m's c's normalized inner =
+						(m's pop/avgPop)/(m's c's inner/innerCharAvg)
+
+
 =end comment
 =cut
 
@@ -107,7 +121,10 @@ my $validYears = '2015';
 # censusTest();
 # censusMun();
 # munCensusSorting();
-linkLibsMuns();
+# linkLibsMuns();
+# calculateAvgMunPops();
+# test2();
+normalizeCensusValues();
 
 sub dbPrepare{
 	my $database = "olli";
@@ -853,7 +870,7 @@ sub censusMun{
 }
 
 sub munCensusSorting{
-	dbPrepare();
+	# dbPrepare();
 
 	my $SQL = "select census_year.value as cen_year_id,
 	c.total as c_total, c.male as c_male, c.female as c_female, c.division_id as c_division_id, c.subdivision_id as c_subdivision_id,
@@ -945,10 +962,12 @@ sub munCensusSorting{
 	return @censusMunVals;
 }
 
+# Links appropriate library id's to census data joined with municipalities.
 sub linkLibsMuns{
-	dbPrepare();
-	
-	my @censusMunVals = munCensusSorting();
+	# dbPrepare();
+
+	my ($censusMunVals) = @_;
+	# my @censusMunVals = munCensusSorting();
 	# print "$censusMunVals[557][8][0][0]\n";
 
 	my $SQL = "select id as b_id, year as b_year, library_id as l_id, municipality_id	as m_id from branches where municipality_id is not null";
@@ -972,15 +991,117 @@ sub linkLibsMuns{
 		$l_id = $currentRow->[$l_id_idx];
 		$m_id = $currentRow->[$m_id_idx];
 		
-		print $currentRow->[$m_id_idx] . "\n";
-		if(defined $censusMunVals[$currentRow->[$m_id_idx]]){
-			$linkSubSize = @{$censusMunVals[$m_id]};
-			print "\tlinkSubSize: $linkSubSize\n";
-			$links->[$l_id][$linkSubSize] = $censusMunVals[$m_id];
+		# print "m_id: " . $m_id . "\n";
+		if(defined $censusMunVals->[$m_id]){
+			$linkSubSize = @{$censusMunVals->[$m_id]};
+			# print "\tlinkSubSize: $linkSubSize\n";
+			$links->[$l_id][$linkSubSize] = $censusMunVals->[$m_id];
 		}
 	}
 
 	return $links;
+}
+
+# Calculates average municipality population, given a list of municipality populations.
+sub calculateAvgMunPops{
+	my ($censusMunVals) = @_;
+
+	my $SQL = "select id, population from municipalities";
+	$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
+	$sth->execute() or die "Execute exception: $DBI::errstr";
+	my $munTable = $sth->fetchall_arrayref();
+
+	my $sum = 0;
+	my $numMuns = 0;
+
+	for(my $row = 0; $row < @{$munTable}; $row++){
+		if(defined $censusMunVals->[$munTable->[$row][0]]){
+			$sum += $munTable->[$row][1];
+			$numMuns++;
+		}
+	}
+	my $avg = $sum/$numMuns;
+	print "NUM_MUN: $numMuns, AVG_POP: $avg\n";
+	return $avg;
+}
+
+# Takes array given by 'munCensusSorting' sub.
+# Calls calculateAvgMunPops and censusCalcAvgChars.
+# Creates new array holding normalized census characteristic values for each municipality.
+# 	For municipality m,
+# 		census characteristic c,
+# 		inner characteristic indicator inner,
+# 		averaged characteristic indicator innerCharAvg,
+# 		and average population avgPop:
+#
+# 			m's c's normalized inner =
+# 				(m's pop/avgPop)/(m's c's inner/innerCharAvg)
+sub normalizeCensusValues{
+	dbPrepare();
+
+	my @censusMunVals = munCensusSorting();
+	my $popAvg = calculateAvgMunPops(\@censusMunVals);
+	# my $links = linkLibsMuns(\@censusMunVals);	
+
+	my @normalized;
+	my $charAvgs = censusCalcAvgChars(\@censusMunVals);
+	my $currentNormPop;
+
+	for(my $m_id = 1; $m_id < @censusMunVals; $m_id++){
+		if(defined $censusMunVals[$m_id]){
+			print "Normalizing values of municipality $m_id\n";
+			for(my $c_id = 1; $c_id < @{$censusMunVals[$m_id]}; $c_id++){
+				if(defined $censusMunVals[$m_id][$c_id]){
+					$currentNormPop = $censusMunVals[$m_id][$c_id][0][0]/$popAvg;
+					# print "m_id: $m_id, c_id: $c_id, currentNormPop: $currentNormPop\n";
+					for(my $inner = 1; $inner < 4; $inner++){
+						if($currentNormPop == 0 || $charAvgs->[$c_id][$inner] == 0){
+							$normalized[$m_id][$c_id][$inner] = 0;
+						}
+						else{
+							$normalized[$m_id][$c_id][$inner] = $censusMunVals[$m_id][$c_id][0][$inner]/
+								($currentNormPop * $charAvgs->[$c_id][$inner]);
+						}
+
+						# print "normalized[$m_id][$c_id][$inner]: $normalized[$m_id][$c_id][$inner]\n";
+					}
+				}
+			}
+		}
+	}
+}
+
+# Calculates average of each (Total, Male, Female) across all valid censusMunVals, stores averages in similar structure to censusMunVals.
+sub censusCalcAvgChars{
+	my ($censusMunVals) = @_;
+
+	my $charAvgs;
+	my $charNums;
+
+	for(my $m_id = 1; $m_id < @{$censusMunVals}; $m_id++){
+		if(defined $censusMunVals->[$m_id]){
+			for(my $c_id = 1; $c_id < @{$censusMunVals->[$m_id]}; $c_id++){
+				if(defined $censusMunVals->[$m_id][$c_id]){
+					for(my $inner = 1; $inner < 4; $inner++){
+						$charAvgs->[$c_id][$inner] += $censusMunVals->[$m_id][$c_id][0][$inner];
+						$charNums->[$c_id]++;
+						# print "charAvgs->[$c_id] = $charAvgs->[$c_id]\n";
+					}
+				}
+			}
+		}
+	}
+
+	for(my $c_id = 1; $c_id < @{$charAvgs}; $c_id++){
+		if(defined $charNums->[$c_id]){
+			for(my $inner = 1; $inner < 4; $inner++){
+				$charAvgs->[$c_id][$inner] = $charAvgs->[$c_id][$inner]/$charNums->[$c_id];
+				print "charAvgs->[$c_id][$inner] = $charAvgs->[$c_id][$inner]\n";
+			}
+		}
+	}
+
+	return $charAvgs;
 }
 
 sub pairAnalysis{
