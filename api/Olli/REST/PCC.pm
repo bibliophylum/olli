@@ -89,6 +89,9 @@
 					m's c's normalized inner =
 						(m's pop/avgPop)/(m's c's inner/innerCharAvg)
 
+	V12 (2017.07.25):
+		- 'listSpecificNormalizedValues' sub allows the user to specify a valid municipality and census characteristic, then prints the appropriate values from the normalized data.
+		- The next version will feature a better implementation of normalization.
 
 =end comment
 =cut
@@ -103,6 +106,7 @@ use List::MoreUtils qw(firstidx);
 # use Array::Heap;
 # use Heap::Elem::Num;
 use Heap::Simple;
+use Scalar::Util qw(looks_like_number);
 
 
 my $SQL;
@@ -124,7 +128,8 @@ my $validYears = '2015';
 # linkLibsMuns();
 # calculateAvgMunPops();
 # test2();
-normalizeCensusValues();
+# normalizeCensusValues();
+listSpecificNormalizedValues();
 
 sub dbPrepare{
 	my $database = "olli";
@@ -1049,7 +1054,7 @@ sub normalizeCensusValues{
 
 	for(my $m_id = 1; $m_id < @censusMunVals; $m_id++){
 		if(defined $censusMunVals[$m_id]){
-			print "Normalizing values of municipality $m_id\n";
+			# print "Normalizing values of municipality $m_id\n";
 			for(my $c_id = 1; $c_id < @{$censusMunVals[$m_id]}; $c_id++){
 				if(defined $censusMunVals[$m_id][$c_id]){
 					$currentNormPop = $censusMunVals[$m_id][$c_id][0][0]/$popAvg;
@@ -1069,6 +1074,7 @@ sub normalizeCensusValues{
 			}
 		}
 	}
+	return @normalized;
 }
 
 # Calculates average of each (Total, Male, Female) across all valid censusMunVals, stores averages in similar structure to censusMunVals.
@@ -1096,12 +1102,115 @@ sub censusCalcAvgChars{
 		if(defined $charNums->[$c_id]){
 			for(my $inner = 1; $inner < 4; $inner++){
 				$charAvgs->[$c_id][$inner] = $charAvgs->[$c_id][$inner]/$charNums->[$c_id];
-				print "charAvgs->[$c_id][$inner] = $charAvgs->[$c_id][$inner]\n";
+				# print "charAvgs->[$c_id][$inner] = $charAvgs->[$c_id][$inner]\n";
 			}
 		}
 	}
 
 	return $charAvgs;
+}
+
+# Lists valid municipalities, lets the user choose one.
+# Then lists valid census characteristics for that municipality, lets the user choose one.
+# Shows normalized values for (Total, Male, Female) for the given characteristic for the given municipality.
+sub listSpecificNormalizedValues{
+	my @normalized = normalizeCensusValues();
+
+	my $SQL = "select id, name from municipalities";
+	$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
+	$sth->execute() or die "Execute exception: $DBI::errstr";
+
+	my $muns = $sth->fetchall_arrayref();
+
+	my $munList;
+	my $charList;
+	my $munChoice;
+	my $charChoice;
+
+	for(my $m_id = 0; $m_id < @normalized; $m_id++){
+		if(defined $normalized[$m_id]){
+			$SQL = "select id, name from municipalities where id = '$m_id'";
+
+			$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
+			$sth->execute() or die "Execute exception: $DBI::errstr";
+			$munList->[@{$munList}] = $sth->fetchall_arrayref()->[0];
+		}
+	}
+
+	for(my $n = 0; $n < @{$munList}; $n++){
+		print $munList->[$n][0] . ": " . $munList->[$n][1] . "\n";
+	}
+
+	# Gets valid municipality id choice from user:
+	do{
+		print "\nChoose a municipality by typing in one of the id's above: ";
+		$munChoice = <STDIN>;
+		chomp $munChoice;
+
+		if((!looks_like_number($munChoice)) || ! defined $normalized[$munChoice]){
+			print "Not a valid municipality id!\n";
+		}
+	}while((!looks_like_number($munChoice)) || ! defined $normalized[$munChoice]);
+
+	for(my $c_id = 0; $c_id < @{$normalized[$munChoice]}; $c_id++){
+		if(defined $normalized[$munChoice][$c_id]){
+			$SQL = "select id, value from census_characteristics where id = '$c_id'";
+			$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
+			$sth->execute() or die "Execute exception: $DBI::errstr";
+			$charList->[@{$charList}] = $sth->fetchall_arrayref()->[0];
+		}
+	}
+
+	print "\n\n";
+	for(my $n = 0; $n < @{$charList}; $n++){
+		print $charList->[$n][0] . ": " . $charList->[$n][1] . "\n";
+	}
+
+	# Gets valid census characteristic id choice from user:
+	do{
+		print "\nChoose a census characteristic by typing in one of the id's above: ";
+		$charChoice = <STDIN>;
+		chomp $charChoice;
+
+		if((!looks_like_number($charChoice)) || ! defined $normalized[$munChoice][$charChoice]){
+			print "Not a valid characteristic id!\n";
+		}
+	}while((!looks_like_number($charChoice)) || ! defined $normalized[$munChoice][$charChoice]);
+
+	my $innerNames = [
+		'',
+		'Total',
+		'Male',
+		'Female'
+	];
+
+	# Gets name for chosen census characteristic:
+	$SQL = "select value from census_characteristics where id = '$charChoice'";
+	$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
+	$sth->execute() or die "Execute exception: $DBI::errstr";
+	my $charValue = $sth->fetchall_arrayref()->[0][0];
+	$charValue = trim($charValue);
+
+	# Gets name for chosen municipality:
+	$SQL = "select name from municipalities where id = '$munChoice'";
+	$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
+	$sth->execute() or die "Execute exception: $DBI::errstr";
+	my $munName = $sth->fetchall_arrayref()->[0][0];
+	$munName =trim($munName);
+
+	# Prints results:
+	print "\nNormalized values of characteristic $charChoice ($charValue) for municipality $munChoice ($munName):\n";
+	for(my $inner = 1; $inner < 4; $inner++){
+		print "\t" . $innerNames->[$inner] . ": " . $normalized[$munChoice][$charChoice][$inner] . "\n";
+	}
+	# print "Done listSpecificNormalizedValues sub\n";
+}
+
+# Trims whitespace on either side of a given string.
+sub trim {
+	my $s = shift;
+	$s =~ s/^\s+|\s+$//g;
+	return $s;
 }
 
 sub pairAnalysis{
