@@ -93,6 +93,16 @@
 		- 'listSpecificNormalizedValues' sub allows the user to specify a valid municipality and census characteristic, then prints the appropriate values from the normalized data.
 		- The next version will feature a better implementation of normalization.
 
+	V13 (2017.07.26):
+		- 'normalizeCensusValues2' sub normalizes the municipality/census values in a better manner.
+			- For each census characteristic subvalue E_c_i, each municipality m's census characteristic subvalue e_m_i is given the value of 
+				e_m_i = ((e_m_i - E_c_i_min) / (E_c_i_max - E_c_i_min))
+					* (m's pop);
+				
+			- Each e_m_i is then normalized again by the max of all e_x_i's to be put in a range from 0 -> 1.
+
+			- This gives normalized values that are per capita for each municipality, and allows us to compare between municipalities.
+
 =end comment
 =cut
 
@@ -130,6 +140,7 @@ my $validYears = '2015';
 # test2();
 # normalizeCensusValues();
 listSpecificNormalizedValues();
+# normalizeCensusValues2();
 
 sub dbPrepare{
 	my $database = "olli";
@@ -1030,6 +1041,18 @@ sub calculateAvgMunPops{
 	return $avg;
 }
 
+# Simple method, doesn't check if municipality is valid, and it takes the first tuple returned.
+sub calculateMaxMunPops{
+	my $SQL = "select population from municipalities where population = (select max(population) from municipalities);";
+	$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
+	$sth->execute() or die "Execute exception: $DBI::errstr";
+	my $maxPops = $sth->fetchall_arrayref();
+
+	# print "MAX_POP: $maxPops->[0][0]\n";
+	# <STDIN>;
+	return $maxPops->[0][0];
+}
+
 # Takes array given by 'munCensusSorting' sub.
 # Calls calculateAvgMunPops and censusCalcAvgChars.
 # Creates new array holding normalized census characteristic values for each municipality.
@@ -1077,6 +1100,100 @@ sub normalizeCensusValues{
 	return @normalized;
 }
 
+# For each census characteristic subvalue E_c_i, each municipality m's census characteristic subvalue e_m_i is given the value of 
+# 	e_m_i = ((e_m_i - E_c_i_min) / (E_c_i_max - E_c_i_min))
+# 		* (m's pop);
+	
+# Each e_m_i is then normalized again by the max of all e_x_i's to be put in a range from 0 -> 1.
+
+# This gives normalized values that are per capita for each municipality, and allows us to compare between municipalities.
+sub normalizeCensusValues2{
+	dbPrepare();
+
+	my @censusMunVals = munCensusSorting();
+	# my $popAvg = calculateAvgMunPops(\@censusMunVals);
+	# my $maxPop = calculateMaxMunPops();
+	# my $links = linkLibsMuns(\@censusMunVals);	
+
+	my @normalized;
+	# my $charAvgs = censusCalcAvgChars(\@censusMunVals);
+	my $currentNormPop;
+
+	my $charMinMax;
+	my $resultsMax;
+
+	for(my $m_id = 1; $m_id < @censusMunVals; $m_id++){
+		if(defined $censusMunVals[$m_id]){
+			# print "Normalizing values of municipality $m_id\n";
+			for(my $c_id = 1; $c_id < @{$censusMunVals[$m_id]}; $c_id++){
+				if(defined $censusMunVals[$m_id][$c_id]){
+					for(my $inner = 1; $inner < 4; $inner++){
+						if(! defined $charMinMax->[$c_id][$inner]){
+							$charMinMax->[$c_id][$inner][0] = $censusMunVals[$m_id][$c_id][0][$inner];
+							$charMinMax->[$c_id][$inner][1] = $censusMunVals[$m_id][$c_id][0][$inner];
+						}
+						else{
+							# print "[$m_id][$c_id][0][$inner] = " . $censusMunVals[$m_id][$c_id][0][$inner] . "\n";
+							if($censusMunVals[$m_id][$c_id][0][$inner] < $charMinMax->[$c_id][$inner][0]){
+								$charMinMax->[$c_id][$inner][0] = $censusMunVals[$m_id][$c_id][0][$inner];
+							}
+							if($censusMunVals[$m_id][$c_id][0][$inner] > $charMinMax->[$c_id][$inner][1]){
+								$charMinMax->[$c_id][$inner][1] = $censusMunVals[$m_id][$c_id][0][$inner];
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	for(my $m_id = 1; $m_id < @censusMunVals; $m_id++){
+		if(defined $censusMunVals[$m_id]){
+			# print "Normalizing values of municipality $m_id\n";
+			for(my $c_id = 1; $c_id < @{$censusMunVals[$m_id]}; $c_id++){
+				if(defined $censusMunVals[$m_id][$c_id]){
+					for(my $inner = 1; $inner < 4; $inner++){
+						if($charMinMax->[$c_id][$inner][0] == $charMinMax->[$c_id][$inner][1]){
+							$normalized[$m_id][$c_id][$inner] = 0.5;
+							$resultsMax->[$c_id][$inner] = 0.5;
+						}
+						else{
+							# $normalized[$m_id][$c_id][$inner] = ($censusMunVals[$m_id][$c_id][0][$inner]-$charMinMax->[$c_id][$inner][0]) / ($charMinMax->[$c_id][$inner][1] - $charMinMax->[$c_id][$inner][0]);
+							$normalized[$m_id][$c_id][$inner] = 
+								(($censusMunVals[$m_id][$c_id][0][$inner]-$charMinMax->[$c_id][$inner][0]) /
+								($charMinMax->[$c_id][$inner][1] - $charMinMax->[$c_id][$inner][0])) /
+								$censusMunVals[$m_id][$c_id][0][0];
+							# ($popAvg/$censusMunVals[$m_id][$c_id][0][0]);
+							# * ($censusMunVals[$m_id][$c_id][0][$inner]/$charAvgs->[$c_id][$inner]);
+
+							if(! defined $resultsMax->[$c_id][$inner] || $resultsMax->[$c_id][$inner] < $normalized[$m_id][$c_id][$inner]){
+								$resultsMax->[$c_id][$inner] = $normalized[$m_id][$c_id][$inner];
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	for(my $m_id = 1; $m_id < @censusMunVals; $m_id++){
+		if(defined $censusMunVals[$m_id]){
+			# print "Normalizing values of municipality $m_id\n";
+			for(my $c_id = 1; $c_id < @{$censusMunVals[$m_id]}; $c_id++){
+				if(defined $censusMunVals[$m_id][$c_id]){
+					for(my $inner = 1; $inner < 4; $inner++){
+						# print "\nnormalized[$m_id][$c_id][$inner]: $normalized[$m_id][$c_id][$inner]\n";
+						$normalized[$m_id][$c_id][$inner] /= $resultsMax->[$c_id][$inner];
+						# print "2nd normalized[$m_id][$c_id][$inner]: $normalized[$m_id][$c_id][$inner]\n";
+					}
+				}
+			}
+		}
+	}
+
+	return @normalized;
+}
+
 # Calculates average of each (Total, Male, Female) across all valid censusMunVals, stores averages in similar structure to censusMunVals.
 sub censusCalcAvgChars{
 	my ($censusMunVals) = @_;
@@ -1114,7 +1231,7 @@ sub censusCalcAvgChars{
 # Then lists valid census characteristics for that municipality, lets the user choose one.
 # Shows normalized values for (Total, Male, Female) for the given characteristic for the given municipality.
 sub listSpecificNormalizedValues{
-	my @normalized = normalizeCensusValues();
+	my @normalized = normalizeCensusValues2();
 
 	my $SQL = "select id, name from municipalities";
 	$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
@@ -1199,7 +1316,7 @@ sub listSpecificNormalizedValues{
 	$munName =trim($munName);
 
 	# Prints results:
-	print "\nNormalized values of characteristic $charChoice ($charValue) for municipality $munChoice ($munName):\n";
+	print "\nNormalized values of characteristic $charChoice ($charValue) per capita for municipality $munChoice ($munName):\n";
 	for(my $inner = 1; $inner < 4; $inner++){
 		print "\t" . $innerNames->[$inner] . ": " . $normalized[$munChoice][$charChoice][$inner] . "\n";
 	}
