@@ -112,7 +112,10 @@
 	V15 (2017.07.27):
 		- 'findMinMaxNCharVals' sub asks the user to choose a valid municipality, and then how many of the minimum/maximum normalized census characteristic values for the chosen municipality to list in asc/desc order.
 	
-	
+	V16 (2017.07.27):
+		- 'listSpecificNormalizedValues' sub improved to allow the user to specify multiple census characteristic ids for a chosen municipality.
+
+
 =end comment
 =cut
 
@@ -149,9 +152,9 @@ my $validYears = '2015';
 # calculateAvgMunPops();
 # test2();
 # normalizeCensusValues();
-# listSpecificNormalizedValues();
 # normalizeCensusValues2();
-findMinMaxNCharVals();
+# findMinMaxNCharVals();
+listSpecificNormalizedValues();
 
 sub dbPrepare{
 	my $database = "olli";
@@ -1272,8 +1275,8 @@ sub getTrueCensus2011Pops{
 }
 
 # Lists valid municipalities, lets the user choose one.
-# Then lists valid census characteristics for that municipality, lets the user choose one.
-# Shows normalized values for (Total, Male, Female) for the given characteristic for the given municipality.
+# Then lists valid census characteristics for that municipality, lets the user choose however many they want.
+# Shows normalized values for (Total, Male, Female) for the given municipality's given characteristics.
 sub listSpecificNormalizedValues{
 	my @normalized = normalizeCensusValues2();
 
@@ -1331,16 +1334,39 @@ sub listSpecificNormalizedValues{
 		print $charList->[$n][0] . ": " . $charList->[$n][1] . "\n";
 	}
 
-	# Gets valid census characteristic id choice from user:
+	my @charChoiceArr;
+	my $more = 1;
+
+	# Gets valid census characteristic id choices from user:
+	# Currently does not protect from the same value occuring more than once in @charChoiceArr.
+	print "\nContinue entering census characteristics by typing in one at a time from the list of the id's above. Enter \"end\" once you're finished.\n";
 	do{
-		print "\nChoose a census characteristic by typing in one of the id's above: ";
+		print "\n(" . @charChoiceArr . ") Enter a valid characteristic id: ";
 		$charChoice = <STDIN>;
 		chomp $charChoice;
+		trim($charChoice);
 
-		if((!looks_like_number($charChoice)) || ! defined $normalized[$munChoice][$charChoice]){
-			print "Not a valid characteristic id!\n";
+		if((!looks_like_number($charChoice))
+			|| ! defined $normalized[$munChoice][$charChoice]
+			|| $charChoice < 1){
+		
+			if(uc($charChoice) eq uc("end")){
+				$more = 0;
+			}
+			else{
+				print "Not a valid characteristic id!\n";
+			}
 		}
-	}while((!looks_like_number($charChoice)) || ! defined $normalized[$munChoice][$charChoice]);
+		else{
+			$charChoice += 0; # Easy method of removing leading zeros, else the same characteristic id could be entered multiple times.
+			if(!checkArrForElem(\@charChoiceArr, $charChoice)){
+				push (@charChoiceArr, $charChoice);
+			}
+			else{
+				print "Chosen characteristic id has already been recorded!\n";
+			}
+		}
+	}while($more);
 
 	my $innerNames = [
 		'',
@@ -1349,13 +1375,6 @@ sub listSpecificNormalizedValues{
 		'Female'
 	];
 
-	# Gets name for chosen census characteristic:
-	$SQL = "select value from census_characteristics where id = '$charChoice'";
-	$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
-	$sth->execute() or die "Execute exception: $DBI::errstr";
-	my $charValue = $sth->fetchall_arrayref()->[0][0];
-	$charValue = trim($charValue);
-
 	# Gets name for chosen municipality:
 	$SQL = "select name from municipalities where id = '$munChoice'";
 	$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
@@ -1363,12 +1382,34 @@ sub listSpecificNormalizedValues{
 	my $munName = $sth->fetchall_arrayref()->[0][0];
 	$munName =trim($munName);
 
-	# Prints results:
-	print "\nNormalized values (0 -> 1) of characteristic $charChoice ($charValue) per capita for municipality $munChoice ($munName) in comparison to all other municipalities:\n";
-	for(my $inner = 1; $inner < 4; $inner++){
-		print "\t" . $innerNames->[$inner] . ": " . $normalized[$munChoice][$charChoice][$inner] . "\n";
+	print "\nCensus characteristics values per capita for municipality $munChoice ($munName), normalized (0 -> 1) with all other valid municipalities:\n";
+
+	# For each given census characteristic choice, get the appropriate values
+	for(my $choiceIdx = 0; $choiceIdx < @charChoiceArr; $choiceIdx++){
+		# Gets name for chosen census characteristic:
+		$SQL = "select value from census_characteristics where id = '$charChoiceArr[$choiceIdx]'";
+		$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
+		$sth->execute() or die "Execute exception: $DBI::errstr";
+		my $charValue = $sth->fetchall_arrayref()->[0][0];
+		$charValue = trim($charValue);
+
+		# Prints results:
+		print "\nCharacteristic $charChoiceArr[$choiceIdx] ($charValue):\n";
+		for(my $inner = 1; $inner < 4; $inner++){
+			print "\t" . $innerNames->[$inner] . ": " . $normalized[$munChoice][$charChoiceArr[$choiceIdx]][$inner] . "\n";
+		}
 	}
-	# print "Done listSpecificNormalizedValues sub\n";
+}
+
+# Takes an array and element, returns whether the element is present within the array.
+sub checkArrForElem{
+	my ($arr, $elem) = @_;
+	for(my $n = 0; $n < @{$arr}; $n++){
+		if($arr->[$n] eq $elem){
+			return 1; # elem found in arr
+		}
+	}
+	return 0; # elem not found in arr
 }
 
 # Lists valid municipalities, lets the user choose one.
