@@ -104,11 +104,15 @@
 		- Currently using population values from municipalities table, conflicts with census populations.
 
 	V14 (2017.07.26):
-	- Fixed an issue of normalization giving really odd values due to trusting the municipalities table's population values, instead of what was given in the census table.
-		- eg, mun_id 491 (Flin Flon Ext. Boundaries) has a population of 267, but the census population for that mun_id has a population value similar to mun_id 490 (City of Flin Flon), which is about 20x that of mun_id 491's.
-		- Now that the census table's population values are being used, there is sometimes a slight discrepancy (up to 6%) as the census values seem to conflict slightly with themselves, but the normalized values now make sense.
-		- The second normalization step in 'normalizeCensusValues2' sub is no longer needed; this was in place to try to make more sense of the incorrect output.
+		- Fixed an issue of normalization giving really odd values due to trusting the municipalities table's population values, instead of what was given in the census table.
+			- eg, mun_id 491 (Flin Flon Ext. Boundaries) has a population of 267, but the census population for that mun_id has a population value similar to mun_id 490 (City of Flin Flon), which is about 20x that of mun_id 491's.
+			- Now that the census table's population values are being used, there is sometimes a slight discrepancy (up to 6%) as the census values seem to conflict slightly with themselves, but the normalized values now make sense.
+			- The second normalization step in 'normalizeCensusValues2' sub is no longer needed; this was in place to try to make more sense of the incorrect output.
 
+	V15 (2017.07.27):
+		- 'findMinMaxNCharVals' sub asks the user to choose a valid municipality, and then how many of the minimum/maximum normalized census characteristic values for the chosen municipality to list in asc/desc order.
+	
+	
 =end comment
 =cut
 
@@ -145,8 +149,9 @@ my $validYears = '2015';
 # calculateAvgMunPops();
 # test2();
 # normalizeCensusValues();
-listSpecificNormalizedValues();
+# listSpecificNormalizedValues();
 # normalizeCensusValues2();
+findMinMaxNCharVals();
 
 sub dbPrepare{
 	my $database = "olli";
@@ -1283,6 +1288,7 @@ sub listSpecificNormalizedValues{
 	my $munChoice;
 	my $charChoice;
 
+	# Gathers id and name from all valid municipalities.
 	for(my $m_id = 0; $m_id < @normalized; $m_id++){
 		if(defined $normalized[$m_id]){
 			$SQL = "select id, name from municipalities where id = '$m_id'";
@@ -1293,6 +1299,7 @@ sub listSpecificNormalizedValues{
 		}
 	}
 
+	# Prints all valid municipalities for the user to choose from.
 	for(my $n = 0; $n < @{$munList}; $n++){
 		print $munList->[$n][0] . ": " . $munList->[$n][1] . "\n";
 	}
@@ -1303,11 +1310,12 @@ sub listSpecificNormalizedValues{
 		$munChoice = <STDIN>;
 		chomp $munChoice;
 
-		if((!looks_like_number($munChoice)) || ! defined $normalized[$munChoice]){
+		if((!looks_like_number($munChoice)) || ! defined $normalized[$munChoice] || $munChoice <= 0){
 			print "Not a valid municipality id!\n";
 		}
-	}while((!looks_like_number($munChoice)) || ! defined $normalized[$munChoice]);
+	}while((!looks_like_number($munChoice)) || ! defined $normalized[$munChoice] || $munChoice <= 0);
 
+	# Gathers id and value from all valid census characteristics (for the chosen municipality).
 	for(my $c_id = 0; $c_id < @{$normalized[$munChoice]}; $c_id++){
 		if(defined $normalized[$munChoice][$c_id]){
 			$SQL = "select id, value from census_characteristics where id = '$c_id'";
@@ -1317,6 +1325,7 @@ sub listSpecificNormalizedValues{
 		}
 	}
 
+	# Prints all valid census characteristics (for the chosen municipality) for the user to choose from.
 	print "\n\n";
 	for(my $n = 0; $n < @{$charList}; $n++){
 		print $charList->[$n][0] . ": " . $charList->[$n][1] . "\n";
@@ -1360,6 +1369,150 @@ sub listSpecificNormalizedValues{
 		print "\t" . $innerNames->[$inner] . ": " . $normalized[$munChoice][$charChoice][$inner] . "\n";
 	}
 	# print "Done listSpecificNormalizedValues sub\n";
+}
+
+# Lists valid municipalities, lets the user choose one.
+# Asks for the number of minimum/maximum census characteristics values to display, in sorted ascending/descending (separately). This is ordered by subvalue (Total).
+# Shows normalized values for (Total, Male, Female) for the given municipality.
+sub findMinMaxNCharVals{
+	my @normalized = normalizeCensusValues2();
+
+	my $SQL = "select id, name from municipalities";
+	$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
+	$sth->execute() or die "Execute exception: $DBI::errstr";
+
+	my $muns = $sth->fetchall_arrayref();
+
+	my $munList;
+	my $charList;
+	my $munChoice;
+	my $numMinChars;
+	my $numMaxChars;
+
+	# Gathers id and name from all valid municipalities.
+	for(my $m_id = 0; $m_id < @normalized; $m_id++){
+		if(defined $normalized[$m_id]){
+			$SQL = "select id, name from municipalities where id = '$m_id'";
+
+			$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
+			$sth->execute() or die "Execute exception: $DBI::errstr";
+			$munList->[@{$munList}] = $sth->fetchall_arrayref()->[0];
+		}
+	}
+
+	# Prints all valid municipalities for the user to choose from.
+	for(my $n = 0; $n < @{$munList}; $n++){
+		print $munList->[$n][0] . ": " . $munList->[$n][1] . "\n";
+	}
+
+	# Gets valid municipality id choice from user:
+	do{
+		print "\nChoose a municipality by typing in one of the id's above: ";
+		$munChoice = <STDIN>;
+		chomp $munChoice;
+
+		if((!looks_like_number($munChoice)) || ! defined $normalized[$munChoice] || $munChoice <= 0){
+			print "Not a valid municipality id!\n";
+		}
+	}while((!looks_like_number($munChoice)) || ! defined $normalized[$munChoice] || $munChoice <= 0);
+
+	for(my $c_id = 0; $c_id < @{$normalized[$munChoice]}; $c_id++){
+		if(defined $normalized[$munChoice][$c_id]){
+			$SQL = "select id, value from census_characteristics where id = '$c_id'";
+			$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
+			$sth->execute() or die "Execute exception: $DBI::errstr";
+			$charList->[@{$charList}] = $sth->fetchall_arrayref()->[0];
+		}
+	}
+
+	my $innerNames = [
+		'',
+		'Total',
+		'Male',
+		'Female'
+	];
+
+	# @normalizedFilter stores only the valid census characteristics' values
+	my @normalizedFilter;
+	my $filterSize = 0;
+	for(my $c_id = 0; $c_id < @{$normalized[$munChoice]}; $c_id++){
+		if(defined $normalized[$munChoice][$c_id]){
+			$normalizedFilter[$filterSize] = $normalized[$munChoice][$c_id];
+			$normalizedFilter[$filterSize][4] = $c_id;	# Temporary solution to get sorted indices, other solutions don't seem to work properly. Is wasteful, duplication.
+			# print "normalized[$munChoice][$c_id][1] = " . $normalized[$munChoice][$c_id][1] . "\n";
+			# print "normalizedFilter[$filterSize][1] = " . $normalizedFilter[$filterSize][1] . "\n";
+			# <STDIN>;
+			$filterSize++;
+		}
+	}
+
+	# Gets number of minimum elements from user:
+	do{
+		print "\nEnter the number of minimum (subvalue \"Total\") characteristic elements, between 1 and " . @normalizedFilter . ": ";
+		$numMinChars = <STDIN>;
+		chomp $numMinChars;
+
+		if((!looks_like_number($numMinChars))){
+			print "Not a number!\n";
+		}
+		elsif($numMinChars > @normalizedFilter || $numMinChars <= 0){
+			print "Invalid number!\n";
+		}
+	}while((!looks_like_number($numMinChars)) || $numMinChars > @normalizedFilter || $numMinChars < 0);
+
+	# Sorts @normalizedFilter by characteristic subvalue (Total) in ascending order.
+	my @sorted_charValues = sort { $a->[1] <=> $b->[1] } @normalizedFilter;
+
+	my $current_c_id;
+
+	# Prints $numMinChars of minimum census characteristic subvalues from $sorted_charValues
+	for(my $n = 0; $n < $numMinChars; $n++){
+		$current_c_id = $sorted_charValues[$n]->[4];
+
+		# Gets name for chosen census characteristic:
+		$SQL = "select value from census_characteristics where id = '$current_c_id'";
+		$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
+		$sth->execute() or die "Execute exception: $DBI::errstr";
+		my $charValue = $sth->fetchall_arrayref()->[0][0];
+		$charValue = trim($charValue);
+
+		print "\nCharacteristic $current_c_id ($charValue):\n";
+		for(my $inner = 1; $inner < 4; $inner++){
+			print "\t$innerNames->[$inner]: $sorted_charValues[$n][$inner]\n";
+		}
+		# print "characteristic: $sorted_charValues[$n]->[4], sorted_charValues[$n] = " . $sorted_charValues[$n]->[1] . "\n";
+	}
+
+	# Gets number of maximum elements from user:
+	do{
+		print "\n\nEnter the number of maximum (subvalue \"Total\") characteristic elements, between 1 and " . @normalizedFilter . ": ";
+		$numMaxChars = <STDIN>;
+		chomp $numMaxChars;
+
+		if((!looks_like_number($numMaxChars))){
+			print "Not a number!\n";
+		}
+		elsif($numMaxChars > @normalizedFilter || $numMaxChars <= 0){
+			print "Invalid number!\n";
+		}
+	}while((!looks_like_number($numMaxChars)) || $numMaxChars > @normalizedFilter || $numMaxChars < 0);
+
+	# Prints $numMaxChars of maximum census characteristic subvalues from $sorted_charValues
+	for(my $n = @sorted_charValues - 1; $n > @sorted_charValues - $numMaxChars - 1; $n--){
+		$current_c_id = $sorted_charValues[$n]->[4];
+
+		# Gets name for chosen census characteristic:
+		$SQL = "select value from census_characteristics where id = '$current_c_id'";
+		$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
+		$sth->execute() or die "Execute exception: $DBI::errstr";
+		my $charValue = $sth->fetchall_arrayref()->[0][0];
+		$charValue = trim($charValue);
+
+		print "\nCharacteristic $current_c_id ($charValue):\n";
+		for(my $inner = 1; $inner < 4; $inner++){
+			print "\t$innerNames->[$inner]: $sorted_charValues[$n][$inner]\n";
+		}
+	}
 }
 
 # Trims whitespace on either side of a given string.
