@@ -128,6 +128,10 @@
 			- Future versions will instead return some standardized form of the output.
 		- Rid 'normalized' array from 'normalizeCensusValues' sub reallocation/duplication across all subs.
 
+	V20 (2017.07.28):
+		- 'listSpecificNormalizedValues' sub now takes boolean value as 3rd parameter, determines whether the results will be printed to the screen.
+		- 'listSpecificNormalizedValues' sub now returns output in standardized structure, specified within the sub.
+
 =end comment
 =cut
 
@@ -168,7 +172,7 @@ my $validYears = '2015';
 # findMinMaxNCharVals();
 # listSpecificNormalizedValues();
 # findMutuallyValidChars();
-listSpecificNormalizedValues([20,40,42],[600,609]);
+listSpecificNormalizedValues([20,40,42],[600,609], 1);
 
 # my $test1 = [20];
 # my $test2 = [600,609];
@@ -1227,7 +1231,7 @@ sub getTrueCensus2011Pops{
 sub listSpecificNormalizedValues{
 	my $normalized = normalizeCensusValues();
 
-	my ($charParams, $munParams) = @_;
+	my ($charParams, $munParams, $printOutput) = @_;
 	my $validPassedParams = 0;
 
 	if(! defined $munParams){
@@ -1328,6 +1332,23 @@ sub listSpecificNormalizedValues{
 	my $munName;
 	my $munNames;
 
+	my $chosenOutput;
+	# $chosenOutput structure:
+	# 1st Dim: characteristic choice index of $charChoiceArr
+	# 	2nd Dim:
+	# 		0: characteristic information
+	# 			0: characteristic id
+	# 			1: characteristic value
+	#		1: municipality choice index of $munChoiceArr
+	# 			0: municipality information
+	# 				0: municipality id
+	# 				1: municipality name
+	# 			1: normalized results for current municipality
+	# 				1: Total
+	# 				2: Male
+	# 				3: Female
+
+
 	# For each given census characteristic choice, get the appropriate values
 	for(my $choiceIdx = 0; $choiceIdx < @{$charChoiceArr}; $choiceIdx++){
 		# Gets name for chosen census characteristic:
@@ -1338,7 +1359,11 @@ sub listSpecificNormalizedValues{
 		$charValue = trim($charValue);
 
 		# Prints results:
-		print "Characteristic $charChoiceArr->[$choiceIdx] ($charValue):\n";
+		if($printOutput){
+			print "Characteristic $charChoiceArr->[$choiceIdx] ($charValue):\n";
+		}
+		$chosenOutput->[$choiceIdx][0][0] = $charChoiceArr->[$choiceIdx];
+		$chosenOutput->[$choiceIdx][0][1] = $charValue;
 
 		for(my $m_id_idx = 0; $m_id_idx < @{$munChoiceArr}; $m_id_idx++){
 			$SQL = "select name from municipalities where id = '$munChoiceArr->[$m_id_idx]'";
@@ -1347,13 +1372,24 @@ sub listSpecificNormalizedValues{
 			$munName = $sth->fetchall_arrayref()->[0][0];
 			$munNames->[$m_id_idx] =trim($munName);
 
-			print "Municipality $munChoiceArr->[$m_id_idx] ($munNames->[$m_id_idx]):\n";
+			if($printOutput){
+				print "Municipality $munChoiceArr->[$m_id_idx] ($munNames->[$m_id_idx]):\n";
+			}
+			$chosenOutput->[$choiceIdx][1][0][0] = $munChoiceArr->[$m_id_idx];
+			$chosenOutput->[$choiceIdx][1][0][1] = $munNames->[$m_id_idx];
+
 			for(my $inner = 1; $inner < 4; $inner++){
-				print "\t" . $innerNames->[$inner] . ": " . $normalized->[$munChoiceArr->[$m_id_idx]][$charChoiceArr->[$choiceIdx]][$inner] . "\n";
+				if($printOutput){
+					print "\t" . $innerNames->[$inner] . ": " . $normalized->[$munChoiceArr->[$m_id_idx]][$charChoiceArr->[$choiceIdx]][$inner] . "\n";
+				}
+				$chosenOutput->[$choiceIdx][1][1][$inner] = $normalized->[$munChoiceArr->[$m_id_idx]][$charChoiceArr->[$choiceIdx]][$inner];
 			}
 		}
-		print "\n";
+		if($printOutput){
+			print "\n";
+		}
 	}
+	return $chosenOutput;
 }
 
 # Takes an array and element, returns whether the element is present within the array.
