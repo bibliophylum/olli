@@ -129,8 +129,19 @@
 		- Rid 'normalized' array from 'normalizeCensusValues' sub reallocation/duplication across all subs.
 
 	V20 (2017.07.28):
-		- 'listSpecificNormalizedValues' sub now takes boolean value as 3rd parameter, determines whether the results will be printed to the screen.
+		- 'listSpecificNormalizedValues' sub now takes boolean value as 1st parameter, determines whether the results will be printed to the screen.
 		- 'listSpecificNormalizedValues' sub now returns output in standardized structure, specified within the sub.
+
+	V21 (2017.07.28):
+		- Census characteristic id check error fixed in 'listSpecificNormalizedValues' sub.
+		- 'munCensusSorting' sub now allows census entries that have a "Total" subvalue of 0.
+		- 'censusMun' sub deleted.
+		- Odd behaviour with municipality id 2, where every census characteristic is seen as valid, even though they are not. This municipality shouldn't even get through munCensusSorting, as its year is 2014.
+			- Possible issue with initial $SQL in 'munCensusSorting' sub, not joining mun_cen and municipalities correctly.
+			- Instead of 2 (2014 year), the 2011 municipality has an id of 458.
+			- Even if those municipalities are blocked altogether, 'findMutuallyValidChars' sub still sees municipality id 2 to be valid (through inspection of the array 'normalized'). Although, the sub 'normalizeCensusValues' that passes the array 'normalized' to 'findMutuallyValidChars' sub doesn't see municipality id 2 to be valid. It seems to be the only value that does this, oddly enough, everything else is fine.
+			- For now, this municipality is manually invalidated in 'findMutuallyValidChars', but it may be a symptom of a larger issue.
+		- Minor cleansing all around.
 
 =end comment
 =cut
@@ -170,9 +181,14 @@ my $validYears = '2015';
 # test2();
 # normalizeCensusValues();
 # findMinMaxNCharVals();
-# listSpecificNormalizedValues();
 # findMutuallyValidChars();
-listSpecificNormalizedValues([20,40,42],[600,609], 1);
+# listSpecificNormalizedValues(1);
+
+# If calling 'listSpecificNormalizedValues' sub with pre-chosen values, populate both $charIds and $munIds.
+# If either are empty or contain an invalid value, you will be asked to manually supply values for each.
+my $charIds = [20,40,42];
+my $munIds = [2,609];
+listSpecificNormalizedValues(1,$charIds,$munIds);
 
 # my $test1 = [20];
 # my $test2 = [600,609];
@@ -725,207 +741,10 @@ sub censusTest{
 	}
 }
 
-sub censusMun{
-	dbPrepare();
-
-	my $SQL_branchesSelect = ", b.year as b_year, b.id as b_id, b.library_id as b_library_id, b.municipality_id as b_municipality_id,
-	b.name as b_name, cast(b.annual_rent as decimal(10,2)) as b_annual_rent, b.floor_space as b_floor_space, b.active_memberships as b_active_memberships,
-	b.nonresident_single_memberships as b_nonresident_single_memberships, b.nonresident_family_memberships as b_nonresident_family_memberships";
-
-	my $SQL_branchesJoin = " inner join branches as b on b.municipality_id = m.id and b.year = '2011'";
-
-	my $SQL = "select census_year.value as cen_year_id,
-	c.total as c_total, c.male as c_male, c.female as c_female, c.division_id as c_division_id, c.subdivision_id as c_subdivision_id,
-	m.id as m_id, m.year as m_year, m.name as m_name, m.population as m_population,
-	census_characteristics.id as census_char_id,
-	census_characteristics.value as census_char_value
-	from mun_cen
-	inner join census as c on mun_cen.census_subdivision_id = c.subdivision_id
-	inner join census_year on c.year_id = census_year.id
-	inner join municipalities as m on mun_cen.municipality_id = m.id and m.year = '2011'
-	inner join census_characteristics on c.characteristics_id = census_characteristics.id";
-
-	$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
-	$sth->execute() or die "Execute exception: $DBI::errstr";
-
-	my $arr = $sth->fetchall_arrayref();
-	my $arrNames = $sth->{NAME};
-	my $arrTypes = $sth->{pg_type};
-
-	# for(my $n = 0; $n < @{$arrNames}; $n++){
-	# 	print $arrNames->[$n] . " ($arrTypes->[$n])\n";
-	# }
-
-	# my $charValIdx = firstidx { $_ eq 'census_char_value' } @$arrNames;
-	my $totalIdx = firstidx { $_ eq 'c_total'} @$arrNames;
-	my $maleIdx = firstidx { $_ eq 'c_male'} @$arrNames;
-	my $femaleIdx = firstidx { $_ eq 'c_female'} @$arrNames;
-	my $characterIdIdx = firstidx { $_ eq 'census_char_id'} @$arrNames;
-	my $divIdx = firstidx { $_ eq 'c_division_id'} @$arrNames;
-	my $subDivIdx = firstidx { $_ eq 'c_subdivision_id'} @$arrNames;
-
-	my $m_idIdx = firstidx { $_ eq 'm_id'} @$arrNames;
-	my $m_popIdx = firstidx { $_ eq 'm_population'} @$arrNames;
-
-	my @censusMunVals;
-	my @currentArr;
-	my $currentRow;
-
-	my $current_m_id;
-	my $current_char_id;
-
-	my $censusMunValidList;
-	my $censusMunSizeList;
-
-	my $numTuples = 0;
-
-	my @censusOutput;
-	my $censusValidVals;
-	my $censusValidValsIdx;
-	my $censusValidChars;
-
-	# Holds population of each valid municipality
-	my $munValidVals;
-	my $munNumValidVals = 0;
-
-	# Gathering all unique municipality ids that show up in the census data
-	for(my $n = 0; $n < @{$arr}; $n++){
-		
-		$currentRow = $arr->[$n];
-
-		# Only views census values that are valid
-		# (ie, at least total > 0 and all values at least defined as a number)
-		if(defined $currentRow->[$totalIdx]
-			&& !($currentRow->[$totalIdx] eq '')
-			&& $currentRow->[$totalIdx] !=0
-			&& defined $currentRow->[$maleIdx]
-			&& !($currentRow->[$maleIdx] eq '')
-			&& defined $currentRow->[$femaleIdx]
-			&& !($currentRow->[$femaleIdx] eq '')
-			){
-
-			@currentArr = [
-				$currentRow->[$m_popIdx],
-				$currentRow->[$totalIdx],
-				$currentRow->[$maleIdx],
-				$currentRow->[$femaleIdx]
-			];
-
-			$current_m_id = $arr->[$n][$m_idIdx];
-			$current_char_id = $currentRow->[$characterIdIdx];
-
-			push @{$censusMunVals
-				[$current_m_id]
-				[$current_char_id]},
-				@currentArr;
-
-			# print "m_id: $current_m_id\n";
-			# print "c_idIdx: $current_char_id\n";
-
-			$censusMunValidList->[$current_m_id] = 1;
-			$censusMunSizeList->[$current_m_id]++;
-
-			$munValidVals->[$munNumValidVals] = $currentRow->[$m_popIdx];
-			$munNumValidVals++;
-
-			$censusValidChars->[$n+1] = 1;
-
-			# my $outerSize = $censusMunSizeList->[$current_m_id];
-			# my $innerSize = @{$censusMunVals
-			# 	[$current_m_id]
-			# 	[$current_char_id]};
-
-			if(defined $censusValidVals->[$current_char_id][0]){
-				$censusValidValsIdx = @{$censusValidVals->[$current_char_id][0]};
-			}
-			else{
-				$censusValidValsIdx = 0;
-			}
-			# print "censusValidValsIdx: $censusValidValsIdx\n";
-
-			$censusValidVals->[$current_char_id][0][$censusValidValsIdx] = $currentRow->[$totalIdx];
-			$censusValidVals->[$current_char_id][1][$censusValidValsIdx] = $currentRow->[$maleIdx];
-			$censusValidVals->[$current_char_id][2][$censusValidValsIdx] = $currentRow->[$femaleIdx];
-
-			$numTuples++;
-			# print "outerSize: $outerSize, innerSize: $innerSize, numTuples: $numTuples\n";
-			# print "\n";
-			# <STDIN>;
-		}
-	}
-	
-	# <STDIN>;
-	my $censusNames = [
-		$arrNames->[$totalIdx],
-		$arrNames->[$maleIdx],
-		$arrNames->[$femaleIdx]
-	];
-
-	my $resRows;
-	my $listIdx = 0;
-	for($current_char_id = 1; $current_char_id < @{$censusValidVals}; $current_char_id++){
-		if(defined $censusValidVals->[$current_char_id]){
-			$resRows = @{$censusValidVals->[$current_char_id][0]};
-			for(my $innerValIdx = 0; $innerValIdx < 3; $innerValIdx++){
-				# print "computeSingleAvgSD for census $current_char_id.$innerValIdx\n";
-				computeSingleAvgSD(
-					"census",	#table
-					$current_char_id . "_" . $innerValIdx . "($censusNames->[$innerValIdx])",	#field
-					$resRows,	#resRows
-					$censusValidVals->[$current_char_id][$innerValIdx],	#fieldArr
-					$censusValidVals->[$current_char_id][$innerValIdx],	#resValidTuples
-					$resRows,	#resNumValidTuples
-					$listIdx,	#listIdx
-					\@censusOutput	#givenOutput
-					);
-				
-				print "$censusOutput[$listIdx][0][0]: $censusOutput[$listIdx][0][1]\n";
-				print "$censusOutput[$listIdx][1][0]: $censusOutput[$listIdx][1][1]\n";
-				print "\n";
-				$listIdx++;
-				# <STDIN>;
-			}
-		}
-	}
-
-	my @munOutput;
-	$listIdx = 0;
-
-	computeSingleAvgSD(
-		"municipalities",
-		"population",
-		$munNumValidVals,
-		$munValidVals,
-		$munValidVals,
-		$munNumValidVals,
-		$listIdx,
-		\@munOutput
-		);
-
-	# my @censusMunComputeOutput;
-	# for(my $char_id = 0; $char_id < 254; $char_id++){
-	# 	if($censusValidChars->[$char_id]){
-	# 		censusMunComputePairPCC(
-	# 			\@censusMunVals,	#censusMunVals
-	# 			$char_id,	#char_id
-	# 			$censusMunValidList,
-	# 			$censusMunSizeList,
-	# 			0,	#pairListIdx
-	# 			\@censusMunComputeOutput	#givenOutput
-	# 			);
-
-	# 		print "$munOutput[$listIdx][0][0]: $munOutput[$listIdx][0][1]\n";
-	# 		print "$munOutput[$listIdx][1][0]: $munOutput[$listIdx][1][1]\n";
-	# 	}
-	# }
-
-	print "Done.\n";
-}
-
 sub munCensusSorting{
 	# dbPrepare();
 
-	my $SQL = "select census_year.value as cen_year_id,
+	my $SQL = "select census_year.value as cen_year_value,
 	c.total as c_total, c.male as c_male, c.female as c_female, c.division_id as c_division_id, c.subdivision_id as c_subdivision_id,
 	m.id as m_id, m.year as m_year, m.name as m_name, m.population as m_population,
 	census_characteristics.id as census_char_id,
@@ -938,7 +757,6 @@ sub munCensusSorting{
 
 	$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
 	$sth->execute() or die "Execute exception: $DBI::errstr";
-
 	my $arr = $sth->fetchall_arrayref();
 	my $arrNames = $sth->{NAME};
 	my $arrTypes = $sth->{pg_type};
@@ -949,46 +767,45 @@ sub munCensusSorting{
 	my $characterIdIdx = firstidx { $_ eq 'census_char_id'} @$arrNames;
 	my $divIdx = firstidx { $_ eq 'c_division_id'} @$arrNames;
 	my $subDivIdx = firstidx { $_ eq 'c_subdivision_id'} @$arrNames;
+	my $c_yearIdx = firstidx { $_ eq 'cen_year_value'} @$arrNames;
 
 	my $m_idIdx = firstidx { $_ eq 'm_id'} @$arrNames;
 	my $m_popIdx = firstidx { $_ eq 'm_population'} @$arrNames;
+	my $m_yearIdx = firstidx { $_ eq 'm_year'} @$arrNames;
 
-	my @censusMunVals;
-	my @currentArr;
-	my $currentRow;
-
+	my @censusMunVals; # Holds all valid data in standard format
+	my @currentArr; # Temporary storage of array to be pushed to @censusMunVals
+	my $currentRow; # Temporary storage of tuple
 	my $current_m_id;
 	my $current_char_id;
-
-	my $censusMunValidList;
-	my $censusMunSizeList;
-
-	my $censusValidChars;
-
-	my $munValidVals;
-	my $munNumValidVals = 0;
 
 	# Gathering all unique municipality ids that show up in the census data
 	for(my $n = 0; $n < @{$arr}; $n++){
 		$currentRow = $arr->[$n];
-		# print "n: $n\n";
 
 		# Only views census values that are valid
-		# (ie, at least total > 0 and all values at least defined as a number)
+		# (ie, all values at least defined as a number and at least total > 0)
 		if(defined $currentRow->[$totalIdx]
 			&& !($currentRow->[$totalIdx] eq '')
-			&& $currentRow->[$totalIdx] !=0
+			# && $currentRow->[$totalIdx] !=0
 			&& defined $currentRow->[$maleIdx]
 			&& !($currentRow->[$maleIdx] eq '')
 			&& defined $currentRow->[$femaleIdx]
 			&& !($currentRow->[$femaleIdx] eq '')
+			# && $currentRow->[$m_yearIdx] eq $currentRow->[$c_yearIdx]
+			# && $currentRow->[$c_yearIdx] eq '2011'
+			&& $currentRow->[$m_yearIdx] eq '2011'
+			&& $currentRow->[$subDivIdx] != 9
 			){
+				if($currentRow->[$subDivIdx] == 9){
+					print "for mun 2, char $currentRow->[$characterIdIdx] is valid.\n";
+					print "year: " . $currentRow->[$m_yearIdx] . "\n";
+					exit 0;
+				}
 
 			# $SQL = "select c.total from census as c inner join mun_cen on mun_cen.census_subdivision_id = c.subdivision_id and c.subdivision_id = '$currentRow->[$subDivIdx]' inner join municipalities as m on m.id = mun_cen.municipality_id";
-			
 			# $sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
 			# $sth->execute() or die "Execute exception: $DBI::errstr";
-
 			# my $censusPop = $sth->fetchall_arrayref();
 
 			@currentArr = [
@@ -1005,31 +822,17 @@ sub munCensusSorting{
 				[$current_m_id]
 				[$current_char_id]},
 				@currentArr;
-
-			$censusMunValidList->[$current_m_id] = 1;
-			$censusMunSizeList->[$current_m_id]++;
-			$munValidVals->[$munNumValidVals] = $currentRow->[$m_popIdx];
-			$munNumValidVals++;
-			$censusValidChars->[$n+1] = 1;
-
-			# print "current_char_id: $current_char_id, current_m_id: $current_m_id\n";
-			# <STDIN>;
 		}
 	}
-	# print "$censusMunVals[557][8][0][2]\n";
+	# <STDIN>;
 	return @censusMunVals;
 }
 
 # Links appropriate library id's to census data joined with municipalities.
 sub linkLibsMuns{
-	# dbPrepare();
+	my $censusMunVals = @_;
 
-	my ($censusMunVals) = @_;
-	# my @censusMunVals = munCensusSorting();
-	# print "$censusMunVals[557][8][0][0]\n";
-
-	my $SQL = "select id as b_id, year as b_year, library_id as l_id, municipality_id	as m_id from branches where municipality_id is not null";
-
+	my $SQL = "select id as b_id, year as b_year, library_id as l_id, municipality_id as m_id from branches where municipality_id is not null";
 	$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
 	$sth->execute() or die "Execute exception: $DBI::errstr";
 	my $branches = $sth->fetchall_arrayref();
@@ -1056,13 +859,12 @@ sub linkLibsMuns{
 			$links->[$l_id][$linkSubSize] = $censusMunVals->[$m_id];
 		}
 	}
-
 	return $links;
 }
 
 # Calculates average municipality population, given a list of municipality populations.
 sub calculateAvgMunPops{
-	my ($censusMunVals) = @_;
+	my $censusMunVals = @_;
 
 	my $SQL = "select id, population from municipalities";
 	$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
@@ -1078,7 +880,6 @@ sub calculateAvgMunPops{
 			if($censusMunVals->[$munTable->[$row][0]] > $max){
 				$max = $censusMunVals->[$munTable->[$row][0]];
 			}
-			
 			$sum += $munTable->[$row][1];
 			$numMuns++;
 		}
@@ -1111,7 +912,7 @@ sub normalizeCensusValues{
 	dbPrepare();
 
 	my @censusMunVals = munCensusSorting();
-	my @normalized; # Holds normalized values for each valid census characteristic subvalue for each valid municipality (range of 0 -> 1)
+	my $normalized; # Holds normalized values for each valid census characteristic subvalue for each valid municipality (range of 0 -> 1)
 	my $charMinMax; # Holds min ([0]) and max ([1]) for each subvalue of each census characteristic.
 	my $currentPop; # Used in loops to reduce text and declarations.
 
@@ -1119,6 +920,14 @@ sub normalizeCensusValues{
 	for(my $m_id = 1; $m_id < @censusMunVals; $m_id++){
 		if(defined $censusMunVals[$m_id]){
 			# print "Normalizing values of municipality $m_id\n";
+			# <STDIN>;
+
+			if($m_id == 2){
+				print "normalizeCensusValues sub (1): m_id of 2 is seen as valid!\n";
+				# print "Aborting!\n";
+				# exit 0;
+			}
+
 			for(my $c_id = 1; $c_id < @{$censusMunVals[$m_id]}; $c_id++){
 				if(defined $censusMunVals[$m_id][$c_id]){
 					# print "m_id $m_id\'s currentPop: $currentPop\n";
@@ -1147,24 +956,38 @@ sub normalizeCensusValues{
 		}
 	}
 
+	# my $testValid;
+	# if (! defined $censusMunVals[2]){
+	# 	$testValid = 0;
+	# }
+	# else{
+	# 	$testValid = 1;
+	# }
+	# print "m_id of 2 valid: " . $testValid . "\n";
+
 	# Applying first normalization step to census/municipality characteristic subvalues.
 	for(my $m_id = 1; $m_id < @censusMunVals; $m_id++){
 		if(defined $censusMunVals[$m_id]){
+			if($m_id == 2){
+				print "normalizeCensusValues sub (2): m_id of 2 is seen as valid!\n";
+				# print "Aborting!\n";
+				# exit 0;
+			}
 			# print "Normalizing values of municipality $m_id\n";
 			for(my $c_id = 1; $c_id < @{$censusMunVals[$m_id]}; $c_id++){
 				if(defined $censusMunVals[$m_id][$c_id]){
 					for(my $inner = 1; $inner < 4; $inner++){
 						$currentPop = $censusMunVals[$m_id][8][0][$inner];
 						if($charMinMax->[$c_id][$inner][0] == $charMinMax->[$c_id][$inner][1]){
-							$normalized[$m_id][$c_id][$inner] = 0.5;
+							$normalized->[$m_id][$c_id][$inner] = 0.5;
 						}
 						else{
-							$normalized[$m_id][$c_id][$inner] = 
+							$normalized->[$m_id][$c_id][$inner] = 
 								((($censusMunVals[$m_id][$c_id][0][$inner]/$currentPop)-$charMinMax->[$c_id][$inner][0]) /
 								($charMinMax->[$c_id][$inner][1] - $charMinMax->[$c_id][$inner][0]));
 
 							# if($m_id == 609 && $c_id == 69){
-							# 	print "c_id: $c_id.$inner, pop: $currentPop, val: $censusMunVals[$m_id][$c_id][0][$inner], norm: $normalized[$m_id][$c_id][$inner], min: $charMinMax->[$c_id][$inner][0], max: $charMinMax->[$c_id][$inner][1]\n";
+							# 	print "c_id: $c_id.$inner, pop: $currentPop, val: $censusMunVals[$m_id][$c_id][0][$inner], norm: $normalized->[$m_id][$c_id][$inner], min: $charMinMax->[$c_id][$inner][0], max: $charMinMax->[$c_id][$inner][1]\n";
 							# 	<STDIN>;
 							# }
 						}
@@ -1173,7 +996,7 @@ sub normalizeCensusValues{
 			}
 		}
 	}
-	return \@normalized;
+	return $normalized;
 }
 
 # Calculates average of each (Total, Male, Female) across all valid censusMunVals, stores averages in similar structure to censusMunVals.
@@ -1231,42 +1054,24 @@ sub getTrueCensus2011Pops{
 sub listSpecificNormalizedValues{
 	my $normalized = normalizeCensusValues();
 
-	my ($charParams, $munParams, $printOutput) = @_;
-	my $validPassedParams = 0;
+	my ($printOutput, $charParams, $munParams) = @_;
+	my $validPassedParams = 0; # Boolean for whether passed parameters combination is valid.
 
-	if(! defined $munParams){
-		# print "munInput not defined!\n";
-	}
-	if(! defined $charParams){
-		# print "charInput not defined!\n";
-	}
-
-	if(defined $munParams && defined $charParams && @{$munParams} > 0 && @{$charParams} > 0){
-		if(checkCharValidity($normalized, $charParams, $munParams)){
-			$validPassedParams = 1;
-			# print "valid\n";
-			# exit 0;
-		}
-		else{
-			# print "not valid\n";
-			# exit 0;
-		}
+	if(checkCharValidity($normalized, $charParams, $munParams)){
+		$validPassedParams = 1;
 	}
 	
 	my $munChoiceArr;
 	my $mutuallyValidChars;
-	
 	my $munList;
 	my $charList;
-	my $munChoice;
-	my $charChoice;
-
-	my $charChoiceArr;
+	my $tempChoice; # Temporarily holds user input of municipality id
+	my @charChoiceArr;
 
 	# Use passed parameters as chosen municipality and census characteristics indices.
 	if($validPassedParams){
 		$munChoiceArr = $munParams;
-		$charChoiceArr = $charParams;
+		@charChoiceArr = @{$charParams};
 
 	}
 	else{
@@ -1293,16 +1098,16 @@ sub listSpecificNormalizedValues{
 		# Currently does not protect from the same value occuring more than once in @charChoiceArr.
 		print "\nContinue entering census characteristics by typing in one at a time from the list of the id's above. Enter \"end\" once you're finished.\n";
 		do{
-			print "\n(" . @{$charChoiceArr} . ") Enter a valid characteristic id: ";
-			$charChoice = <STDIN>;
-			chomp $charChoice;
-			trim($charChoice);
+			print "\n(" . @charChoiceArr . ") Enter a valid characteristic id: ";
+			$tempChoice = <STDIN>;
+			chomp $tempChoice;
+			trim($tempChoice);
 
-			if((!looks_like_number($charChoice))
-				|| ! defined $mutuallyValidChars->[$charChoice]
-				|| $charChoice < 1){
+			if((!looks_like_number($tempChoice))
+				|| ! $mutuallyValidChars->[$tempChoice]
+				|| $tempChoice < 1){
 			
-				if(uc($charChoice) eq uc("end")){
+				if(uc($tempChoice) eq uc("end")){
 					$more = 0;
 				}
 				else{
@@ -1310,9 +1115,9 @@ sub listSpecificNormalizedValues{
 				}
 			}
 			else{
-				$charChoice += 0; # Easy method of removing leading zeros, else the same characteristic id could be entered multiple times.
-				if(!checkArrForElem($charChoiceArr, $charChoice)){
-					$charChoiceArr->[@{$charChoiceArr}] = $charChoice;
+				$tempChoice += 0; # Easy method of removing leading zeros, else the same characteristic id could be entered multiple times.
+				if(!checkArrForElem(\@charChoiceArr, $tempChoice)){
+					$charChoiceArr[@charChoiceArr] = $tempChoice;
 					# push (@charChoiceArr, $charChoice);
 				}
 				else{
@@ -1322,6 +1127,7 @@ sub listSpecificNormalizedValues{
 		}while($more);
 	}
 
+	# Names of census characteristic subvalues.
 	my $innerNames = [
 		'',
 		'Total',
@@ -1338,7 +1144,7 @@ sub listSpecificNormalizedValues{
 	# 	2nd Dim:
 	# 		0: characteristic information
 	# 			0: characteristic id
-	# 			1: characteristic value
+	# 			1: characteristic value (name of the characteristic)
 	#		1: municipality choice index of $munChoiceArr
 	# 			0: municipality information
 	# 				0: municipality id
@@ -1348,11 +1154,10 @@ sub listSpecificNormalizedValues{
 	# 				2: Male
 	# 				3: Female
 
-
 	# For each given census characteristic choice, get the appropriate values
-	for(my $choiceIdx = 0; $choiceIdx < @{$charChoiceArr}; $choiceIdx++){
+	for(my $choiceIdx = 0; $choiceIdx < @charChoiceArr; $choiceIdx++){
 		# Gets name for chosen census characteristic:
-		$SQL = "select value from census_characteristics where id = '$charChoiceArr->[$choiceIdx]'";
+		$SQL = "select value from census_characteristics where id = '$charChoiceArr[$choiceIdx]'";
 		$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
 		$sth->execute() or die "Execute exception: $DBI::errstr";
 		my $charValue = $sth->fetchall_arrayref()->[0][0];
@@ -1360,9 +1165,9 @@ sub listSpecificNormalizedValues{
 
 		# Prints results:
 		if($printOutput){
-			print "Characteristic $charChoiceArr->[$choiceIdx] ($charValue):\n";
+			print "Characteristic $charChoiceArr[$choiceIdx] ($charValue):\n";
 		}
-		$chosenOutput->[$choiceIdx][0][0] = $charChoiceArr->[$choiceIdx];
+		$chosenOutput->[$choiceIdx][0][0] = $charChoiceArr[$choiceIdx];
 		$chosenOutput->[$choiceIdx][0][1] = $charValue;
 
 		for(my $m_id_idx = 0; $m_id_idx < @{$munChoiceArr}; $m_id_idx++){
@@ -1380,9 +1185,9 @@ sub listSpecificNormalizedValues{
 
 			for(my $inner = 1; $inner < 4; $inner++){
 				if($printOutput){
-					print "\t" . $innerNames->[$inner] . ": " . $normalized->[$munChoiceArr->[$m_id_idx]][$charChoiceArr->[$choiceIdx]][$inner] . "\n";
+					print "\t" . $innerNames->[$inner] . ": " . $normalized->[$munChoiceArr->[$m_id_idx]][$charChoiceArr[$choiceIdx]][$inner] . "\n";
 				}
-				$chosenOutput->[$choiceIdx][1][1][$inner] = $normalized->[$munChoiceArr->[$m_id_idx]][$charChoiceArr->[$choiceIdx]][$inner];
+				$chosenOutput->[$choiceIdx][1][1][$inner] = $normalized->[$munChoiceArr->[$m_id_idx]][$charChoiceArr[$choiceIdx]][$inner];
 			}
 		}
 		if($printOutput){
@@ -1406,22 +1211,31 @@ sub checkArrForElem{
 # Allows the user to choose multiple valid municipalities, then finds all census characteristics that are valid across all chosen municipalities.
 # Returns the list of valid municipality choices and the list of census characteristics that are valid across all chosen municipalities.
 sub findMutuallyValidChars{
-	# my $normalized = ${@_};
 	my $normalized = shift;
 
 	my $munList;
 	my $charList;
-	my $charChoice;
 	my $munChoice;
 	my @munChoiceArr;
+	my $more = 1;
+	my $current_m_id;
+	my $mutuallyValidChars;
+
+	# PATCHWORK, NOT OPTIMAL
+	undef $normalized->[2];
 
 	# Gathers id and name from all valid municipalities.
 	for(my $m_id = 0; $m_id < @{$normalized}; $m_id++){
 		if(defined $normalized->[$m_id]){
+			if($m_id == 2){
+				print "findMutuallyValidChars: m_id of 2 is seen as valid!\n\n";
+				# print "Aborting!\n";
+				# exit 0;
+			}
 			$SQL = "select id, name from municipalities where id = '$m_id'";
-
 			$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
 			$sth->execute() or die "Execute exception: $DBI::errstr";
+
 			$munList->[@{$munList}] = $sth->fetchall_arrayref()->[0];
 		}
 	}
@@ -1431,7 +1245,6 @@ sub findMutuallyValidChars{
 		print $munList->[$n][0] . ": " . $munList->[$n][1] . "\n";
 	}
 
-	my $more = 1;
 	print "\nContinue entering municipalities by typing in one at a time from the list of the id's above. Enter \"end\" once you're finished.\n";
 	do{
 		print "\n(" . @munChoiceArr . ") Enter a valid municipality id: ";
@@ -1461,10 +1274,7 @@ sub findMutuallyValidChars{
 		}
 	}while($more);
 
-	my $current_m_id;
-	my $mutuallyValidChars;
-
-	# Finds max(id) instead of count(id) as there could possibly be gaps, but we address each census characteristic by the actual id.
+	# Uses max(id) instead of count(id) as there could possibly be gaps, but we address each census characteristic by the actual id.
 	$SQL = "select max(id) from census_characteristics";
 	$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
 	$sth->execute() or die "Execute exception: $DBI::errstr";
@@ -1480,11 +1290,7 @@ sub findMutuallyValidChars{
 		$current_m_id = $munChoiceArr[$m_id_idx];
 		for(my $c_id = 0; $c_id < @{$normalized->[$current_m_id]}; $c_id++){
 			if(! defined $normalized->[$current_m_id][$c_id]){
-				# if($mutuallyValidChars->[$c_id]){
-				# 	print "Invalidating c_id $c_id\n";
-				# }
 				$mutuallyValidChars->[$c_id] = 0;
-
 			}
 		}
 	}
@@ -1499,15 +1305,16 @@ sub findMutuallyValidChars{
 			$charList->[@{$charList}] = $sth->fetchall_arrayref()->[0];
 		}
 	}
-
 	return (\@munChoiceArr, $mutuallyValidChars);
 }
 
+# Returns 1 if passed census characteristics and municipality choices are valid together, else returns 0.
 sub checkCharValidity{
-	# my ($normalized, $munChoiceArr, $charChoiceArr) = @_;
-	my $normalized = shift;
-	my $charChoiceArr = shift;
-	my $munChoiceArr = shift;
+	my ($normalized, $charChoiceArr, $munChoiceArr) = @_;
+
+	if(! defined $charChoiceArr || ! defined $munChoiceArr || @{$charChoiceArr} < 1 || @{$munChoiceArr} < 1){
+		return 0; # Not valid or not specified
+	}
 
 	for(my $c_id_idx = 0; $c_id_idx < @{$charChoiceArr}; $c_id_idx++){
 		for(my $m_id_idx = 0; $m_id_idx < @{$munChoiceArr}; $m_id_idx++){
@@ -1534,7 +1341,6 @@ sub findMinMaxNCharVals{
 	my $SQL = "select id, name from municipalities";
 	$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
 	$sth->execute() or die "Execute exception: $DBI::errstr";
-
 	my $muns = $sth->fetchall_arrayref();
 
 	my $munList;
@@ -1579,6 +1385,7 @@ sub findMinMaxNCharVals{
 		}
 	}
 
+	# Names of census characteristic subvalues.
 	my $innerNames = [
 		'',
 		'Total',
@@ -1586,7 +1393,7 @@ sub findMinMaxNCharVals{
 		'Female'
 	];
 
-	# @normalizedFilter stores only the valid census characteristics' values
+	# @normalizedFilter holds only the valid census characteristics' values
 	my @normalizedFilter;
 	my $filterSize = 0;
 	for(my $c_id = 0; $c_id < @{$normalized->[$munChoice]}; $c_id++){
@@ -1678,8 +1485,6 @@ sub trim {
 
 sub pairAnalysis{
 	my ($pairList, $numPairs, $pairListIdx, $refOutput) = @_;
-	# my @pairList = @$refPairList;
-	# my $output = @$refOutput;
 
 	my $xt = $pairList->[$pairListIdx][0];
 	my $xfield = $pairList->[$pairListIdx][1];
@@ -1805,7 +1610,6 @@ sub pairAnalysis{
 					. " ,$xt.id as x_id"
 					. " ,$yt.id as y_id"
 					. " ,CAST($yfield as decimal(10,2))"
-					#. " ,$yt.*"
 					. " FROM $xt"
 					. $joinSQL
 					. " where $xt.year = $yt.year and '$validYears' like '%' || $xt.year || '%'";
@@ -1818,7 +1622,6 @@ sub pairAnalysis{
 					. " ,$xt.id as x_id"
 					. " ,$yt.id as y_id"
 					. " ,CAST($yfield as decimal(10,2))"
-					#. " ,$yt.*"
 					. " FROM $xt"
 					. $joinSQL
 					. " where '$validYears' like '%' || $xt.year || '%'";
@@ -1831,7 +1634,6 @@ sub pairAnalysis{
 					. " ,$xt.id as x_id"
 					. " ,$yt.id as y_id"
 					. " ,CAST($yfield as decimal(10,2))"
-					#. " ,$yt.*"
 					. " FROM $xt"
 					. $joinSQL
 					. " where '$validYears' like '%' || $yt.year || '%'";
@@ -1846,7 +1648,6 @@ sub pairAnalysis{
 					. " ,$yt.id as y_id"
 					. " ,CAST($yfield as decimal(10,2))"
 					. " from $xt"
-					# . " $yt.* FROM $xt"
 					. $joinSQL;
 			}
 			# print "\nSQL: $SQL\n\n";
@@ -1863,9 +1664,6 @@ sub pairAnalysis{
 	# }
 
 	my $resRows = @res;
-
-
-
 	# print "rows = $resRows\n";
 	my $resCols = @{$res[0]};
 	# print "cols = $resCols\n";
@@ -1998,7 +1796,6 @@ sub computeSingleAvgSD{
 
 	$SD /= $resNumValidTuples;
 	$SD = sqrt($SD);
-
 
 	my $outputElemIdx;
 	if(defined $givenOutput->[$listIdx]){
@@ -2159,7 +1956,6 @@ sub computeSpearmanRCC{
 # Stores values that are interpreted as invalid.
 sub errorOutput{
 	my ($xt, $xfield, $yt, $yfield, $pairListIdx, $givenOutput) = @_;
-	# my $output = @$givenOutput;
 
 	$givenOutput->[$pairListIdx][0][0] = $xt . "." . $xfield . '_Avg';
 	$givenOutput->[$pairListIdx][1][0] = $xt . "." . $xfield . '_SD';
@@ -2187,30 +1983,11 @@ sub censusMunComputePairPCC{
 		$pairListIdx,
 		$givenOutput) = @_;
 
-	# my $munField
-
-	# @currentArr = [
-	# 	$currentRow->[$m_popIdx],
-	# 	$currentRow->[$totalIdx],
-	# 	$currentRow->[$maleIdx],
-	# 	$currentRow->[$femaleIdx]
-	# ];
-
-	# push @{$censusMunVals
-	# 	[$current_m_id]
-	# 	[$current_char_id]},
-	# 	@currentArr;
-
 	my $munAvg = 0;
 	my $munSD = 0;
-
 	my $censusAvgsArr;
 	my $SDarr;
-
 	my $censusMunNumValid = 0;
-
-	# print "char_id: $char_id\n";
-	# <STDIN>;	
 
 	# Does not take into account any census entries other than the first for each mun for each characteristic,
 	# as there really shouldn't be more than one. More than one means that the same census row was entered more than once,
@@ -2220,7 +1997,7 @@ sub censusMunComputePairPCC{
 		for(my $m_id = 1; $m_id < @{$censusMunVals}; $m_id++){
 			# print "\t1m_id: $m_id\n";
 			if($censusMunValidList->[$m_id] && defined $censusMunVals->[$m_id][$char_id]){
-				$censusAvgsArr->[$innerVal] += $censusMunVals->[$m_id][$char_id][0][$innerVal];
+				$censusAvgsArr->[$innerVal] += $censusMunVals->[$m_id][$char_id][$innerVal];
 				$censusMunNumValid++;
 			}
 		}
@@ -2236,7 +2013,7 @@ sub censusMunComputePairPCC{
 		for(my $m_id = 1; $m_id < @{$censusMunVals}; $m_id++){
 			# print "\t2m_id: $m_id\n";
 			if($censusMunValidList->[$m_id] && defined $censusMunVals->[$m_id][$char_id]){
-				$SDarr->[$innerVal] += ($censusMunVals->[$m_id][$char_id][0][$innerVal]
+				$SDarr->[$innerVal] += ($censusMunVals->[$m_id][$char_id][$innerVal]
 					- $censusAvgsArr->[$innerVal])**2;
 			}
 		}
@@ -2247,7 +2024,7 @@ sub censusMunComputePairPCC{
 
 	for(my $m_id = 1; $m_id < @{$censusMunVals}; $m_id++){
 		if($censusMunValidList->[$m_id]){
-			$munAvg += $censusMunVals->[$m_id][$char_id][0][0];
+			$munAvg += $censusMunVals->[$m_id][$char_id][0];
 		}
 	}
 
@@ -2256,7 +2033,7 @@ sub censusMunComputePairPCC{
 
 	for(my $m_id = 1; $m_id < @{$censusMunVals}; $m_id++){
 		if($censusMunValidList->[$m_id] && defined $censusMunVals->[$m_id][$char_id]){
-			$munSD += ($censusMunVals->[$m_id][$char_id][0][0] - $munAvg)**2;
+			$munSD += ($censusMunVals->[$m_id][$char_id][0] - $munAvg)**2;
 			# print "pop of mun $m_id: $censusMunVals->[$m_id][$char_id][0][0]\n";
 			# print "Additional SD: " . ($censusMunVals->[$m_id][$char_id][0][0] - $munAvg)**2 . "\n";
 			# print "munSD = $munSD\n";
@@ -2277,17 +2054,17 @@ sub censusMunComputePairPCC{
 		for(my $m_id = 1; $m_id < @{$censusMunVals}; $m_id++){
 			if($censusMunValidList->[$m_id] && defined $censusMunVals->[$m_id][$char_id]){
 				# print "Valid m_id: $m_id\n";
-				my $p11 = $censusMunVals->[$m_id][$char_id][0][$innerVal];
+				my $p11 = $censusMunVals->[$m_id][$char_id][$innerVal];
 				my $p12 = $censusAvgsArr->[$innerVal];
 
-				my $p21 = $censusMunVals->[$m_id][$char_id][0][0];
+				my $p21 = $censusMunVals->[$m_id][$char_id][0];
 				my $p22 = $munAvg;
 
 				my $p3 = ($munSD * $SDarr->[$innerVal]);
 
-				$PCC = (($censusMunVals->[$m_id][$char_id][0][$innerVal]
+				$PCC = (($censusMunVals->[$m_id][$char_id][$innerVal]
 					- $censusAvgsArr->[$innerVal])
-					* ($censusMunVals->[$m_id][$char_id][0][0] - $munAvg)) /
+					* ($censusMunVals->[$m_id][$char_id][0] - $munAvg)) /
 					  ($munSD * $SDarr->[$innerVal]);
 
 				$PCCarr->[$innerVal] += $PCC;
