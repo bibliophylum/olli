@@ -129,7 +129,7 @@
 		- Rid 'normalized' array from 'normalizeCensusValues' sub reallocation/duplication across all subs.
 
 	V20 (2017.07.28):
-		- 'listSpecificNormalizedValues' sub now takes boolean value as 1st parameter, determines whether the results will be printed to the screen.
+		- 'listSpecificNormalizedValues' sub now takes a boolean value as 1st parameter, determines whether the results will be printed to the screen.
 		- 'listSpecificNormalizedValues' sub now returns output in standardized structure, specified within the sub.
 
 	V21 (2017.07.28):
@@ -137,11 +137,16 @@
 		- 'munCensusSorting' sub now allows census entries that have a "Total" subvalue of 0.
 		- 'censusMun' sub deleted.
 		- Odd behaviour with municipality id 2, where every census characteristic is seen as valid, even though they are not. This municipality shouldn't even get through munCensusSorting, as its year is 2014.
-			- Possible issue with initial $SQL in 'munCensusSorting' sub, not joining mun_cen and municipalities correctly.
+			- Possible issue with initial $SQL in 'munCensusSorting' sub not joining mun_cen and municipalities correctly.
 			- Instead of 2 (2014 year), the 2011 municipality has an id of 458.
 			- Even if those municipalities are blocked altogether, 'findMutuallyValidChars' sub still sees municipality id 2 to be valid (through inspection of the array 'normalized'). Although, the sub 'normalizeCensusValues' that passes the array 'normalized' to 'findMutuallyValidChars' sub doesn't see municipality id 2 to be valid. It seems to be the only value that does this, oddly enough, everything else is fine.
 			- For now, this municipality is manually invalidated in 'findMutuallyValidChars', but it may be a symptom of a larger issue.
 		- Minor cleansing all around.
+
+	V22 (2017.07.31):
+		- 'findMutuallyValidChars' sub modified to allow passed municipality ids param.
+			- Checks if each id is valid. If so, continues, else asks for manual entry of valid municipalities.
+			- 1st param to 'findMutuallyValidChars' sub determines whether any results are printed to screen.
 
 =end comment
 =cut
@@ -174,21 +179,22 @@ my $validYears = '2015';
 # GET();
 # allPairs();
 # censusTest();
-# censusMun();
 # munCensusSorting();
 # linkLibsMuns();
 # calculateAvgMunPops();
-# test2();
 # normalizeCensusValues();
 # findMinMaxNCharVals();
 # findMutuallyValidChars();
-# listSpecificNormalizedValues(1);
+# listSpecificNormalizedValues(1,[],[]);
 
 # If calling 'listSpecificNormalizedValues' sub with pre-chosen values, populate both $charIds and $munIds.
 # If either are empty or contain an invalid value, you will be asked to manually supply values for each.
+my $printOutput = 1;
 my $charIds = [20,40,42];
-my $munIds = [2,609];
-listSpecificNormalizedValues(1,$charIds,$munIds);
+my $munIds = [609];
+listSpecificNormalizedValues($printOutput,$charIds,$munIds);
+
+$dbh->disconnect;
 
 # my $test1 = [20];
 # my $test2 = [600,609];
@@ -215,7 +221,6 @@ sub dbPrepare{
 sub GET {
 	my ($self, $request, $response) = @_ ;
 	dbPrepare();
-
 
 	my @pairList = (
 		[
@@ -1053,29 +1058,23 @@ sub getTrueCensus2011Pops{
 # Shows normalized values for (Total, Male, Female) for the given municipality's given characteristics.
 sub listSpecificNormalizedValues{
 	my $normalized = normalizeCensusValues();
-
 	my ($printOutput, $charParams, $munParams) = @_;
-	my $validPassedParams = 0; # Boolean for whether passed parameters combination is valid.
 
-	if(checkCharValidity($normalized, $charParams, $munParams)){
-		$validPassedParams = 1;
-	}
-	
 	my $munChoiceArr;
 	my $mutuallyValidChars;
 	my $munList;
 	my $charList;
 	my $tempChoice; # Temporarily holds user input of municipality id
 	my @charChoiceArr;
+	my $more = 1; # Whether there is more user input to be received.
 
-	# Use passed parameters as chosen municipality and census characteristics indices.
-	if($validPassedParams){
+	# If valid choices, use passed parameters as chosen municipality and census characteristics indices.
+	if(checkCharValidity($normalized, $charParams, $munParams)){
 		$munChoiceArr = $munParams;
 		@charChoiceArr = @{$charParams};
-
 	}
 	else{
-		($munChoiceArr, $mutuallyValidChars) = findMutuallyValidChars($normalized);
+		($munChoiceArr, $mutuallyValidChars) = findMutuallyValidChars($printOutput, $normalized, $munParams);
 
 		for(my $c_id = 0; $c_id < @{$mutuallyValidChars}; $c_id++){
 			if($mutuallyValidChars->[$c_id]){
@@ -1087,12 +1086,10 @@ sub listSpecificNormalizedValues{
 		}
 
 		# Prints all valid census characteristics (for the chosen municipality) for the user to choose from.
-		print "\n\n";
+		print "\nPossible census characteristics:\n";
 		for(my $n = 0; $n < @{$charList}; $n++){
 			print $charList->[$n][0] . ": " . $charList->[$n][1] . "\n";
 		}
-
-		my $more = 1;
 
 		# Gets valid census characteristic id choices from user:
 		# Currently does not protect from the same value occuring more than once in @charChoiceArr.
@@ -1125,6 +1122,7 @@ sub listSpecificNormalizedValues{
 				}
 			}
 		}while($more);
+		print "\n";
 	}
 
 	# Names of census characteristic subvalues.
@@ -1153,6 +1151,11 @@ sub listSpecificNormalizedValues{
 	# 				1: Total
 	# 				2: Male
 	# 				3: Female
+
+
+	if($printOutput){
+		print "Results:\n";
+	}
 
 	# For each given census characteristic choice, get the appropriate values
 	for(my $choiceIdx = 0; $choiceIdx < @charChoiceArr; $choiceIdx++){
@@ -1211,68 +1214,84 @@ sub checkArrForElem{
 # Allows the user to choose multiple valid municipalities, then finds all census characteristics that are valid across all chosen municipalities.
 # Returns the list of valid municipality choices and the list of census characteristics that are valid across all chosen municipalities.
 sub findMutuallyValidChars{
-	my $normalized = shift;
-
+	my ($printOutput, $normalized, $munParams) = @_;
+	
 	my $munList;
 	my $charList;
 	my $munChoice;
-	my @munChoiceArr;
 	my $more = 1;
 	my $current_m_id;
 	my $mutuallyValidChars;
 
-	# PATCHWORK, NOT OPTIMAL
+	# PATCHWORK, NOT OPTIMAL!
+	# Municipality id of 2 is getting through as valid, even though it should have been disregarded from the start. The reason for this is unknown.
 	undef $normalized->[2];
 
-	# Gathers id and name from all valid municipalities.
-	for(my $m_id = 0; $m_id < @{$normalized}; $m_id++){
-		if(defined $normalized->[$m_id]){
-			if($m_id == 2){
-				print "findMutuallyValidChars: m_id of 2 is seen as valid!\n\n";
-				# print "Aborting!\n";
-				# exit 0;
+	my $munChoiceArr = [];
+	
+	if(checkMunValidity($normalized, $munParams)){
+		$munChoiceArr = $munParams;
+	}
+	else{
+		# Gathers id and name from all valid municipalities.
+		for(my $m_id = 0; $m_id < @{$normalized}; $m_id++){
+			if(defined $normalized->[$m_id]){
+				if($m_id == 2){
+					print "findMutuallyValidChars: m_id of 2 is seen as valid!\n\n";
+					# print "Aborting!\n";
+					# exit 0;
+				}
+				$SQL = "select id, name from municipalities where id = '$m_id'";
+				$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
+				$sth->execute() or die "Execute exception: $DBI::errstr";
+
+				$munList->[@{$munList}] = $sth->fetchall_arrayref()->[0];
 			}
-			$SQL = "select id, name from municipalities where id = '$m_id'";
-			$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
-			$sth->execute() or die "Execute exception: $DBI::errstr";
-
-			$munList->[@{$munList}] = $sth->fetchall_arrayref()->[0];
 		}
-	}
 
-	# Prints all valid municipalities for the user to choose from.
-	for(my $n = 0; $n < @{$munList}; $n++){
-		print $munList->[$n][0] . ": " . $munList->[$n][1] . "\n";
-	}
+		if($printOutput){
+			# Prints all valid municipalities for the user to choose from.
+			print "Valid municipalities:\n";
+			for(my $n = 0; $n < @{$munList}; $n++){
+				print $munList->[$n][0] . ": " . $munList->[$n][1] . "\n";
+			}
+		}
 
-	print "\nContinue entering municipalities by typing in one at a time from the list of the id's above. Enter \"end\" once you're finished.\n";
-	do{
-		print "\n(" . @munChoiceArr . ") Enter a valid municipality id: ";
-		$munChoice = <STDIN>;
-		chomp $munChoice;
-		trim($munChoice);
+		print "\nContinue entering municipalities by typing in one at a time from the list of the id's above. Enter \"end\" once you're finished.\n";
+		do{
+			print "\n(" . @{$munChoiceArr} . ") Enter a valid municipality id: ";
+			$munChoice = <STDIN>;
+			chomp $munChoice;
+			trim($munChoice);
 
-		if((!looks_like_number($munChoice))
-			|| ! defined $normalized->[$munChoice]
-			|| $munChoice < 1){
-		
-			if(uc($munChoice) eq uc("end")){
-				$more = 0;
+			if((!looks_like_number($munChoice))
+				|| ! defined $normalized->[$munChoice]
+				|| $munChoice < 1){
+			
+				if(uc($munChoice) eq uc("end")){
+					if(@{$munChoiceArr} == 0){
+						print "Must enter at least one valid municipality id!\n";
+					}
+					else{
+						$more = 0;
+					}
+				}
+				else{
+					print "Not a valid characteristic id!\n";
+				}
 			}
 			else{
-				print "Not a valid characteristic id!\n";
+				$munChoice += 0; # Easy method of removing leading zeros, else the same characteristic id could be entered multiple times.
+				if(!checkArrForElem($munChoiceArr, $munChoice)){
+					$munChoiceArr->[@{$munChoiceArr}] = $munChoice;
+					# push (@munChoiceArr, $munChoice);
+				}
+				else{
+					print "Chosen municipality id has already been recorded!\n";
+				}
 			}
-		}
-		else{
-			$munChoice += 0; # Easy method of removing leading zeros, else the same characteristic id could be entered multiple times.
-			if(!checkArrForElem(\@munChoiceArr, $munChoice)){
-				push (@munChoiceArr, $munChoice);
-			}
-			else{
-				print "Chosen municipality id has already been recorded!\n";
-			}
-		}
-	}while($more);
+		}while($more);
+	}
 
 	# Uses max(id) instead of count(id) as there could possibly be gaps, but we address each census characteristic by the actual id.
 	$SQL = "select max(id) from census_characteristics";
@@ -1286,8 +1305,8 @@ sub findMutuallyValidChars{
 	}
 
 	# Gathers id and value from all valid census characteristics (for the chosen municipality).
-	for(my $m_id_idx = 0; $m_id_idx < @munChoiceArr; $m_id_idx++){
-		$current_m_id = $munChoiceArr[$m_id_idx];
+	for(my $m_id_idx = 0; $m_id_idx < @{$munChoiceArr}; $m_id_idx++){
+		$current_m_id = $munChoiceArr->[$m_id_idx];
 		for(my $c_id = 0; $c_id < @{$normalized->[$current_m_id]}; $c_id++){
 			if(! defined $normalized->[$current_m_id][$c_id]){
 				$mutuallyValidChars->[$c_id] = 0;
@@ -1305,10 +1324,32 @@ sub findMutuallyValidChars{
 			$charList->[@{$charList}] = $sth->fetchall_arrayref()->[0];
 		}
 	}
-	return (\@munChoiceArr, $mutuallyValidChars);
+	return ($munChoiceArr, $mutuallyValidChars);
 }
 
-# Returns 1 if passed census characteristics and municipality choices are valid together, else returns 0.
+# Returns 1 if the passed municipality id choices are valid, else returns 0.
+sub checkMunValidity{
+	my ($normalized, $munChoiceArr) = @_;
+	# print "in checkMunValidity\n";
+
+	if(@{$munChoiceArr} < 1){
+		return 0;
+	}
+
+	for(my $m_id_idx = 0; $m_id_idx < @{$munChoiceArr}; $m_id_idx++){
+		if(
+			! defined $munChoiceArr->[$m_id_idx]
+			|| ! looks_like_number($munChoiceArr->[$m_id_idx])
+			|| ! defined $normalized->[$munChoiceArr->[$m_id_idx]]
+			|| $munChoiceArr->[$m_id_idx] < 1
+			){
+				return 0;
+		}
+	}
+	return 1;
+}
+
+# Returns 1 if the passed census characteristics and municipality choices are valid together, else returns 0.
 sub checkCharValidity{
 	my ($normalized, $charChoiceArr, $munChoiceArr) = @_;
 
@@ -1319,11 +1360,13 @@ sub checkCharValidity{
 	for(my $c_id_idx = 0; $c_id_idx < @{$charChoiceArr}; $c_id_idx++){
 		for(my $m_id_idx = 0; $m_id_idx < @{$munChoiceArr}; $m_id_idx++){
 			if(
-				! looks_like_number($charChoiceArr->[$c_id_idx])
+				! defined $charChoiceArr->[$c_id_idx]
+				|| ! defined $munChoiceArr->[$m_id_idx]
+				|| ! looks_like_number($charChoiceArr->[$c_id_idx])
 				|| ! looks_like_number($munChoiceArr->[$m_id_idx])
-				|| ! defined $normalized->[$munChoiceArr->[$m_id_idx]][$charChoiceArr->[$c_id_idx]]
 				|| $charChoiceArr->[$c_id_idx] < 1
 				|| $munChoiceArr->[$m_id_idx] < 1
+				|| ! defined $normalized->[$munChoiceArr->[$m_id_idx]][$charChoiceArr->[$c_id_idx]]
 				){
 				return 0; # Not valid choices lists
 			}
