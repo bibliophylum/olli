@@ -19,5 +19,9 @@ olliApp.controller('NavController', ['$scope', '$location', function ($scope, $l
     $scope.loadLibraries = function () {
         $location.url('/libraries');
     };
+
+    $scope.loadCensusEntry = function () {
+        $location.url('/censusNormalization');
+    };
     
 }]);

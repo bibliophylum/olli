@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<script>
+// Submit on enter key in munID textbox
+document.getElementById("munTextbox")
+    .addEventListener("keyup", function(event) {
+    event.preventDefault();
+    if (event.keyCode == 13) {
+        document.getElementById("submitButton").click();
+    }
+});
+
+// Submit on enter key in charID textbox
+document.getElementById("charTextbox")
+    .addEventListener("keyup", function(event) {
+    event.preventDefault();
+    if (event.keyCode == 13) {
+        document.getElementById("submitButton").click();
+    }
+});
+</script>
+
+<script
+src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js">
+</script>
+
+<body>
+
+<div class="container-fluid">
+
+	You may enter multiple ID's for each, with each ID separated by a space. (Valid values: munID = 600, charID = 20)<br><br>
+	munID: <input type="value" ng-model="munID" id="munTextbox"><br>
+	charID: <input type="value" ng-model="charID" id="charTextbox"><br>
+	<br>
+	<input type="button" ng-click="getCensusValues()" value="Compute (Enter)" id="submitButton">
+	<br><br>
+	Raw Output: {{output}}<br><br>
+	Status: {{status}}<br><br>
+	<!--{{output[0][0][0]}}-->
+
+	<!--Only displaying the first values for the first municipality-->
+	<tr ng-repeat="mun in output">
+		<table border="1" cellpadding="10">
+			<caption>{{output[0][0][1]}}</caption>
+			<thead>
+				<tr>
+			<th>Characteristic</th>
+			<th>Total</th>
+			<th>Male</th>
+			<th>Female</th>
+			<!--<th>{{mun.data[0][1]}}</th>-->
+			<!--<th>{{output[0][0][1]}}</th>-->
+				</tr>
+			</thead>
+			<tbody>
+
+			<td>{{output[0][1][0][0][1]}}</td>
+			<td>{{output[0][1][0][1][1]}}</td>
+			<td>{{output[0][1][0][1][2]}}</td>
+			<td>{{output[0][1][0][1][3]}}</td>
+			</tbody>
+		</table>
+	</tr>
+
+</div>
+
+</body>
+</html>

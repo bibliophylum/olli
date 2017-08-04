@@ -8,6 +8,7 @@ use Olli::REST::API::libraries;
 use Olli::REST::API::libraries::library;
 use Olli::REST::API::branches;
 use Olli::REST::API::branches::branch;
+use Olli::REST::API::censusNormalization;
 
 use base qw/Apache2::REST::Handler/;
 
@@ -34,6 +35,8 @@ sub buildNext{
 	$subh = Olli::REST::API::libraries->new($self) ;
     } elsif ($frag eq "branches") {
 	$subh = Olli::REST::API::branches->new($self) ;
+    } elsif ($frag eq "censusNormalization") {
+	$subh = Olli::REST::API::censusNormalization->new($self) ;
     }
 
 #    $subh->{'userid'} = $frag  ;

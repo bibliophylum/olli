@@ -28,7 +28,12 @@ olliApp.config(function ($routeProvider,$locationProvider) {
 	    controller: 'BranchController',
 	    templateUrl: 'partials/branch.html?v=11'
 	})
-        .otherwise({ redirectTo: '/municipalities' });
+	//.when('/censusCorrelate/:charID/:munID', {
+	.when('/censusNormalization', {
+	    controller: 'censusNormalizationController',
+	    templateUrl: 'partials/censusNormalization.html'
+	})
+    .otherwise({ redirectTo: '/municipalities' });
 
     /* you can pass parameters to a route like this:
        .when("/customer/:customerID", { ... });
@@ -106,3 +111,18 @@ olliApp.factory('branchFactory', ['$http', function($http) {
     return branchFactory;
 }]);
 
+//-----------------------------------------------------------------------
+olliApp.factory('cenFactory', ['$http', function($http) {
+
+    var urlBase = '/api/censusNormalization';
+    var cenFactory = {};
+
+    cenFactory.getValues = function (charID, munID) {
+        return $http({
+			url: urlBase,
+			method: "GET",
+			params: {charID: charID, munID: munID}});
+    };
+
+    return cenFactory;
+}]);

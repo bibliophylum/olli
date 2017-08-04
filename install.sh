@@ -18,7 +18,8 @@ sudo mkdir /opt/olli
 echo Changing ownership...
 echo Enter username: 
 read username
-#sudo chown david:david /opt/olli
+# username='itinerant'
+# username='david'
 sudo chown $username:$username /opt/olli
 
 echo Copying from dev...
