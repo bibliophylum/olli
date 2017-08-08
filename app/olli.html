@@ -27,7 +27,8 @@
     <script src="/controllers/LibrariesController.js"></script>
     <script src="/controllers/LibraryController.js"></script>
     <script src="/controllers/BranchController.js"></script>
-    <script src="/controllers/censusNormalizationController.js"></script>    
+    <script src="/controllers/censusNormalizationController.js"></script>
+    <script src="/controllers/munGroupingController.js"></script>
 
     <script src="/geo/geoMunData.js"></script> <!-- defines geoMunData -->
     <script src="/geo/geoProvBoundary.js"></script>
@@ -53,6 +54,7 @@
 	    <li ng-class="navClass('municipalities')"><a href='' ng-click="loadMunicipalities()">Municipalities</a></li>
 	    <li ng-class="navClass('libraries')"><a href='' ng-click="loadLibraries()">Libraries</a></li>
 	    <li ng-class="navClass('censusNormalization')"><a href='' ng-click="loadCensusEntry()">Census</a></li>
+    	<li ng-class="navClass('munGrouping')"><a href='' ng-click="loadMunGrouping()">Municipality Grouping</a></li>
 	  </ul>
 	</div>
  

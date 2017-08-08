@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<script>
+// Submit on enter key in munID textbox
+document.getElementById("munTextbox")
+    .addEventListener("keyup", function(event) {
+    event.preventDefault();
+    if (event.keyCode == 13) {
+        document.getElementById("submitButton").click();
+    }
+});
+</script>
+
+<script
+src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js">
+</script>
+
+<body>
+
+<div class="container-fluid">
+
+	You may enter multiple municipality ID's, with each ID separated by a space. (Valid values: munID = 600 610)<br><br>
+	munID: <input type="value" ng-model="munID" id="munTextbox"><br>
+	<br>
+	<input type="button" ng-click="group()" value="Compute (Enter)" id="submitButton">
+	<br><br>
+	Raw Output: {{rawOutput}}<br><br>
+	<!--Output: {{output}}<br><br>-->
+	Status: {{status}}<br><br>
+
+	<!--Only displaying the first characteristic-->
+	<tr>
+		<table border="1" cellpadding="10">
+			<caption>Combined (Only First)</caption>
+			<thead>
+				<tr>
+			<th>Characteristic</th>
+			<th>Total</th>
+			<th>Male</th>
+			<th>Female</th>
+				</tr>
+			</thead>
+			<tbody>
+
+			<td>{{rawOutput[0][0]}}</td>
+			<td>{{rawOutput[0][1][1]}}</td>
+			<td>{{rawOutput[0][1][2]}}</td>
+			<td>{{rawOutput[0][1][3]}}</td>
+			</tbody>
+		</table>
+	</tr>
+	<br>
+
+</div>
+
+</body>
+</html>

@@ -155,6 +155,9 @@
 	V24 (2017.08.02):
 		- All subs related to census data moved to censusCorrelate.pm
 
+	V25 (2017.08.08):
+		- Old/useless code removed.
+
 =end comment
 =cut
 
@@ -164,9 +167,6 @@ use strict;
 use base qw/Apache2::REST::Handler/;
 use DBI;
 use List::MoreUtils qw(firstidx);
-# use Heap::Binary;
-# use Array::Heap;
-# use Heap::Elem::Num;
 use Heap::Simple;
 use Scalar::Util qw(looks_like_number);
 
@@ -183,7 +183,7 @@ my $numValidOutput;
 # If $validYears = '', there is no filtering by year.
 my $validYears = '2015';
 
-# Names of census characteristic subvalues.
+# Names of census characteristic subvalues. The first value is a spacer, may be used for the municipality's population.
 my $innerNames = [
 	'',
 	'Total',
@@ -192,11 +192,7 @@ my $innerNames = [
 ];
 
 # GET();
-# allPairs();
-# censusTest();
-# calculateAvgMunPops();
-
-# $dbh->disconnect;
+allPairs();
 
 sub dbPrepare{
 	my $database = "olli";
@@ -244,13 +240,11 @@ sub GET {
 		pairAnalysis(\@pairList, $iter, \@output);
 
 		for(my $i = 0; $i < @{$output[$iter]}; $i++){
-			# print "output[$i] = " . $output[$iter][$i][1] . "\n";
 			printf "%s: %.3f\n", $output[$iter][$i][0], $output[$iter][$i][1];
 		}
 	}
 	
 	$dbh->disconnect;
-	print "\nEnd of script\n";
 	return Apache2::Const::HTTP_OK ;
 }
 
@@ -260,34 +254,19 @@ sub allPairs{
 	my @pairList;
 
 	$SQL = "select table_name from information_schema.tables where table_schema = 'public' and table_catalog = 'olli'"
-		#. " and table_name not like '%' || 'census' || '%'"
 		. " and table_name not like 'contact'"
 		. " and table_name not like 'mun_geo'"
 		. " and table_name not like 'mun_cen'"
-		#. " and table_name not like 'financial'"
 		. " and table_name not like 'technology'"
-		#. " and table_name not like 'social_media'"
-		#. " and table_name not like 'activities'"
 		;
 	$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
 	$sth->execute() or die "Execute exception: $DBI::errstr";
 	my $dbTables = $sth->fetchall_arrayref();
-	# my $dbTablesNames = $sth->{NAME};
 	
 	my @dbStructure;
 
 	for(my $n = 0; $n < @$dbTables; $n++){
-		# print @$dbTablesNames[$n] . "\n";
 		$dbStructure[$n][0] = $dbTables->[$n][0];
-		# print @$dbTables[$n] . "\n";
-		# print "TABLE: $dbStructure[$n][0]\n";
-
-		# $SQL = "select column_name from information_schema.columns where table_name = '$dbStructure[$n][0]'
-		# 	and column_name not like '%' || '_id' || '%'
-		# 	and column_name not like 'year'
-		# 	and column_name not like 'name'
-		# 	and column_name not like 'ils'
-		# 	and column_name not like '%' || 'is_' || '%'";
 		
 		$SQL = "select attname
 			from pg_attribute
@@ -322,30 +301,21 @@ sub allPairs{
 		my $dbStructure_mIndex = 0;
 		for(my $m = 0; $m < $#{ $data }; $m++){
 			if($dataTypes->[$m][1] eq 'integer' || $dataTypes->[$m][1] eq 'money' || $dataTypes->[$m][1] eq 'numeric'){
-				# print "\tIS, $data->[$m][0]\n";
-				# print "data->[$m][0] = " . $data->[$m][0] . "\n";
 				$dbStructure[$n][1][$dbStructure_mIndex] = $data->[$m][0];
-				# print $data->[$m][0] . "\n";
-				# print "\t" . $dbStructure[$n][1][$dbStructure_mIndex] . "\n";
 				$dbStructure_mIndex++;
 			}
 			else{
-				# print "\tNOT, $data->[$m][0]\n";
 			}
 		}
 	}
 
 	# Pair up all useful columns
 	my $numTables = @dbStructure;
-	# print "\nnumTables: $numTables\n";
 	
 	my $pairIdx = 0;
 	my $numPairs = 0;
 	for(my $n = 0; $n < $numTables; $n++){
-		# print "n = $n\n";
 		for(my $m = 0; defined $dbStructure[$n][1] && $m < @{$dbStructure[$n][1]}; $m++){
-			# print "\tm = $m\n";
-
 			# Pairs each column with each other column within the same table, no duplication
 			for(my $m2 = $m + 1; $m2 < @{$dbStructure[$n][1]}; $m2++){
 				$pairList[$pairIdx++] = 
@@ -356,16 +326,10 @@ sub allPairs{
 						$dbStructure[$n][1][$m2]
 					];
 				$numPairs++;
-				# print "\t\tpairIdx = $pairIdx\n";
-				# print "\t\t$dbStructure[$n][0]\n";
-				# print "\t\t$dbStructure[$n][1][$m]\n";
-				# print "\t\t$dbStructure[$n][0]\n";
-				# print "\t\t$dbStructure[$n][1][$m2]\n";
 			}
 
 			# Pairs each column with each column not in the same table, no duplication
 			for(my $n2 = $n + 1; $n2 < $numTables; $n2++){
-				# print "  n2 = $n2\n";
 
 				for(my $m2 = $m + 1; defined $dbStructure[$n2][1] &&  $m2 < @{$dbStructure[$n2][1]}; $m2++){
 					$pairList[$pairIdx++] = 
@@ -376,11 +340,6 @@ sub allPairs{
 							$dbStructure[$n2][1][$m2]
 						];
 					$numPairs++;
-					# print "\t\tpairIdx = $pairIdx\n";
-					# print "\t\t$dbStructure[$n][0]\n";
-					# print "\t\t$dbStructure[$n][1][$m]\n";
-					# print "\t\t$dbStructure[$n2][0]\n";
-					# print "\t\t$dbStructure[$n2][1][$m2]\n";
 				}
 			}
 		}
@@ -418,329 +377,6 @@ sub allPairs{
 	print "Number valid output pairs: $numValidOutput\n";
 
 	$dbh->disconnect;
-	print "\nEnd of script.\n";
-}
-
-sub censusTest{
-	dbPrepare();
-
-	my $SQL_branchesSelect = ", b.year as b_year, b.id as b_id, b.library_id as b_library_id, b.municipality_id as b_municipality_id,
-	b.name as b_name, cast(b.annual_rent as decimal(10,2)) as b_annual_rent, b.floor_space as b_floor_space, b.active_memberships as b_active_memberships,
-	b.nonresident_single_memberships as b_nonresident_single_memberships, b.nonresident_family_memberships as b_nonresident_family_memberships";
-
-	my $SQL_branchesJoin = " inner join branches as b on b.municipality_id = m.id and b.year = '2011'";
-
-	my $SQL = "select mun_cen.municipality_id as mun_id, census_year.value as cen_year_id,
-	c.total as c_total, c.male as c_male, c.female as c_female, c.division_id as c_division_id, c.subdivision_id as c_subdivision_id,
-	m.id as m_id, m.year as m_year, m.name as m_name, m.population as m_population"
-	. $SQL_branchesSelect . 
-	", census_characteristics.id as census_char_id,
-	census_characteristics.value as census_char_value
-	from mun_cen
-	inner join census as c on mun_cen.census_subdivision_id = c.subdivision_id
-	inner join census_year on c.year_id = census_year.id
-	inner join municipalities as m on mun_cen.municipality_id = m.id
-	inner join census_characteristics on c.characteristics_id = census_characteristics.id"
-	. $SQL_branchesJoin;
-
-	$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
-	$sth->execute() or die "Execute exception: $DBI::errstr";
-
-	my $arr = $sth->fetchall_arrayref();
-	my $arrNames = $sth->{NAME};
-	my $arrTypes = $sth->{pg_type};
-
-	# for(my $n = 0; $n < @{$arrNames}; $n++){
-	# 	print $arrNames->[$n] . " ($arrTypes->[$n])\n";
-	# }
-
-	# my $charValIdx = firstidx { $_ eq 'census_char_value' } @$arrNames;
-	my $totalIdx = firstidx { $_ eq 'c_total'} @$arrNames;
-	my $maleIdx = firstidx { $_ eq 'c_male'} @$arrNames;
-	my $femaleIdx = firstidx { $_ eq 'c_female'} @$arrNames;
-	my $characterIdIdx = firstidx { $_ eq 'census_char_id'} @$arrNames;
-	my $rentIdx = firstidx { $_ eq 'b_annual_rent'} @$arrNames;
-	my $floorSpaceIdx = firstidx { $_ eq 'b_floor_space'} @$arrNames;
-	my $actvMemIdx = firstidx { $_ eq 'b_active_memberships'} @$arrNames;
-	my $nonResSingMemIdx = firstidx { $_ eq 'b_nonresident_single_memberships'} @$arrNames;
-	my $nonResFamlMemIdx = firstidx { $_ eq 'b_nonresident_family_memberships'} @$arrNames;
-
-	my $varsList = [
-		$rentIdx,
-		$floorSpaceIdx,
-		$actvMemIdx,
-		$nonResSingMemIdx,
-		$nonResFamlMemIdx
-		];
-
-	my $divIdx = firstidx { $_ eq 'c_division_id'} @$arrNames;
-	my $subDivIdx = firstidx { $_ eq 'c_subdivision_id'} @$arrNames;
-
-	my $censusValsList;
-	#  $censusValsList layout:
-	# 
-	# Dim1: census_characteristics.id
-	# Dim2: 
-	# 	0: Descriptor of census values (total, male, female)
-	# 	1: Actual census values in Dim3.Dim4 subarray
-	# 	2: Number of elements in specific Dim3 subarrays
-	# Dim3:
-	# 	0: Specifier of which census value subarray (total, male, female)
-	# Dim4:
-	# 	0->n: Census values 
-
-	my $censusDefined;
-	my $sumList;
-	my $censusValidIdxs;
-	my $numValid;
-
-	my $censusHasVals;
-	my $censusValNames = [
-		"Total",
-		"Male",
-		"Female"
-	];
-
-	$SQL = "select id, value from census_characteristics";
-	$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
-	$sth->execute() or die "Execute exception: $DBI::errstr";
-	my $census_charArr = $sth->fetchall_arrayref();
-
-	for(my $n = 1; $n <= @{$census_charArr}; $n++){
-		$censusValsList->[$n][0] = $census_charArr->[$n-1][1];
-		$censusValsList->[$n][2][0] = 0;
-		$censusValsList->[$n][2][1] = 0;
-		$censusValsList->[$n][2][2] = 0;
-	}
-
-	my $currentCharId;
-
-	my $munPopList;
-
-	my $censusStandStructList;
-	my $censusStandStructValidNum = 0;
-
-	# Stores census total/male/female values for each valid row in $arr.
-	for(my $n = 0; $n < @{$arr}; $n++){
-		$numValid = 0;
-		$currentCharId = $arr->[$n][$characterIdIdx];
-		# print "\$currentCharId = $currentCharId\n";
-		# print "\$n = $n\n";
-
-		if(defined $arr->[$n][$totalIdx] && !($arr->[$n][$totalIdx] eq '')){
-			# print "1\n";
-			$censusValsList->[$currentCharId][1][0][$censusValsList->[$currentCharId][2][0]] = $arr->[$n][$totalIdx];
-			
-			$sumList->[0] += $censusValsList->[$currentCharId][1][0][$censusValsList->[$currentCharId][2][0]];
-			if($censusValsList->[$currentCharId][1][0][$censusValsList->[$currentCharId][2][0]] != 0){
-				$numValid++;
-			}
-			$censusDefined->[0]++;
-			$censusHasVals->[$currentCharId][0] = 1;
-			$censusValsList->[$currentCharId][2][0]++;
-
-			# print $censusValsList->[$currentCharId][1][0][$n] . "\t";
-			# print "\$arr->[$n][$totalIdx] = $arr->[$n][$totalIdx]\n";
-			# print "\$censusValsList->[$currentCharId][1][0][$n] = " . $censusValsList->[$currentCharId][1][0][$n] . "\n";
-		}
-		if(defined $arr->[$n][$maleIdx] && !($arr->[$n][$maleIdx] eq '')){
-			# print "\t2\n";
-			$censusValsList->[$currentCharId][1][1][$censusValsList->[$currentCharId][2][1]] = $arr->[$n][$maleIdx];
-			
-			$sumList->[1] += $censusValsList->[$currentCharId][1][1][$censusValsList->[$currentCharId][2][1]];
-			$numValid++;
-			$censusDefined->[1]++;
-			$censusHasVals->[$currentCharId][1] = 1;
-			$censusValsList->[$currentCharId][2][1]++;
-
-			# print $censusValsList->[$currentCharId][1][1][$n] . "\t";
-			# print "\$censusValsList->[$currentCharId][1][1][$n] = " . $censusValsList->[$currentCharId][1][1][$n] . "\n";
-		}
-		if(defined $arr->[$n][$femaleIdx] && !($arr->[$n][$femaleIdx] eq '')){
-			# print "\t\t3\n";
-			$censusValsList->[$currentCharId][1][2][$censusValsList->[$currentCharId][2][2]] = $arr->[$n][$femaleIdx];
-			
-			$sumList->[2] += $censusValsList->[$currentCharId][1][2][$censusValsList->[$currentCharId][2][2]];
-			$numValid++;
-			$censusDefined->[2]++;
-			$censusHasVals->[$currentCharId][2] = 1;
-			$censusValsList->[$currentCharId][2][2]++;
-
-			# print $censusValsList->[$currentCharId][1][2][$n] . "\t";
-			# print "\$censusValsList->[$currentCharId][1][2][$n] = " . $censusValsList->[$currentCharId][1][2][$n] . "\n";
-		}
-
-		if($numValid == 3){
-			$censusValidIdxs->[$n] = 1;
-		}
-		else{
-			$censusValidIdxs->[$n] = 0;
-		}
-		# <STDIN>;
-	}
-
-	for(my $n = 0; $n < @{$arr}; $n++){
-		if($censusValidIdxs->[$n]){
-			$censusStandStructValidNum++;
-			my $currentCharId = $arr->[$n][$characterIdIdx];
-			$censusStandStructList->[$currentCharId][0][$n] = $arr->[$n][$totalIdx];
-			$censusStandStructList->[$currentCharId][1][$n] = $arr->[$n][$maleIdx];
-			$censusStandStructList->[$currentCharId][2][$n] = $arr->[$n][$femaleIdx];
-
-			print "$currentCharId:\t$censusStandStructList->[$currentCharId][0][$n]\t$censusStandStructList->[$currentCharId][1][$n]\t$censusStandStructList->[$currentCharId][2][$n]\n";
-
-			print "size: " . @{$censusStandStructList->[$currentCharId][0]} . "\n\n";
-		}
-	}
-	<STDIN>;
-
-	my @generalOutput;
-
-	my $munIds;
-	my $munVals;
-	my $div;
-	my $subDiv;
-
-	my $SQL_munFields = "municipalities.id, municipalities.year, municipalities.name, municipalities.population";
-
-	$SQL = "select " . $SQL_munFields . " from municipalities where false";
-	$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
-	$sth->execute() or die "Execute exception: $DBI::errstr";
-	my $munNames = $sth->{NAME};
-	$sth->finish();
-
-	my $munIdIdx = firstidx { $_ eq 'id'} @$munNames;
-	my $munPopIdx = firstidx { $_ eq 'population'} @$munNames;
-
-	my $munNumVals = 0;
-	my $munPopVals;
-
-	# Gathering all unique municipality ids that show up in the census data
-	for(my $n = 0; $n < @{$censusValidIdxs}; $n++){
-		# print "$n validity: " . $censusValidIdxs->[$n] . "\n";
-		if($censusValidIdxs->[$n]){
-			$div = $arr->[$n][$divIdx];
-			$subDiv = $arr->[$n][$subDivIdx];
-			# print "div: $div, subDiv: $subDiv\n";
-			if(! defined $munIds->[$div][$subDiv]){
-				
-				print "Defining [$div][$subDiv]\n";
-				
-				$SQL = "select " . $SQL_munFields . " from mun_cen
-				inner join municipalities on mun_cen.municipality_id = municipalities.id
-				and municipalities.year = '2011' and census_division_id = '$div' and census_subdivision_id = '$subDiv'";
-
-				$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
-				$sth->execute() or die "Execute exception: $DBI::errstr";
-
-				# my $test = ;
-				# for(my $mun = 0; $mun < @{$test}; $mun++){
-				# print "$test->[0][0]\n";
-				# }
-				my $data = $sth->fetchall_arrayref()->[0];
-				
-				$munIds->[$div][$subDiv] = $data->[$munIdIdx];
-				$munVals->[$munNumVals] = $data;
-				for(my $val = 0; $val < @{$munVals->[$munNumVals]}; $val++){
-					if(defined $munVals->[$munNumVals][$val]){
-						print "$munNames->[$val]: $munVals->[$munNumVals][$val]\n";
-					}
-				}
-				$munPopVals->[$munNumVals] = $munVals->[$munNumVals][3];
-				$munNumVals++;
-				# print "munNumVals = $munNumVals\n";
-				print "\n";
-				# <STDIN>;
-			}
-		}
-	}
-	<STDIN>;
-	
-	my $listIdx = 0;
-	my @censusOutput;
-	my $censusOutputDesc;
-
-	my $censusOutputIdx = 0;
-	for(my $censusValsIdx = 1; $censusValsIdx <= @{$census_charArr}; $censusValsIdx++){
-		for(my $innerCensusValsIdx = 0; $innerCensusValsIdx < @{$censusValNames}; $innerCensusValsIdx++){
-			if($censusHasVals->[$censusValsIdx][$innerCensusValsIdx]){
-				computeSingleAvgSD('census',
-				"\"" . $censusValsList->[$censusValsIdx][0] . "\"." . $censusValNames->[$innerCensusValsIdx],
-					$censusValsList->[$censusValsIdx][2][$innerCensusValsIdx],
-					$censusValsList->[$censusValsIdx][1][$innerCensusValsIdx],
-					$censusHasVals,
-					$censusValsList->[$censusValsIdx][2][$innerCensusValsIdx],
-					$censusOutputIdx,
-					\@censusOutput);
-
-				print "\$censusOutput[$censusOutputIdx][0][0] = " . $censusOutput[$censusOutputIdx][0][0] . "\n";
-				print "\$censusOutput[$censusOutputIdx][0][1] = " . $censusOutput[$censusOutputIdx][0][1] . "\n";
-				print "\$censusOutput[$censusOutputIdx][1][0] = " . $censusOutput[$censusOutputIdx][1][0] . "\n";
-				print "\$censusOutput[$censusOutputIdx][1][1] = " . $censusOutput[$censusOutputIdx][1][1] . "\n";
-
-				$generalOutput[$censusOutputIdx][0][1] = $censusOutput[$censusOutputIdx][0][1];
-
-				$generalOutput[$censusOutputIdx][1][1] = $censusOutput[$censusOutputIdx][1][1];
-
-				$censusOutputDesc->[$censusOutputIdx][0] = $censusValsList->[$censusValsIdx][0];
-				$censusOutputDesc->[$censusOutputIdx][1] = $censusValNames->[$innerCensusValsIdx];
-
-				$censusOutputIdx++;
-			}
-			print "Done $censusValsIdx.$innerCensusValsIdx\n\n";
-			# <STDIN>;
-		}
-	}
-
-	print "\nCOMPLETED COMPUTATION OF AVERAGES AND STANDARD DEVIATIONS FOR EACH CENSUS VALUE SET.\n\n";
-	
-	my @munOutput;
-	my $munOutputIdx = 0;
-
-	print "\@{\$munPopVals} = " . @{$munPopVals} . "\n";
-	<STDIN>;
-
-	computeSingleAvgSD("municipalities", "population",
-		$munNumVals, $munPopVals,
-		$munPopVals, $munNumVals,
-		$munOutputIdx, \@munOutput);
-
-	for(my $censusIdx = 0; $censusIdx < @censusOutput; $censusIdx++){
-		$generalOutput[$censusIdx][2][1] = $munOutput[$munOutputIdx][0][1];
-		$generalOutput[$censusIdx][3][1] = $munOutput[$munOutputIdx][1][1];
-		for(my $i = 0; $i < 4; $i++){
-			print "\$generalOutput[$censusIdx][$i][1] = $generalOutput[$censusIdx][$i][1]\n";
-		}
-		print "\n";
-	}
-	<STDIN>;
-
-	my $generalOutputIdx;
-
-	for(my $munIdx = 0; $munIdx < @munOutput; $munIdx++){
-		$censusOutputIdx = 0;
-		for(my $censusValsIdx = 1; $censusValsIdx <= @{$census_charArr}; $censusValsIdx++){
-			for(my $innerCensusValsIdx = 0; $innerCensusValsIdx < @{$censusValNames}; $innerCensusValsIdx++){
-				$generalOutputIdx = ($munIdx+1)*($censusValidIdxs*3 + $innerCensusValsIdx);
-				if($censusHasVals->[$censusValsIdx][$innerCensusValsIdx]){
-					print "Computing $censusValsIdx.$innerCensusValsIdx\n";
-					print "yfieldSize: " . @{$censusStandStructList->[1][0]} . "\n";
-					<STDIN>;
-					
-					computePCC(
-						(@censusOutput * @munOutput),
-						$munPopVals,
-						$censusStandStructList->[$censusValsIdx][$innerCensusValsIdx],
-						$censusValidIdxs,
-						$censusStandStructValidNum,
-						$censusOutputIdx,
-						\@generalOutput);
-				
-					$censusOutputIdx++;
-				}
-			}
-		}
-	}
 }
 
 # Calculates average municipality population, given a list of municipality populations.
@@ -859,7 +495,6 @@ sub pairAnalysis{
 		# No year field
 		else{		
 			$SQL = "SELECT CAST($xfield as decimal(10,2)) as x_$xfield,"
-			#. " $xt.year as x_year,"
 			. " $xt.id as x_id, CAST($yfield as decimal(10,2)) FROM $xt";
 		}
 	}
@@ -871,28 +506,6 @@ sub pairAnalysis{
 			return;
 		}
 		else{
-			# for(my $n = 0; $n < @$foreignArrNames; $n++){
-			# 	print $foreignArrNames->[$n] . "\n";
-			# }
-			# print "\n";
-
-			# print "Number of rows: " . @$foreignArr . "\n";
-
-			# for(my $n = 0; defined $foreignArr->[0] && $n < @{$foreignArr->[0]}; $n++){
-			# 	print $foreignArr->[0][$n] . "\n";
-			# }
-			# print "\n";
-
-			# for(my $n = 0; $n < @$foreignArr; $n++){
-			# 	print $foreignArr->[$n][1] . "\n";
-			# }
-			# print "\n";
-
-			# print "\nforeign_xtTableIdx = $foreign_xtTableIdx, $foreignArr->[0][$foreign_xtTableIdx]\n";
-			# print "foreign_xtColIdx = $foreign_xtColIdx, $xt.$foreignArr->[0][$foreign_xtColIdx]\n";
-			# print "foreign_ytTableIdx = $foreign_ytTableIdx, $foreignArr->[0][$foreign_ytTableIdx]\n";
-			# print "foreign_ytColIdx = $foreign_ytColIdx, $yt.$foreignArr->[0][$foreign_ytColIdx]\n\n";
-
 			my $startSQL = "select cast($xfield as decimal(10,2)) as x_$xfield";
 			my $joinSQL;
 
@@ -955,7 +568,6 @@ sub pairAnalysis{
 					. " from $xt"
 					. $joinSQL;
 			}
-			# print "\nSQL: $SQL\n\n";
 		}
 	}
 
@@ -964,16 +576,8 @@ sub pairAnalysis{
 	my @res = @{$sth->fetchall_arrayref()};
 	my $resNames = $sth->{NAME};
 
-	# for(my $n = 0; $n < @$resNames; $n++){
-	# 	print $resNames->[$n] . "\n";
-	# }
-
 	my $resRows = @res;
-	# print "rows = $resRows\n";
 	my $resCols = @{$res[0]};
-	# print "cols = $resCols\n";
-	# print "\nresRows = $resRows\n";
-	# print "resCols = $resCols\n";
 
 	my @resValidTuples;
 	my $resNumValidTuples = 0;
@@ -987,15 +591,15 @@ sub pairAnalysis{
 	for (my $n = 0; $n < $resRows; $n++){
 		# Notes which tuples hold valid values
 		if (#$res->[$n][$res_xtYearIdx] == $validYears &&
-		defined $res[$n][$res_ytIDIdx]
-		&& defined $res[$n][$res_xfieldIdx]
-		&& defined $res[$n][$res_yfieldIdx]){# && $res->[$n][$res_xfieldIdx] > 0 && $res->[$n][$res_yfieldIdx] > 0){
+			defined $res[$n][$res_ytIDIdx]
+			&& defined $res[$n][$res_xfieldIdx]
+			&& defined $res[$n][$res_yfieldIdx]
+			# && $res->[$n][$res_xfieldIdx] > 0 && $res->[$n][$res_yfieldIdx] > 0
+			){
 			$resValidTuples[$n] = 1;
 			$resNumValidTuples++;
-			#print "Defined\n";
 		}
 		else{
-			#print "Undefined.\n";
 			$resValidTuples[$n] = 0;
 		}
 	}
@@ -1015,13 +619,6 @@ sub pairAnalysis{
 			$yfieldArr[$n] = $res[$n][$res_yfieldIdx];
 		}
 	}
-
-	# print "resRows: $resRows\n";
-	# print "xt: $xt\n";
-	# print "xfield: $xfield\n";
-	# print "yt: $yt\n";
-	# print "yfield: $yfield\n";
-	# <STDIN>;
 
 	computePairAvgSD($xt, $xfield, $yt, $yfield,
 			$resRows,
@@ -1081,22 +678,16 @@ sub computeSingleAvgSD{
 	# Sums $xfield and appropriate $yfield values for later averaging
 	for (my $n = 0; $n < $resRows; $n++){
 		if($resValidTuples->[$n]){
-			# print "n: $n\n";
 			$sum += $fieldArr->[$n];
-			# print "\t\$sum = $sum\n";
 		}
-		# <STDIN>;
 	}
 
 	$avg = $sum/$resNumValidTuples;
 
 	for (my $n = 0; $n < $resRows; $n++){
 		if($resValidTuples->[$n]){
-			# print "n: $n\n";
 			$SD += ($fieldArr->[$n]-$avg)**2;
-			# print "\t\$SD = $SD\n";
 		}
-		# <STDIN>;
 	}
 
 	$SD /= $resNumValidTuples;
@@ -1117,8 +708,6 @@ sub computeSingleAvgSD{
 	# Actual output values
 	$givenOutput->[$listIdx][$outputElemIdx][1] = $avg;
 	$givenOutput->[$listIdx][$outputElemIdx+1][1] = $SD;
-
-	# print "avg: $avg, SD: $SD\n";
 }
 
 # Computes Pearson Correlation Coefficient of value-set pair, appends values to output array.
@@ -1128,18 +717,11 @@ sub computePCC{
 		$resValidTuples, $resNumValidTuples,
 		$pairListIdx, $givenOutput) = @_;
 
-	# my $resRows = @$res;
-
 	my $xfieldAvg = $givenOutput->[$pairListIdx][0][1];
 	my $xfieldSD = $givenOutput->[$pairListIdx][1][1];
 
 	my $yfieldAvg = $givenOutput->[$pairListIdx][2][1];
 	my $yfieldSD = $givenOutput->[$pairListIdx][3][1];
-
-	# print "\n\$xfieldAvg: $xfieldAvg\n\$xfieldSD: $xfieldSD\n\$yfieldAvg: $yfieldAvg\n\$yfieldSD: $yfieldSD\n";
-	# print "xfieldSize: " . @{$xfieldArr} . "\n";
-	# print "yfieldSize: " . @{$yfieldArr} . "\n";
-	# <STDIN>;
 
 	# Computation of Pearson's Correlation Coefficient
 	my $PCC;
@@ -1151,17 +733,12 @@ sub computePCC{
 			if($xfieldSD != 0 && $yfieldSD != 0){
 				$x = $xfieldArr->[$n];
 				$y = $yfieldArr->[$n];
-				# print "\$n: $n\, \$x: $x, \$y: $y\n";
-				# <STDIN>;
-
 				$PCC = (($xfieldArr->[$n]-$xfieldAvg)*($yfieldArr->[$n]-$yfieldAvg))/($xfieldSD*$yfieldSD);
 				$PCCsum += $PCC;
 			}
 		}
 	}
 	my $PCCavg = $PCCsum/$resNumValidTuples;
-
-	# print "Number valid tuples: $resNumValidTuples\n";
 
 	my $outputElemIdx;
 	if(defined $givenOutput->[$pairListIdx]){
@@ -1172,7 +749,7 @@ sub computePCC{
 	} 
 
 	# Descriptors for each output value
-	$givenOutput->[$pairListIdx][$outputElemIdx][0] = 'PCC_Avg';
+	$givenOutput->[$pairListIdx][$outputElemIdx][0] = 'PCC';
 
 	# Actual output values
 	$givenOutput->[$pairListIdx][$outputElemIdx][1] = $PCCavg;
@@ -1190,11 +767,9 @@ sub computeSpearmanRCC{
 	my $yheap = Heap::Simple->new(elements => "Array", order => ">");
 
 	my $size = @$xfieldArr;
-	# print "size: $size\n";
 
 	my $xAvgRank = $size/2;
 	my $yAvgRank = $size/2;
-
 
 	for(my $n = 0; $n < $size; $n++){
 		if($resValidTuples->[$n]){
@@ -1207,15 +782,10 @@ sub computeSpearmanRCC{
 		push (@$xelem, $rank);
 		my $yelem = $yheap->extract_top;
 		push (@$yelem, $rank);
-		# print "$xelem->[1],\t$yelem->[1]\t\t$xelem->[0]\t $yelem->[0]\n";
 
 		$results->[$xelem->[1]][0] = [$xelem->[0], $rank];
 		$results->[$yelem->[1]][1] = [$yelem->[0], $rank];
 	}
-
-	# for(my $n = 0; $n < $resNumValidTuples; $n++){
-		# print "$results->[$n][0][0], $results->[$n][0][1]\t$results->[$n][1][0], $results->[$n][1][1]\n";
-	# }
 
 	my $covariance = 0;
 	my $xrankSD = 0;
@@ -1266,8 +836,8 @@ sub errorOutput{
 	$givenOutput->[$pairListIdx][1][0] = $xt . "." . $xfield . '_SD';
 	$givenOutput->[$pairListIdx][2][0] = $yt . "." . $yfield . '_Avg';
 	$givenOutput->[$pairListIdx][3][0] = $yt . "." . $yfield . '_SD';
-	$givenOutput->[$pairListIdx][4][0] = 'PCC_Avg';
-	$givenOutput->[$pairListIdx][5][0] = 'RCC';
+	$givenOutput->[$pairListIdx][4][0] = 'PCC';
+	$givenOutput->[$pairListIdx][5][0] = 'SpearmanRCC';
 
 	$givenOutput->[$pairListIdx][0][1] = -2;
 	$givenOutput->[$pairListIdx][1][1] = -2;
@@ -1280,11 +850,9 @@ sub errorOutput{
 sub censusMunComputePairPCC{
 	my (
 		$censusMunVals,
-		# $m_id,
 		$char_id,
 		$censusMunValidList,
 		$censusMunSizeList,
-		# $numValid,
 		$pairListIdx,
 		$givenOutput) = @_;
 
@@ -1298,9 +866,7 @@ sub censusMunComputePairPCC{
 	# as there really shouldn't be more than one. More than one means that the same census row was entered more than once,
 	# being either the same values (Total, Male, Female) or different ones.
 	for(my $innerVal = 1; $innerVal < 4; $innerVal++){
-		# print "1innerVal: $innerVal\n";
 		for(my $m_id = 1; $m_id < @{$censusMunVals}; $m_id++){
-			# print "\t1m_id: $m_id\n";
 			if($censusMunValidList->[$m_id] && defined $censusMunVals->[$m_id][$char_id]){
 				$censusAvgsArr->[$innerVal] += $censusMunVals->[$m_id][$char_id][$innerVal];
 				$censusMunNumValid++;
@@ -1311,12 +877,10 @@ sub censusMunComputePairPCC{
 
 
 	for(my $innerVal = 1; $innerVal < 4; $innerVal++){
-		# print "2innerVal: $innerVal\n";
 		$censusAvgsArr->[$innerVal] /= $censusMunNumValid;
 		print "censusAvgsArr->[$innerVal]: $censusAvgsArr->[$innerVal]\n";
 		# <STDIN>;
 		for(my $m_id = 1; $m_id < @{$censusMunVals}; $m_id++){
-			# print "\t2m_id: $m_id\n";
 			if($censusMunValidList->[$m_id] && defined $censusMunVals->[$m_id][$char_id]){
 				$SDarr->[$innerVal] += ($censusMunVals->[$m_id][$char_id][$innerVal]
 					- $censusAvgsArr->[$innerVal])**2;
@@ -1339,33 +903,29 @@ sub censusMunComputePairPCC{
 	for(my $m_id = 1; $m_id < @{$censusMunVals}; $m_id++){
 		if($censusMunValidList->[$m_id] && defined $censusMunVals->[$m_id][$char_id]){
 			$munSD += ($censusMunVals->[$m_id][$char_id][0] - $munAvg)**2;
-			# print "pop of mun $m_id: $censusMunVals->[$m_id][$char_id][0][0]\n";
-			# print "Additional SD: " . ($censusMunVals->[$m_id][$char_id][0][0] - $munAvg)**2 . "\n";
-			# print "munSD = $munSD\n";
-			# <STDIN>;
 		}
 	}
 
 	$munSD /= $censusMunNumValid;
 	$munSD = sqrt($munSD);
-	print "munSD: $munSD\n";
 
 	my $PCC;
 	my $PCCarr;
 	my $PCCsum;
+	my ($p11, $p12, $p21, $p22, $p3);
 	
 	for(my $innerVal = 1; $innerVal < 4; $innerVal++){
 		$PCCsum = 0;
 		for(my $m_id = 1; $m_id < @{$censusMunVals}; $m_id++){
 			if($censusMunValidList->[$m_id] && defined $censusMunVals->[$m_id][$char_id]){
 				# print "Valid m_id: $m_id\n";
-				my $p11 = $censusMunVals->[$m_id][$char_id][$innerVal];
-				my $p12 = $censusAvgsArr->[$innerVal];
+				$p11 = $censusMunVals->[$m_id][$char_id][$innerVal];
+				$p12 = $censusAvgsArr->[$innerVal];
 
-				my $p21 = $censusMunVals->[$m_id][$char_id][0];
-				my $p22 = $munAvg;
+				$p21 = $censusMunVals->[$m_id][$char_id][0];
+				$p22 = $munAvg;
 
-				my $p3 = ($munSD * $SDarr->[$innerVal]);
+				$p3 = ($munSD * $SDarr->[$innerVal]);
 
 				$PCC = (($censusMunVals->[$m_id][$char_id][$innerVal]
 					- $censusAvgsArr->[$innerVal])
@@ -1373,12 +933,9 @@ sub censusMunComputePairPCC{
 					  ($munSD * $SDarr->[$innerVal]);
 
 				$PCCarr->[$innerVal] += $PCC;
-				# print "PCCsum: $PCCsum\n\n";
 			}
 		}
 		$PCCarr->[$innerVal] /= $censusMunNumValid;
-		print "PCCarr->[$innerVal] = $PCCarr->[$innerVal]\n";
-		# <STDIN>;
 	}
 }
 

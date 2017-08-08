@@ -67,7 +67,7 @@ sub GET{
 	my $chosenOutput = listSpecificNormalizedValues(0,\@charParam,\@munParam);
 	my $chosenOutput = rearrange($chosenOutput);
 
-    $response->data()->{'output'} = $chosenOutput;
+    $response->data()->{'rawOutput'} = $chosenOutput;
     return Apache2::Const::HTTP_OK ;
 }
 

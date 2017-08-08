@@ -23,5 +23,9 @@ olliApp.controller('NavController', ['$scope', '$location', function ($scope, $l
     $scope.loadCensusEntry = function () {
         $location.url('/censusNormalization');
     };
+
+    $scope.loadMunGrouping = function () {
+        $location.url('/munGrouping');
+    };
     
 }]);

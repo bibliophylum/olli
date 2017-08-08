@@ -28,10 +28,13 @@ olliApp.config(function ($routeProvider,$locationProvider) {
 	    controller: 'BranchController',
 	    templateUrl: 'partials/branch.html?v=11'
 	})
-	//.when('/censusCorrelate/:charID/:munID', {
 	.when('/censusNormalization', {
 	    controller: 'censusNormalizationController',
 	    templateUrl: 'partials/censusNormalization.html'
+	})
+	.when('/munGrouping', {
+	    controller: 'munGroupingController',
+	    templateUrl: 'partials/munGrouping.html'
 	})
     .otherwise({ redirectTo: '/municipalities' });
 
@@ -125,4 +128,20 @@ olliApp.factory('cenFactory', ['$http', function($http) {
     };
 
     return cenFactory;
+}]);
+
+//-----------------------------------------------------------------------
+olliApp.factory('munGroupingFactory', ['$http', function($http) {
+
+    var urlBase = '/api/munGrouping';
+    var munGroupingFactory = {};
+
+    munGroupingFactory.getGrouping = function (munID) {
+        return $http({
+			url: urlBase,
+			method: "GET",
+			params: {munID: munID}});
+    };
+
+    return munGroupingFactory;
 }]);
