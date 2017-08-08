@@ -92,7 +92,11 @@ sub munGrouping{
 	my $c_id_idx = 0; # Tracks next empty index of $formatted.
 	for(my $c_id = 1; $c_id < @{$censusSums}; $c_id++){
 		if(defined $censusSums->[$c_id]){
-			$formatted->[$c_id_idx][0] = $c_id; # Stores census characteristic id
+			$formatted->[$c_id_idx][0][0] = $c_id; # Stores census characteristic id
+			$SQL = "select value from census_characteristics where id = $c_id";
+			$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
+			$sth->execute() or die "Execute exception: $DBI::errstr";
+			$formatted->[$c_id_idx][0][1] = $sth->fetchall_arrayref()->[0][0];
 			for(my $inner = 1; $inner < @{$censusSums->[$c_id]}; $inner++){
 				# Stores each characteristic subvalue
 				$formatted->[$c_id_idx][1][$inner] = $censusSums->[$c_id][$inner];

@@ -2,6 +2,12 @@
 <html>
 
 <script>
+jQuery(function($){
+	$("#submitButton").click(function(){
+		waitForElement();
+	});
+});
+
 // Submit on enter key in munID textbox
 document.getElementById("munTextbox")
     .addEventListener("keyup", function(event) {
@@ -16,39 +22,70 @@ document.getElementById("munTextbox")
 src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js">
 </script>
 
+<script>
+function removeRows(){
+	var table = document.getElementById("myTable");
+	while($("#myTable tr").length > 1){
+		table.deleteRow(1);
+	}
+}
+
+function updateRows(){
+	var table = document.getElementById("myTable");
+	var scope = angular.element(document.getElementById("myTable")).scope();
+	var length = (scope.rawOutput).length;
+
+	removeRows();
+
+	for(var rowCounter = 0; rowCounter < length; rowCounter++){
+		var row = table.insertRow(rowCounter + 1);
+		var cell0 = row.insertCell(0);
+		var cell1 = row.insertCell(1);
+		var cell2 = row.insertCell(2);
+		var cell3 = row.insertCell(3);
+		var cell4 = row.insertCell(4);
+
+		cell0.innerHTML = scope.rawOutput[rowCounter][0][0];
+		cell1.innerHTML = scope.rawOutput[rowCounter][0][1];
+		cell2.innerHTML = scope.rawOutput[rowCounter][1][1];
+		cell3.innerHTML = scope.rawOutput[rowCounter][1][2];
+		cell4.innerHTML = scope.rawOutput[rowCounter][1][3];
+	}
+	rowCounter++;
+}
+
+function waitForElement(){
+	var status = angular.element(document.getElementById("myTable")).scope().status;
+	if(status == "Response successful."){
+		updateRows();
+	}
+    else{
+        setTimeout(waitForElement, 250);
+    }
+}
+</script>
+
 <body>
 
 <div class="container-fluid">
-
-	You may enter multiple municipality ID's, with each ID separated by a space. (Valid values: munID = 600 610)<br><br>
+	You may enter multiple municipality ID's, with each ID separated by a space. (Valid values: munID = 600 609)<br><br>
 	munID: <input type="value" ng-model="munID" id="munTextbox"><br>
 	<br>
-	<input type="button" ng-click="group()" value="Compute (Enter)" id="submitButton">
-	<br><br>
-	Raw Output: {{rawOutput}}<br><br>
-	<!--Output: {{output}}<br><br>-->
+	<input type="button" ng-click="group();waitForElement();" value="Compute (Enter)" id="submitButton"><br><br>
 	Status: {{status}}<br><br>
 
-	<!--Only displaying the first characteristic-->
-	<tr>
-		<table border="1" cellpadding="10">
-			<caption>Combined (Only First)</caption>
-			<thead>
-				<tr>
-			<th>Characteristic</th>
-			<th>Total</th>
-			<th>Male</th>
-			<th>Female</th>
-				</tr>
-			</thead>
-			<tbody>
-
-			<td>{{rawOutput[0][0]}}</td>
-			<td>{{rawOutput[0][1][1]}}</td>
-			<td>{{rawOutput[0][1][2]}}</td>
-			<td>{{rawOutput[0][1][3]}}</td>
-			</tbody>
-		</table>
+	<table border="1" cellpadding="10" id="myTable">
+		<caption>Combined census values</caption>
+		<thead>
+			<tr>
+		<th>ID</th>
+		<th>Characteristic</th>
+		<th>Total</th>
+		<th>Male</th>
+		<th>Female</th>
+			</tr>
+		</thead>
+	</table>
 	</tr>
 	<br>
 
