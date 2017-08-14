@@ -143,5 +143,11 @@ olliApp.factory('munGroupingFactory', ['$http', function($http) {
 			params: {munID: munID}});
     };
 
+    munGroupingFactory.getValidMuns = function (){
+        return $http({
+			url: urlBase,
+			method: "GET"});
+    };
+
     return munGroupingFactory;
 }]);

@@ -3,9 +3,13 @@
 
 <script>
 jQuery(function($){
-	$("#submitButton").click(function(){
-		waitForElement();
+	$("#computeButton").click(function(){
+		waitForElement("censusTable");
 	});
+});
+
+$(document).ready(function(){
+	updateMunRows("munTable");
 });
 
 // Submit on enter key in munID textbox
@@ -13,29 +17,23 @@ document.getElementById("munTextbox")
     .addEventListener("keyup", function(event) {
     event.preventDefault();
     if (event.keyCode == 13) {
-        document.getElementById("submitButton").click();
+        document.getElementById("computeButton").click();
     }
 });
-</script>
 
-<script
-src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js">
-</script>
-
-<script>
-function removeRows(){
-	var table = document.getElementById("myTable");
-	while($("#myTable tr").length > 1){
+function removeRows(tableID){
+	var table = document.getElementById(tableID);
+	while($("#" + tableID + " tr").length > 1){
 		table.deleteRow(1);
 	}
 }
 
-function updateRows(){
-	var table = document.getElementById("myTable");
-	var scope = angular.element(document.getElementById("myTable")).scope();
+function updateCensusRows(tableID){
+	var table = document.getElementById(tableID);
+	var scope = angular.element(document.getElementById(tableID)).scope();
 	var length = (scope.rawOutput).length;
 
-	removeRows();
+	removeRows(tableID);
 
 	for(var rowCounter = 0; rowCounter < length; rowCounter++){
 		var row = table.insertRow(rowCounter + 1);
@@ -51,42 +49,86 @@ function updateRows(){
 		cell3.innerHTML = scope.rawOutput[rowCounter][1][2];
 		cell4.innerHTML = scope.rawOutput[rowCounter][1][3];
 	}
-	rowCounter++;
 }
 
-function waitForElement(){
-	var status = angular.element(document.getElementById("myTable")).scope().status;
-	if(status == "Response successful."){
-		updateRows();
+function waitForElement(tableID){
+	var status = angular.element(document.getElementById(tableID)).scope().status;
+	if(status == "Successful response."){
+		updateCensusRows(tableID);
 	}
     else{
-        setTimeout(waitForElement, 250);
+        setTimeout(function(){
+			waitForElement(tableID);
+		}, 250);
     }
 }
+
+function updateMunRows(tableID){
+	var munList = angular.element(document.getElementById(tableID)).scope().munList;
+	
+	if(munList == "Empty"){
+		setTimeout(function() {
+			updateMunRows(tableID);
+		}, 250);
+	}
+	else{
+		removeRows(tableID);
+		var table = document.getElementById(tableID);
+		var length = (munList).length;
+
+		for(var rowCounter = 0; rowCounter < length; rowCounter++){
+			var row = table.insertRow(rowCounter + 1);
+			var cell0 = row.insertCell(0);
+			var cell1 = row.insertCell(1);
+
+			cell0.innerHTML = munList[rowCounter][0];
+			cell1.innerHTML = munList[rowCounter][1];
+		}
+	}
+}
+</script>
+
+<script
+src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js">
 </script>
 
 <body>
 
 <div class="container-fluid">
 	You may enter multiple municipality ID's, with each ID separated by a space. (Valid values: munID = 600 609)<br><br>
-	munID: <input type="value" ng-model="munID" id="munTextbox"><br>
+	Municipality ID: <input type="value" ng-model="munID" id="munTextbox"><br>
 	<br>
-	<input type="button" ng-click="group();waitForElement();" value="Compute (Enter)" id="submitButton"><br><br>
+	<input type="button" ng-click="group();" value="Compute (Enter)" id="computeButton"><br><br>
 	Status: {{status}}<br><br>
+	<!--Mun List: {{munList}}<br><br>-->
+	<!--Raw Output: {{rawOutput}}<br><br>-->
 
-	<table border="1" cellpadding="10" id="myTable">
-		<caption>Combined census values</caption>
-		<thead>
+	<div style="float:left;">
+		<table border="1" cellpadding="10" id="munTable">
+			<caption>Valid Municipalities</caption>
+			<thead>
 			<tr>
-		<th>ID</th>
-		<th>Characteristic</th>
-		<th>Total</th>
-		<th>Male</th>
-		<th>Female</th>
+				<th>ID</th>
+				<th>Name</th>
 			</tr>
-		</thead>
-	</table>
-	</tr>
+			</thead>
+		</table>
+	</div>
+
+	<div style="float:right;">
+		<table border="1" cellpadding="10" id="censusTable">
+			<caption>Grouped Census Values</caption>
+			<thead>
+			<tr>
+				<th>ID</th>
+				<th>Characteristic</th>
+				<th>Total</th>
+				<th>Male</th>
+				<th>Female</th>
+			</tr>
+			</thead>
+		</table>
+	</div>
 	<br>
 
 </div>

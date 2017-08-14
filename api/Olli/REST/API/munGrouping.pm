@@ -9,6 +9,9 @@
 	V01 (2017.08.04):
 		- First version for browser implementation.
 
+	V02 (2017.08.14):
+		- Added 'getValidMunList' sub, returns a list containing the id and name of all valid municipalities.
+
 =end comment
 =cut
 
@@ -47,10 +50,40 @@ sub GET{
 	dbPrepare();
 	my $q = CGI->new;
 	my @munParam = $q->multi_param('munID');
+	my $chosenOutput;
 
-	my $chosenOutput = munGrouping(\@munParam);
-    $response->data()->{'rawOutput'} = $chosenOutput;
-    return Apache2::Const::HTTP_OK ;
+	# If muns not specified, gets list of id and name of all valid muns.
+	if(! defined $munParam[0]){
+		$chosenOutput = getValidMunList();
+	}
+	# Else, gets grouping of the census values of the specified muns.
+	else{
+		$chosenOutput = munGrouping(\@munParam);
+	}
+
+	$response->data()->{'rawOutput'} = $chosenOutput;
+	return Apache2::Const::HTTP_OK ;
+}
+
+sub getValidMunList{
+	my $censusMunVals = munCensusSorting();
+	my $validMunList;
+	my $listIdx = 0;
+	my $name;
+
+	for(my $m_id = 1; $m_id < @{$censusMunVals}; $m_id++){
+		if (defined $censusMunVals->[$m_id]){
+			$SQL = "select name from municipalities where id = $m_id";
+			$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
+			$sth->execute() or die "Execute exception: $DBI::errstr";
+			$name = $sth->fetchall_arrayref();
+
+			$validMunList->[$listIdx][0] = $m_id;
+			$validMunList->[$listIdx][1] = $name;
+			$listIdx++;
+		}
+	}
+	return $validMunList;
 }
 
 sub munGrouping{
