@@ -13,24 +13,48 @@ olliApp.controller('censusNormalizationController', ['$scope', '$routeParams', '
             $scope.charId != ''
             && $scope.munID != ''
             ){
-
-            // Create array for both charIDs and munIDs
+            // Create array for both charIDs and munIDs, each only holding unique integers
             var charArr = ($scope.charID).split(' ');
+            charArr = charArr.uniqueNumbers();
+
             var munArr = ($scope.munID).split(' ');
+            munArr = munArr.uniqueNumbers();
 
             $scope.charID = '';
             $scope.munID = '';
 
-            cenFactory.getValues(charArr, munArr)
-                .then(function (response){
-                    $scope.rawOutput = response.data.data.rawOutput;
-                    $scope.status = "Successful response.";
-                }, function (error){
-                    $scope.status = "ERROR " + error.status;
-                });
+            if(charArr.length == 0 || munArr.length == 0)
+                $scope.status = "Invalid parameters!"
+            else{
+                cenFactory.getValues(charArr, munArr)
+                    .then(function (response){
+                        $scope.rawOutput = response.data.data.rawOutput;
+                        $scope.status = "Successful response.";
+                    }, function (error){
+                        $scope.status = "ERROR " + error.status;
+                    });
+            }
         }
         else{
-            $scope.status = "INVALID PARAMETERS!";
+            if($scope.charId == '' && $scope.munID == '')
+                $scope.status = "Empty parameters!";
+            else
+                $scope.status = "Empty parameter!";
         }
+    }
+
+    Array.prototype.contains = function(v) {
+        for(var i = 0; i < this.length; i++)
+            if(this[i] === v)  
+                return true;
+        return false;
+    };
+
+    Array.prototype.uniqueNumbers = function() {
+        var arr = [];
+        for(var i = 0; i < this.length; i++)
+            if(this[i] != '' && !arr.contains(this[i]) && !isNaN(parseInt(this[i])) && isFinite(this[i]))
+                arr.push(this[i]);
+        return arr; 
     }
 }]);

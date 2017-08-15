@@ -9,10 +9,7 @@ olliApp.controller('MunicipalitiesController', ['$scope', 'munFactory', function
     $scope.municipalityDetails;
 //    $scope.orders;
 
-    init(); //getMunicipalities();
-
-//    function getMunicipalities() {
-    function init() {
+    ! function(){
         munFactory.getMunicipalities()
             .then(function (response) {
                 $scope.municipalities = response.data.data.municipalities;
@@ -20,7 +17,7 @@ olliApp.controller('MunicipalitiesController', ['$scope', 'munFactory', function
             }, function (error) {
                 $scope.status = 'Unable to load municipalities data: ' + error.message;
             });
-    }
+    }();
 
 /*
     $scope.updateMunicipality = function (id) {

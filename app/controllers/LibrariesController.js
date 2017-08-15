@@ -40,9 +40,7 @@ olliApp.controller('LibrariesController', ['$scope', 'libFactory', function ($sc
     $scope.libraries;
 //    $scope.orders;
 
-    getLibraries();
-
-    function getLibraries() {
+    ! function(){
         libFactory.getLibraries()
             .then(function (response) {
                 $scope.libraries = response.data.data.libraries;
@@ -50,7 +48,7 @@ olliApp.controller('LibrariesController', ['$scope', 'libFactory', function ($sc
             }, function (error) {
                 $scope.status = 'Unable to load libraries data: ' + error.message;
             });
-    }
+    }();
 
     $scope.updateLibrary = function (id) {
         var mun;
