@@ -94,18 +94,16 @@ src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js">
 
 <body>
 
-<div class="container-fluid">
+<div class="container-fluid" id="mainDiv">
 	You may enter multiple municipality ID's, with each ID separated by a space. (Valid values: munID = 600 609)<br><br>
 	Municipality ID: <input type="value" ng-model="munID" id="munTextbox"><br>
 	<br>
 	<input type="button" ng-click="group();" value="Compute (Enter)" id="computeButton"><br><br>
 	Status: {{status}}<br><br>
-	<!--Mun List: {{munList}}<br><br>-->
-	<!--Raw Output: {{rawOutput}}<br><br>-->
 
 	<div style="float:left;">
 		<table border="1" cellpadding="10" id="munTable">
-			<caption>Valid Municipalities</caption>
+			<caption><b>Valid Municipalities</b></caption>
 			<thead>
 			<tr>
 				<th>ID</th>
@@ -117,7 +115,7 @@ src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js">
 
 	<div style="float:right;">
 		<table border="1" cellpadding="10" id="censusTable">
-			<caption>Grouped Census Values</caption>
+			<caption><b>Grouped Census Values</b></caption>
 			<thead>
 			<tr>
 				<th>ID</th>
@@ -129,8 +127,6 @@ src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js">
 			</thead>
 		</table>
 	</div>
-	<br>
-
 </div>
 
 </body>

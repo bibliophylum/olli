@@ -7,7 +7,7 @@ document.getElementById("munTextbox")
     .addEventListener("keyup", function(event) {
     event.preventDefault();
     if (event.keyCode == 13) {
-        document.getElementById("submitButton").click();
+        document.getElementById("computeButton").click();
     }
 });
 
@@ -16,9 +16,103 @@ document.getElementById("charTextbox")
     .addEventListener("keyup", function(event) {
     event.preventDefault();
     if (event.keyCode == 13) {
-        document.getElementById("submitButton").click();
+        document.getElementById("computeButton").click();
     }
 });
+
+jQuery(function($){
+	$("#computeButton").click(function(){
+		waitForElement();
+	});
+});
+
+// Waits for a successful response.
+function waitForElement(){
+	var status = angular.element(document.getElementById("mainDiv")).scope().status;
+	if(status == "Successful response."){
+		updateTables();
+	}
+	else{
+		setTimeout(function(){
+			waitForElement();
+		}, 250);
+	}
+}
+
+// Updates tables in 'mainDiv' div, called upon successful computation of normalized values.
+function updateTables(){
+	removeAllTables();
+
+	var normList = angular.element(document.getElementById("mainDiv")).scope().rawOutput;
+	var length = (normList).length;
+	for(var i = 0; i < length; i++){
+		createTable(normList[i]);
+	}
+}
+
+// Removes all tables from the 'mainDiv' div.
+function removeAllTables(){
+	var tables = document.getElementById("mainDiv").getElementsByTagName("table");
+	for (var i = tables.length - 1; i >= 0; i -= 1){
+		if (tables[i]){
+			tables[i].parentNode.removeChild(tables[i]);
+		}
+	}
+}
+
+// Creates a table for the given municipality results.
+function createTable(munVals){
+    var body = document.getElementById("mainDiv"),
+        tbl = document.createElement('table'),
+		th = document.createElement('th');
+    tbl.style.width  = '100px';
+    tbl.style.border = '1px solid black';
+	tbl.style.marginBottom = '20px';
+
+	var rowIdx = 0;
+
+	var header = tbl.createTHead();
+	var row = header.insertRow(rowIdx++);
+	
+	var cell = row.insertCell(0);
+	cell.style.border = '1px solid black';
+	cell.innerHTML = "<b>Characteristic</b>";
+
+	cell = row.insertCell(1);
+	cell.style.border = '1px solid black';
+	cell.innerHTML = "<b>Total</b>";
+
+	cell = row.insertCell(2);
+	cell.style.border = '1px solid black';
+	cell.innerHTML = "<b>Male</b>";
+
+	cell = row.insertCell(3);
+	cell.style.border = '1px solid black';
+	cell.innerHTML = "<b>Female</b>";
+
+	var mycap = tbl.createCaption();
+	mycap.innerHTML = "<b>" + munVals[0][0] + ": " + munVals[0][1] + "</b>";
+
+	for(var char = 0; char < munVals[1].length; char++){
+		row = tbl.insertRow(rowIdx++);
+		cell = row.insertCell(0);
+		cell.style.border = '1px solid black';
+		cell.innerHTML = "(" + munVals[1][char][0][0] + ") " + munVals[1][char][0][1];
+
+		cell = row.insertCell(1);
+		cell.style.border = '1px solid black';
+		cell.innerHTML = munVals[1][char][1][1];
+
+		cell = row.insertCell(2);
+		cell.style.border = '1px solid black';
+		cell.innerHTML = munVals[1][char][1][2];
+
+		cell = row.insertCell(3);
+		cell.style.border = '1px solid black';
+		cell.innerHTML = munVals[1][char][1][2];
+	}
+    body.appendChild(tbl);
+}
 </script>
 
 <script
@@ -27,49 +121,13 @@ src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js">
 
 <body>
 
-<div class="container-fluid">
-
-	You may enter multiple ID's for each, with each ID separated by a space. (Valid values: munID = 600, charID = 20)<br><br>
-	munID: <input type="value" ng-model="munID" id="munTextbox"><br>
-	charID: <input type="value" ng-model="charID" id="charTextbox"><br>
+<div class="container-fluid" id="mainDiv">
+	You may enter multiple ID's for each, with each ID separated by a space. (Valid values: muns = 600 609, chars = 20 40)<br><br>
+	Municipality ID's: &nbsp;&nbsp;&nbsp;<input type="value" ng-model="munID" id="munTextbox"><br>
+	Characteristic ID's: <input type="value" ng-model="charID" id="charTextbox"><br>
 	<br>
-	<input type="button" ng-click="getCensusValues()" value="Compute (Enter)" id="submitButton">
-	<br><br>
-	Raw Output: {{rawOutput}}<br><br>
-	Output: {{output}}<br><br>
+	<input type="button" ng-click="getCensusValues()" value="Compute (Enter)" id="computeButton"><br><br>
 	Status: {{status}}<br><br>
-	<!--{{output[0][0][0]}}-->
-
-	<!--Only displaying the first values for the first municipality-->
-	<!--<tr ng-repeat="mun in output">-->
-	<!--<tr ng-repeat="x in ["111":{"Total":"555", "Male":"666"}, "222":{"Total":"777", "Male":"888"}]">-->
-	<tr ng-repeat="lib in output">
-		<table border="1" cellpadding="10">
-			<!--<caption>{{rawOutput[0][0][1]}}</caption>-->
-			<!--<caption>{{mun}}</caption}-->
-			<caption>{{lib.x}}</caption>
-			<thead>
-				<tr>
-			<th>Characteristic</th>
-			<th>Total</th>
-			<th>Male</th>
-			<th>Female</th>
-			<!--<th>{{mun.data[0][1]}}</th>-->
-			<!--<th>{{output[0][0][1]}}</th>-->
-				</tr>
-			</thead>
-			<tbody>
-
-			<td>{{rawOutput[0][1][0][0][1]}}</td>
-			<td>{{x.Total}}</td>
-			<td>{{x.Male}}</td>
-			<!--<td>{{rawOutput[0][1][0][1][1]}}</td>-->
-			<!--<td>{{rawOutput[0][1][0][1][2]}}</td>-->
-			<!--<td>{{rawOutput[0][1][0][1][3]}}</td>-->
-			</tbody>
-		</table>
-	</tr>
-
 </div>
 
 </body>

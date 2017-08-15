@@ -12,6 +12,10 @@
 	V02 (2017.08.14):
 		- Added 'getValidMunList' sub, returns a list containing the id and name of all valid municipalities.
 
+	V03 (2017.08.):
+		- Added check in 'munGrouping' sub for census characteristics that were percentages.
+			- This is hardcoded, as only chars (3, 33, 235) are percentages.
+
 =end comment
 =cut
 
@@ -132,7 +136,13 @@ sub munGrouping{
 			$formatted->[$c_id_idx][0][1] = $sth->fetchall_arrayref()->[0][0];
 			for(my $inner = 1; $inner < @{$censusSums->[$c_id]}; $inner++){
 				# Stores each characteristic subvalue
-				$formatted->[$c_id_idx][1][$inner] = $censusSums->[$c_id][$inner];
+				# Checks if is a percentage. If so, divides each value by number of municipalities chosen.
+				if($c_id == 3 || $c_id == 33 || $c_id == 235){
+					$formatted->[$c_id_idx][1][$inner] = $censusSums->[$c_id][$inner] / @{$munChoiceArr};
+				}
+				else{
+					$formatted->[$c_id_idx][1][$inner] = $censusSums->[$c_id][$inner];
+				}
 			}
 			$c_id_idx++;
 		}
