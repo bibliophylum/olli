@@ -44,40 +44,68 @@ function updatePairsTable(){
 		removeAllTables("mainDiv");
 		var tbl = createPairsTable();
 		var length = (scope.rawOutput[0]).length;
+		var cellIdx;
+		var cell;
 
 		for(var rowCounter = 0; rowCounter < length; rowCounter++){
 			var row = tbl.insertRow(rowCounter + 1);
+			cellIdx = 0;
 
-			var cell0 = row.insertCell(0);
-			cell0.style.border = '1px solid black';
+			// Table 1
+			cell = row.insertCell(cellIdx++);
+			cell.style.border = '1px solid black';
+			cell.innerHTML = scope.rawOutput[0][rowCounter][0];
 
-			var cell1 = row.insertCell(1);
-			cell1.style.wordWrap = 'break-word';
-			cell1.style.wordBreak = 'break-all';
-			cell1.style.border = '1px solid black';
+			// Field 1
+			cell = row.insertCell(cellIdx++);
+			cell.style.wordWrap = 'break-word';
+			cell.style.wordBreak = 'break-all';
+			cell.style.border = '1px solid black';
+			cell.innerHTML = scope.rawOutput[0][rowCounter][1];
 
-			var cell2 = row.insertCell(2);
-			cell2.style.border = '1px solid black';
+			// Field 1 Average
+			cell = row.insertCell(cellIdx++);
+			cell.style.border = '1px solid black';
+			cell.innerHTML = scope.rawOutput[1][rowCounter][0][1].toFixed(2);
 
-			var cell3 = row.insertCell(3);
-			cell3.style.wordWrap = 'break-word';
-			cell3.style.wordBreak = 'break-all';
-			cell3.style.border = '1px solid black';
+			// Field 1 SD
+			cell = row.insertCell(cellIdx++);
+			cell.style.border = '1px solid black';
+			cell.innerHTML = scope.rawOutput[1][rowCounter][1][1].toFixed(2);
 
-			var cell4 = row.insertCell(4);
-			cell4.style.border = '1px solid black';
-			cell4.style.textAlign = 'right';
+			// Table 2
+			cell = row.insertCell(cellIdx++);
+			cell.style.border = '1px solid black';
+			cell.innerHTML = scope.rawOutput[0][rowCounter][2];
 
-			var cell5 = row.insertCell(5);
-			cell5.style.border = '1px solid black';
-			cell5.style.textAlign = 'right';
+			// Field 2
+			cell = row.insertCell(cellIdx++);
+			cell.style.wordWrap = 'break-word';
+			cell.style.wordBreak = 'break-all';
+			cell.style.border = '1px solid black';
+			cell.innerHTML = scope.rawOutput[0][rowCounter][3];
 
-			cell0.innerHTML = scope.rawOutput[0][rowCounter][0];
-			cell1.innerHTML = scope.rawOutput[0][rowCounter][1];
-			cell2.innerHTML = scope.rawOutput[0][rowCounter][2];
-			cell3.innerHTML = scope.rawOutput[0][rowCounter][3];
-			cell4.innerHTML = scope.rawOutput[1][rowCounter][4][1];
-			cell5.innerHTML = scope.rawOutput[1][rowCounter][5][1];
+			// Field 2 Average
+			cell = row.insertCell(cellIdx++);
+			cell.style.border = '1px solid black';
+			cell.innerHTML = scope.rawOutput[1][rowCounter][2][1].toFixed(2);
+
+			// Field 2 SD
+			cell = row.insertCell(cellIdx++);
+			cell.style.border = '1px solid black';
+			cell.innerHTML = scope.rawOutput[1][rowCounter][3][1].toFixed(2);
+
+			// PCC
+			cell = row.insertCell(cellIdx++);
+			cell.style.border = '1px solid black';
+			cell.style.textAlign = 'right';
+			cell.innerHTML = scope.rawOutput[1][rowCounter][4][1].toFixed(4);;
+
+			// RCC
+			cell = row.insertCell(cellIdx++);
+			cell.style.border = '1px solid black';
+			cell.style.textAlign = 'right';
+			cell.innerHTML = scope.rawOutput[1][rowCounter][5][1].toFixed(4);;
 		}
 	}
 }
@@ -86,36 +114,52 @@ function createPairsTable(){
     var body = document.getElementById("mainDiv"),
         tbl = document.createElement('table'),
 		th = document.createElement('th');
-    tbl.style.width  = '800px';
+    tbl.style.width  = '1000px';
     tbl.style.border = '1px solid black';
 	tbl.style.marginBottom = '20px';
 
-	var rowIdx = 0;
+	var cellIdx = 0;
 
 	var header = tbl.createTHead();
-	var row = header.insertRow(rowIdx++);
+	var row = header.insertRow(0);
 	
-	var cell = row.insertCell(0);
+	var cell = row.insertCell(cellIdx++);
 	cell.style.border = '1px solid black';
 	cell.innerHTML = "<b>Table 1</b>";
 
-	cell = row.insertCell(1);
+	cell = row.insertCell(cellIdx++);
 	cell.style.border = '1px solid black';
 	cell.innerHTML = "<b>Field 1</b>";
 
-	cell = row.insertCell(2);
+	cell = row.insertCell(cellIdx++);
+	cell.style.border = '1px solid black';
+	cell.innerHTML = "<b>Field 1 Average</b>";
+
+	cell = row.insertCell(cellIdx++);
+	cell.style.border = '1px solid black';
+	cell.innerHTML = "<b>Field 1 SD</b>";
+
+	cell = row.insertCell(cellIdx++);
 	cell.style.border = '1px solid black';
 	cell.innerHTML = "<b>Table 2</b>";
 
-	cell = row.insertCell(3);
+	cell = row.insertCell(cellIdx++);
 	cell.style.border = '1px solid black';
 	cell.innerHTML = "<b>Field 2</b>";
 
-	cell = row.insertCell(4);
+	cell = row.insertCell(cellIdx++);
+	cell.style.border = '1px solid black';
+	cell.innerHTML = "<b>Field 1 Average</b>";
+
+	cell = row.insertCell(cellIdx++);
+	cell.style.border = '1px solid black';
+	cell.innerHTML = "<b>Field 1 SD</b>";
+
+	cell = row.insertCell(cellIdx++);
 	cell.style.border = '1px solid black';
 	cell.innerHTML = "<b>PCC</b>";
 
-	cell = row.insertCell(5);
+	cell = row.insertCell(cellIdx++);
 	cell.style.border = '1px solid black';
 	cell.innerHTML = "<b>RCC</b>";
 
