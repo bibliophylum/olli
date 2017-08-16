@@ -36,6 +36,10 @@ olliApp.config(function ($routeProvider,$locationProvider) {
 	    controller: 'munGroupingController',
 	    templateUrl: 'partials/munGrouping.html'
 	})
+	.when('/pairAnalysis', {
+	    controller: 'PairAnalysisController',
+	    templateUrl: 'partials/pairAnalysis.html'
+	})
     .otherwise({ redirectTo: '/municipalities' });
 
     /* you can pass parameters to a route like this:
@@ -127,6 +131,12 @@ olliApp.factory('cenFactory', ['$http', function($http) {
 			params: {charID: charID, munID: munID}});
     };
 
+    cenFactory.getValidMuns = function (){
+        return $http({
+			url: 'api/munGrouping',
+			method: "GET"});
+    };
+
     return cenFactory;
 }]);
 
@@ -150,4 +160,19 @@ olliApp.factory('munGroupingFactory', ['$http', function($http) {
     };
 
     return munGroupingFactory;
+}]);
+
+//-----------------------------------------------------------------------
+olliApp.factory('pairAnalysisFactory', ['$http', function($http) {
+
+    var urlBase = '/api/pairAnalysis';
+    var pairAnalysisFactory = {};
+
+    pairAnalysisFactory.computeAllPairs = function () {
+        return $http({
+			url: urlBase,
+			method: "GET"});
+    };
+
+    return pairAnalysisFactory;
 }]);

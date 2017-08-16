@@ -2,18 +2,7 @@
 <html>
 
 <script>
-// Submit on enter key in munID textbox
-document.getElementById("munTextbox")
-    .addEventListener("keyup", function(event) {
-    event.preventDefault();
-    if (event.keyCode == 13) {
-        document.getElementById("computeButton").click();
-    }
-});
-
-// Submit on enter key in charID textbox
-document.getElementById("charTextbox")
-    .addEventListener("keyup", function(event) {
+document.addEventListener("keyup", function(event) {
     event.preventDefault();
     if (event.keyCode == 13) {
         document.getElementById("computeButton").click();
@@ -24,6 +13,10 @@ jQuery(function($){
 	$("#computeButton").click(function(){
 		waitForElement();
 	});
+});
+
+$(document).ready(function(){
+	updateMunTable();
 });
 
 // Waits for a successful response.
@@ -41,7 +34,7 @@ function waitForElement(){
 
 // Updates tables in 'mainDiv' div, called upon successful computation of normalized values.
 function updateTables(){
-	removeAllTables();
+	removeAllTables('rightDiv');
 
 	var normList = angular.element(document.getElementById("mainDiv")).scope().rawOutput;
 	var length = (normList).length;
@@ -50,9 +43,9 @@ function updateTables(){
 	}
 }
 
-// Removes all tables from the 'mainDiv' div.
-function removeAllTables(){
-	var tables = document.getElementById("mainDiv").getElementsByTagName("table");
+// Removes all tables from the given div.
+function removeAllTables(givenDiv){
+	var tables = document.getElementById(givenDiv).getElementsByTagName("table");
 	for (var i = tables.length - 1; i >= 0; i -= 1){
 		if (tables[i]){
 			tables[i].parentNode.removeChild(tables[i]);
@@ -62,7 +55,7 @@ function removeAllTables(){
 
 // Creates a table for the given municipality results.
 function createTable(munVals){
-    var body = document.getElementById("mainDiv"),
+    var body = document.getElementById("rightDiv"),
         tbl = document.createElement('table'),
 		th = document.createElement('th');
     tbl.style.width  = '500px';
@@ -113,6 +106,60 @@ function createTable(munVals){
 	}
     body.appendChild(tbl);
 }
+
+function updateMunTable(){
+	var munList = angular.element(document.getElementById("mainDiv")).scope().munList;
+	
+	if(munList == "Empty"){
+		setTimeout(function() {
+			updateMunTable();
+		}, 250);
+	}
+	else{
+		removeAllTables("leftDiv");
+		var table = createMunTable();
+		var length = (munList).length;
+
+		for(var rowCounter = 0; rowCounter < length; rowCounter++){
+			var row = table.insertRow(rowCounter + 1);
+			var cell0 = row.insertCell(0);
+			cell0.style.border = '1px solid black';
+			var cell1 = row.insertCell(1);
+			cell1.style.border = '1px solid black';
+
+			cell0.innerHTML = munList[rowCounter][0];
+			cell1.innerHTML = munList[rowCounter][1];
+		}
+	}
+}
+
+function createMunTable(){
+    var body = document.getElementById("leftDiv"),
+        tbl = document.createElement('table'),
+		th = document.createElement('th');
+    tbl.style.width  = '250px';
+    tbl.style.border = '1px solid black';
+	tbl.style.marginBottom = '20px';
+
+	var rowIdx = 0;
+
+	var header = tbl.createTHead();
+	var row = header.insertRow(rowIdx++);
+	
+	var cell = row.insertCell(0);
+	cell.style.border = '1px solid black';
+	cell.innerHTML = "<b>ID</b>";
+
+	cell = row.insertCell(1);
+	cell.style.border = '1px solid black';
+	cell.innerHTML = "<b>Name</b>";
+
+	var mycap = tbl.createCaption();
+	mycap.innerHTML = "<b>Valid Municipalities</b>";
+
+	body.appendChild(tbl);
+	return tbl;
+}
 </script>
 
 <script
@@ -128,6 +175,9 @@ src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js">
 	<br>
 	<input type="button" ng-click="getCensusValues()" value="Compute (Enter)" id="computeButton"><br><br>
 	Status: {{status}}<br><br>
+
+	<div style="float:left;" id="leftDiv"/>
+	<div style="float:right;" id="rightDiv"/>
 </div>
 
 </body>

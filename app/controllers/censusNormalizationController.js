@@ -5,6 +5,21 @@ olliApp.controller('censusNormalizationController', ['$scope', '$routeParams', '
     $scope.munID = '';
     $scope.charID = '';
     $scope.status = 'Waiting.';
+    $scope.munList = "Empty";
+
+    ! function(){
+        $scope.status = "Calling for valid municipalities.";
+        $scope.rawOutput = 'No output.';
+
+        cenFactory.getValidMuns()
+            .then(function (response){
+                $scope.munList = response.data.data.rawOutput;
+
+            }, function (error){
+                $scope.status = "ERROR " + error.status;
+            });
+        $scope.status = "Waiting."
+    }();
 
     $scope.getCensusValues = function(){
         $scope.status = "Calling for normalized values.";

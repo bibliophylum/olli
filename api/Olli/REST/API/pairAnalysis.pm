@@ -161,7 +161,7 @@
 =end comment
 =cut
 
-package Olli::REST::PCC;
+package Olli::REST::API::pairAnalysis;
 use warnings;
 use strict;
 use base qw/Apache2::REST::Handler/;
@@ -169,14 +169,21 @@ use DBI;
 use List::MoreUtils qw(firstidx);
 use Heap::Simple;
 use Scalar::Util qw(looks_like_number);
+use CGI;
 
 
 my $SQL;
 my $sth;
 my $dbh;
+
 my @output;
 my @validOutput;
 my $numValidOutput;
+
+my $database = "olli";
+my $dsn = "dbi:Pg:database=$database;host=localhost;port=5432";
+my $userid = "olli";
+my $password = "olli";
 
 # Filter on the year of $xt's tuples (filtering is by substring, you may include any year however you want.)
 # Example: $validYears = '2013_,asdf20142015' would give valid records from 2013 through 2015.
@@ -191,15 +198,7 @@ my $innerNames = [
 	'Female'
 ];
 
-# GET();
-allPairs();
-
 sub dbPrepare{
-	my $database = "olli";
-	my $dsn = "dbi:Pg:database=$database;host=localhost;port=5432";
-	my $userid = "olli";
-	my $password = "olli";
-
 	$dbh = DBI->connect($dsn,
 				$userid,
 				$password,
@@ -214,43 +213,13 @@ sub dbPrepare{
 sub GET {
 	my ($self, $request, $response) = @_ ;
 	dbPrepare();
-
-	my @pairList = (
-		[
-			'branches',
-			'active_memberships',
-			'municipalities',
-			'population'
-		],
-		[
-			'branches',
-			'active_memberships',
-			'branches',
-			'floor_space'
-		],
-		[
-			'branches',
-			'active_memberships',
-			'branches',
-			'active_memberships'
-		]
-		);
-
-	for(my $iter = 0; $iter < @pairList; $iter++){
-		pairAnalysis(\@pairList, $iter, \@output);
-
-		for(my $i = 0; $i < @{$output[$iter]}; $i++){
-			printf "%s: %.3f\n", $output[$iter][$i][0], $output[$iter][$i][1];
-		}
-	}
-	
+	my $chosenOutput = allPairs();
+	$response->data()->{'rawOutput'} = $chosenOutput;
 	$dbh->disconnect;
 	return Apache2::Const::HTTP_OK ;
 }
 
 sub allPairs{
-	dbPrepare();
-
 	my @pairList;
 
 	$SQL = "select table_name from information_schema.tables where table_schema = 'public' and table_catalog = 'olli'"
@@ -304,8 +273,6 @@ sub allPairs{
 				$dbStructure[$n][1][$dbStructure_mIndex] = $data->[$m][0];
 				$dbStructure_mIndex++;
 			}
-			else{
-			}
 		}
 	}
 
@@ -345,12 +312,15 @@ sub allPairs{
 		}
 	}
 
+	my $validPairList;
+
 	$numValidOutput = 0;
 	for(my $iter = 0; $iter < @pairList; $iter++){
 		pairAnalysis(\@pairList, $numPairs, $iter, \@output);
 
 		if($output[$iter][0][1] != -2){
 			$validOutput[$numValidOutput][@{$output[$iter]}+1][0] = $iter;
+			$validPairList->[@{$validPairList}] = $pairList[$iter];
 			for(my $i = 0; $i < @{$output[$iter]}; $i++){
 				# print "output[$i] = " . $output[$iter][$i][1] . "\n";
 				# printf "%s: %.3f\n", $output[$iter][$i][0], $output[$iter][$i][1];
@@ -361,22 +331,21 @@ sub allPairs{
 		}
 	}
 
-	print "\n\nALL VALID OUTPUT:\n\n";
+	# print "\n\nALL VALID OUTPUT:\n\n";
 	my @origPair;
 
 	for(my $valiter = 0; $valiter < $numValidOutput; $valiter++){
 		@origPair = @{$pairList[$validOutput[$valiter][@{$output[0]}+1][0]]};
-		print $origPair[0] . "." . $origPair[1] . " &\n" . $origPair[2] . "." . $origPair[3] . "\n";
+		# print $origPair[0] . "." . $origPair[1] . " &\n" . $origPair[2] . "." . $origPair[3] . "\n";
 		for(my $i = 0; $i < @{$output[$validOutput[$valiter][@{$output[0]}+1][0]]}; $i++){
 			# print "output[$i] = " . $output[$iter][$i][1] . "\n";
-			printf "\t%s: %.3f\n", $validOutput[$valiter][$i][0], $validOutput[$valiter][$i][1];
+			# printf "\t%s: %.3f\n", $validOutput[$valiter][$i][0], $validOutput[$valiter][$i][1];
 		}
-		print "\n";
+		# print "\n";
 	}
 
-	print "Number valid output pairs: $numValidOutput\n";
-
-	$dbh->disconnect;
+	# print "Number valid output pairs: $numValidOutput\n";
+	return [$validPairList, \@validOutput];
 }
 
 # Calculates average municipality population, given a list of municipality populations.
@@ -402,7 +371,7 @@ sub calculateAvgMunPops{
 		}
 	}
 	my $avg = $sum/$numMuns;
-	print "NUM_MUN: $numMuns, AVG_POP: $avg\n";
+	# print "NUM_MUN: $numMuns, AVG_POP: $avg\n";
 	return [$avg, $max];
 }
 
@@ -433,7 +402,7 @@ sub pairAnalysis{
 	my $yt = $pairList->[$pairListIdx][2];
 	my $yfield = $pairList->[$pairListIdx][3];
 
-	printf "\n(%d/%d) pairAnalysis of %s.%s & %s.%s\n", $pairListIdx, $numPairs, $xt, $xfield, $yt, $yfield;
+	# printf "\n(%d/%d) pairAnalysis of %s.%s & %s.%s\n", $pairListIdx, $numPairs, $xt, $xfield, $yt, $yfield;
 
 	my $xt_yt_same = ($xt eq $yt);
 
@@ -501,7 +470,7 @@ sub pairAnalysis{
 	# Obtains array reference to join of $xt and $yt
 	else{
 		if(@$foreignArr != 1){
-			print "ERROR: NO DIRECT KEY RELATIONSHIP BETWEEN $xt AND $yt\n";
+			# print "ERROR: NO DIRECT KEY RELATIONSHIP BETWEEN $xt AND $yt\n";
 			errorOutput($xt, $xfield, $yt, $yfield, $pairListIdx, \@output);
 			return;
 		}
@@ -521,7 +490,7 @@ sub pairAnalysis{
 			# Both tables $xt and $yt have year fields
 			# Will match years as well
 			if(!($validYears eq '') && $xt_yearIdx != -1 && $yt_yearIdx != -1){
-				print "Both have year\n";
+				# print "Both have year\n";
 				$SQL = $startSQL
 					. " ,$xt.year as x_year"
 					. " ,$yt.year as y_year"
@@ -534,7 +503,7 @@ sub pairAnalysis{
 			}
 			# Only table $xt has year field
 			elsif(!($validYears eq '') && $xt_yearIdx != -1){
-				print "$xt has year\n";
+				# print "$xt has year\n";
 				$SQL = $startSQL
 					. " ,$xt.year as x_year"
 					. " ,$xt.id as x_id"
@@ -546,7 +515,7 @@ sub pairAnalysis{
 			}
 			# Only table $yt has year field
 			elsif(!($validYears eq '') && $yt_yearIdx != -1){
-				print "$yt has year\n";
+				# print "$yt has year\n";
 				$SQL = $startSQL
 					. " ,$yt.year as y_year"
 					. " ,$xt.id as x_id"
@@ -559,7 +528,7 @@ sub pairAnalysis{
 			# Neither tables $xt or $yt have year fields
 			else{
 				if(!($validYears eq '')){
-					print "Neither has year\n";
+					# print "Neither has year\n";
 				}
 				$SQL = $startSQL
 					. " ,$xt.id as x_id"
@@ -605,7 +574,7 @@ sub pairAnalysis{
 	}
 
 	if($resNumValidTuples == 0){
-		print "ERROR: NO VALID TUPLES\n";
+		# print "ERROR: NO VALID TUPLES\n";
 		errorOutput($xt, $xfield, $yt, $yfield, $pairListIdx, \@output);
 		return;
 	}
@@ -819,7 +788,7 @@ sub computeSpearmanRCC{
 	} 
 
 	if ($outputElemIdx == 0){
-		print "ERROR (computeSpearmanRCC): outputElemIdx == 0, does not see other output values\n";
+		# print "ERROR (computeSpearmanRCC): outputElemIdx == 0, does not see other output values\n";
 		<STDIN>;
 	}
 
@@ -878,7 +847,7 @@ sub censusMunComputePairPCC{
 
 	for(my $innerVal = 1; $innerVal < 4; $innerVal++){
 		$censusAvgsArr->[$innerVal] /= $censusMunNumValid;
-		print "censusAvgsArr->[$innerVal]: $censusAvgsArr->[$innerVal]\n";
+		# print "censusAvgsArr->[$innerVal]: $censusAvgsArr->[$innerVal]\n";
 		# <STDIN>;
 		for(my $m_id = 1; $m_id < @{$censusMunVals}; $m_id++){
 			if($censusMunValidList->[$m_id] && defined $censusMunVals->[$m_id][$char_id]){
@@ -888,7 +857,7 @@ sub censusMunComputePairPCC{
 		}
 		$SDarr->[$innerVal] /= $censusMunNumValid;
 		$SDarr->[$innerVal] = sqrt($SDarr->[$innerVal]);
-		print "SDarr->[$innerVal] = $SDarr->[$innerVal]\n";
+		# print "SDarr->[$innerVal] = $SDarr->[$innerVal]\n";
 	}
 
 	for(my $m_id = 1; $m_id < @{$censusMunVals}; $m_id++){
@@ -898,7 +867,7 @@ sub censusMunComputePairPCC{
 	}
 
 	$munAvg /= $censusMunNumValid;
-	print "munAvg: $munAvg\n";
+	# print "munAvg: $munAvg\n";
 
 	for(my $m_id = 1; $m_id < @{$censusMunVals}; $m_id++){
 		if($censusMunValidList->[$m_id] && defined $censusMunVals->[$m_id][$char_id]){

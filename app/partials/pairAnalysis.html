@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+
+<script>
+jQuery(function($){
+	$("#computeButton").click(function(){
+		updatePairsTable();
+	});
+});
+
+document.addEventListener("keyup", function(event) {
+    event.preventDefault();
+    if (event.keyCode == 13) {
+        document.getElementById("computeButton").click();
+    }
+});
+
+function removeRows(tableID){
+	var table = document.getElementById(tableID);
+	while($("#" + tableID + " tr").length > 1){
+		table.deleteRow(1);
+	}
+}
+
+// Removes all tables from the given div.
+function removeAllTables(givenDiv){
+	var tables = document.getElementById(givenDiv).getElementsByTagName("table");
+	for (var i = tables.length - 1; i >= 0; i -= 1){
+		if (tables[i]){
+			tables[i].parentNode.removeChild(tables[i]);
+		}
+	}
+}
+
+function updatePairsTable(){
+	var scope = angular.element(document.getElementById("mainDiv")).scope();
+	
+	if(scope.status != "Successful response."){
+		setTimeout(function(){
+			updatePairsTable();
+		}, 250);
+	}
+    else{
+		removeAllTables("mainDiv");
+		var tbl = createPairsTable();
+		var length = (scope.rawOutput[0]).length;
+
+		for(var rowCounter = 0; rowCounter < length; rowCounter++){
+			var row = tbl.insertRow(rowCounter + 1);
+
+			var cell0 = row.insertCell(0);
+			cell0.style.border = '1px solid black';
+
+			var cell1 = row.insertCell(1);
+			cell1.style.wordWrap = 'break-word';
+			cell1.style.wordBreak = 'break-all';
+			cell1.style.border = '1px solid black';
+
+			var cell2 = row.insertCell(2);
+			cell2.style.border = '1px solid black';
+
+			var cell3 = row.insertCell(3);
+			cell3.style.wordWrap = 'break-word';
+			cell3.style.wordBreak = 'break-all';
+			cell3.style.border = '1px solid black';
+
+			var cell4 = row.insertCell(4);
+			cell4.style.border = '1px solid black';
+			cell4.style.textAlign = 'right';
+
+			var cell5 = row.insertCell(5);
+			cell5.style.border = '1px solid black';
+			cell5.style.textAlign = 'right';
+
+			cell0.innerHTML = scope.rawOutput[0][rowCounter][0];
+			cell1.innerHTML = scope.rawOutput[0][rowCounter][1];
+			cell2.innerHTML = scope.rawOutput[0][rowCounter][2];
+			cell3.innerHTML = scope.rawOutput[0][rowCounter][3];
+			cell4.innerHTML = scope.rawOutput[1][rowCounter][4][1];
+			cell5.innerHTML = scope.rawOutput[1][rowCounter][5][1];
+		}
+	}
+}
+
+function createPairsTable(){
+    var body = document.getElementById("mainDiv"),
+        tbl = document.createElement('table'),
+		th = document.createElement('th');
+    tbl.style.width  = '800px';
+    tbl.style.border = '1px solid black';
+	tbl.style.marginBottom = '20px';
+
+	var rowIdx = 0;
+
+	var header = tbl.createTHead();
+	var row = header.insertRow(rowIdx++);
+	
+	var cell = row.insertCell(0);
+	cell.style.border = '1px solid black';
+	cell.innerHTML = "<b>Table 1</b>";
+
+	cell = row.insertCell(1);
+	cell.style.border = '1px solid black';
+	cell.innerHTML = "<b>Field 1</b>";
+
+	cell = row.insertCell(2);
+	cell.style.border = '1px solid black';
+	cell.innerHTML = "<b>Table 2</b>";
+
+	cell = row.insertCell(3);
+	cell.style.border = '1px solid black';
+	cell.innerHTML = "<b>Field 2</b>";
+
+	cell = row.insertCell(4);
+	cell.style.border = '1px solid black';
+	cell.innerHTML = "<b>PCC</b>";
+
+	cell = row.insertCell(5);
+	cell.style.border = '1px solid black';
+	cell.innerHTML = "<b>RCC</b>";
+
+	var mycap = tbl.createCaption();
+	mycap.innerHTML = "<b>Pairs List</b>";
+
+	body.appendChild(tbl);
+	return tbl;
+}
+</script>
+
+<script
+src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js">
+</script>
+
+<body>
+
+<div class="container-fluid" id="mainDiv">
+	<br>
+	<input type="button" ng-click="compute();" value="Compute All Pairs (Enter)" id="computeButton"><br><br>
+	Status: {{status}}<br><br>
+</div>
+<br>
+
+</body>
+</html>

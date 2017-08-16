@@ -26,7 +26,7 @@ olliApp.controller('BranchController', ['$scope', '$routeParams', 'branchFactory
 				$scope.circulations = response.data.data.circulations;
 				
 			}, function (error) {
-						$scope.status = 'Unable to load library data: ' + error.message;
+				$scope.status = 'Unable to load library data: ' + error.message;
 			});
 		}
     }();

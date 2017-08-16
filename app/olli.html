@@ -29,6 +29,8 @@
     <script src="/controllers/BranchController.js"></script>
     <script src="/controllers/censusNormalizationController.js"></script>
     <script src="/controllers/munGroupingController.js"></script>
+    <script src="/controllers/PairAnalysisController.js"></script>
+
 
     <script src="/geo/geoMunData.js"></script> <!-- defines geoMunData -->
     <script src="/geo/geoProvBoundary.js"></script>
@@ -36,10 +38,10 @@
 <!--    <script src="/geo/geoRoads.js"></script>
 <!--    <script src="/geo/justPortage.js"></script> <!-- defines geoMunData -->
     <script src="/js/olliMap.js"></script> <!-- configure leaflet map -->
+	
+	</head>
 
-  </head>
-
-  <body>
+	<body>
 
     <div id="main">
       <div class="olli-header">
@@ -53,7 +55,8 @@
 	    <li ng-class="navClass('home')"><a href='' ng-click="loadHome()">Home</a></li>
 	    <li ng-class="navClass('municipalities')"><a href='' ng-click="loadMunicipalities()">Municipalities</a></li>
 	    <li ng-class="navClass('libraries')"><a href='' ng-click="loadLibraries()">Libraries</a></li>
-	    <li ng-class="navClass('censusNormalization')"><a href='' ng-click="loadCensusEntry()">Census</a></li>
+	    <li ng-class="navClass('censusNormalization')"><a href='' ng-click="loadCensusEntry()">Census Normalization</a></li>
+      <li ng-class="navClass('pairAnalysis')"><a href='' ng-click="loadPairAnalysis()">Pair Analysis</a></li>
     	<li ng-class="navClass('munGrouping')"><a href='' ng-click="loadMunGrouping()">Municipality Grouping</a></li>
 	  </ul>
 	</div>

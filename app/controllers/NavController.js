@@ -27,5 +27,9 @@ olliApp.controller('NavController', ['$scope', '$location', function ($scope, $l
     $scope.loadMunGrouping = function () {
         $location.url('/munGrouping');
     };
+
+    $scope.loadPairAnalysis = function () {
+        $location.url('/pairAnalysis');
+    };
     
 }]);
