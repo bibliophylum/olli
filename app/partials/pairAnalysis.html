@@ -159,8 +159,8 @@ function insertIntoPairsTable(tableFilters){
 
 		tablesValid =
 			allowSameTables
-			|| (!notSameTables || (notSameTables && (scope.rawOutput[0][i][0] !== scope.rawOutput[0][i][2]))
-			&& !onlySameTables || (onlySameTables && (scope.rawOutput[0][i][0] === scope.rawOutput[0][i][2])));
+			|| ((!notSameTables || (notSameTables && (scope.rawOutput[0][i][0] !== scope.rawOutput[0][i][2])))
+			&& (!onlySameTables || (onlySameTables && (scope.rawOutput[0][i][0] === scope.rawOutput[0][i][2]))));
 
 		if(tablesValid && (tableFilters.length == 0 || filterValid)){
 			row = tbl.insertRow(rowCounter);
