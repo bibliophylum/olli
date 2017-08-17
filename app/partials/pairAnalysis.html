@@ -52,7 +52,7 @@ function updateFilterList(){
 
 		var checkbox;
 		var label;
-		body.appendChild(document.createTextNode('Filter by:'));
+		body.appendChild(document.createTextNode('Filter by tables:'));
 		body.appendChild(document.createElement('br'));
 	
 		for(var i = 0; i < tableList.length; i++){
@@ -75,8 +75,15 @@ function updateFilterList(){
 			body.appendChild(document.createElement('br'));
 		}
 		body.appendChild(document.createElement('br'));
-		// attachCheckboxListeners();
 	}	
+}
+
+// Is called if a filter method radio button is changed, calls to update checkbox filters, which then redraws the pairs list table.
+function filterMethodChange(){
+	var scope = angular.element(document.getElementById("mainDiv")).scope();
+	if(scope.status == "Successful response."){
+		updateFilters(false);
+	}
 }
 
 function updateFilters(moreFiltered){
@@ -92,11 +99,30 @@ function updateFilters(moreFiltered){
 	updatePairsTable(tableFilters);
 }
 
-function contains(arr, v) {
-	for(var i = 0; i < arr.length; i++)
-		if(arr[i] === new String(v).valueOf())  
-			return true;
-	return false;
+function contains(arr, v1, v2) {
+	// Both table names must be within the filters list
+	if($('input[name=filterMethod]:checked').val() === 'AND'){
+		var v1Valid = false;
+		var v2Valid = false;
+
+		for(var i = 0; i < arr.length; i++){
+			if(arr[i] === new String(v1).valueOf()){
+				v1Valid = true;
+			}
+			if(arr[i] === new String(v2).valueOf()){
+				v2Valid = true;
+			}
+		}
+		return v1Valid && v2Valid;
+	}
+
+	// Only one table name must be within the filters list
+	else{
+		for(var i = 0; i < arr.length; i++)
+			if(arr[i] === new String(v1).valueOf() || arr[i] === new String(v2).valueOf())
+				return true;
+		return false;
+	}
 };
 
 function updatePairsTable(tableFilters){
@@ -121,12 +147,22 @@ function insertIntoPairsTable(tableFilters){
 	var cellIdx;
 	var cell;
 	var rowCounter = 1;
-	var isEqual;
+	var filterValid;
+	var tablesValid;
+
+	var notSameTables = $('input[name=sameTableFilter]:checked').val() === 'notSame';
+	var allowSameTables = $('input[name=sameTableFilter]:checked').val() === 'allowSame';
+	var onlySameTables = $('input[name=sameTableFilter]:checked').val() === 'onlySame';
 
 	for(var i = 1; i < length; i++){
-		isEqual = contains(tableFilters, scope.rawOutput[0][i][0]) || contains(tableFilters, scope.rawOutput[0][i][2])
+		filterValid = contains(tableFilters, scope.rawOutput[0][i][0], scope.rawOutput[0][i][2]);
 
-		if(tableFilters.length == 0 || isEqual){
+		tablesValid =
+			allowSameTables
+			|| (!notSameTables || (notSameTables && (scope.rawOutput[0][i][0] !== scope.rawOutput[0][i][2]))
+			&& !onlySameTables || (onlySameTables && (scope.rawOutput[0][i][0] === scope.rawOutput[0][i][2])));
+
+		if(tablesValid && (tableFilters.length == 0 || filterValid)){
 			row = tbl.insertRow(rowCounter);
 			cellIdx = 0;
 
@@ -260,14 +296,33 @@ src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js">
 
 <div class="container-fluid" id="mainDiv">
 	<br>
-	<input type="button" ng-click="compute();" value="Compute All Pairs (Enter)" id="computeButton"><br><br>
 
+	<div class="container-fluid">
+		<input type="button" ng-click="compute();" value="Compute All Pairs (Enter)" id="computeButton"><br><br>
+
+		Filter Methods:<br>
+		<div style='width:200px;'>
+			<div class="container-fluid" style='border:1px solid black;'>
+				<input type="radio" name='filterMethod' value='AND' checked='true' onchange="filterMethodChange();"> ANDing<br>
+				<input type="radio" name='filterMethod' value='OR' onchange="filterMethodChange();"> ORing<br>
+			</div>
+			<br>
+			<div class="container-fluid" style='border:1px solid black;'>
+				<input type="radio" name="sameTableFilter" value='notSame' onchange="filterMethodChange();"> Not same tables<br>
+				<input type="radio" name="sameTableFilter" value='allowSame' onchange="filterMethodChange();" checked='true'> Allow same tables<br>
+				<input type="radio" name="sameTableFilter" value='onlySame' onchange="filterMethodChange();"> Only same tables<br>
+			</div>
+		</div>
+		<br>
+	</div>
 	<div class="container-fluid" id="checkboxDiv"/>
 
 	<!--Raw Output: {{rawOutput}}<br><br>-->
 	<!--Table List: {{tableList}}<br><br>-->
 	<!--Field List: {{fieldList}}<br><br>-->
-	Status: {{status}}<br><br>
+	<div class="container-fluid">
+		Status: {{status}}<br><br>
+	</div>
 </div>
 <br>
 
