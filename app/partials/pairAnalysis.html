@@ -4,7 +4,8 @@
 <script>
 jQuery(function($){
 	$("#computeButton").click(function(){
-		updatePairsTable();
+		updatePairsTable([]);
+		updateFilterList();
 	});
 });
 
@@ -32,80 +33,160 @@ function removeAllTables(givenDiv){
 	}
 }
 
-function updatePairsTable(){
+function updateFilterList(){
+	var scope = angular.element(document.getElementById("mainDiv")).scope();
+
+	if(scope.status != "Successful response."){
+		setTimeout(function(){
+			updateFilterList();
+		}, 250);
+	}
+    else{
+		var tableList = scope.tableList;
+		var body = document.getElementById('checkboxDiv');
+
+		// Removes all elements from 'checkboxDiv' div.
+		while (body.firstChild) {
+			body.removeChild(body.firstChild);
+		}
+
+		var checkbox;
+		var label;
+		body.appendChild(document.createTextNode('Filter by:'));
+		body.appendChild(document.createElement('br'));
+	
+		for(var i = 0; i < tableList.length; i++){
+			checkbox = document.createElement('input');
+			checkbox.type = "checkbox";
+			checkbox.id = "box" + i;
+			checkbox.value = i;
+			checkbox.name = tableList[i];
+
+			checkbox.addEventListener('change', function(){
+				updateFilters(this.checked);			
+			});
+
+			label = document.createElement('label')
+			label.htmlFor = "box" + i;
+			label.appendChild(document.createTextNode('  ' + tableList[i]));
+
+			body.appendChild(checkbox);
+			body.appendChild(label);
+			body.appendChild(document.createElement('br'));
+		}
+		body.appendChild(document.createElement('br'));
+		// attachCheckboxListeners();
+	}	
+}
+
+function updateFilters(moreFiltered){
+	var body = document.getElementById('checkboxDiv');
+	var boxes = body.getElementsByTagName('input');
+	var tableFilters = [];
+	var filtersIdx = 0;
+	for(var i = 0; i < boxes.length; i++){
+		if(boxes[i].checked){
+			tableFilters[filtersIdx++] = boxes[i].name;
+		}
+	}
+	updatePairsTable(tableFilters);
+}
+
+function contains(arr, v) {
+	for(var i = 0; i < arr.length; i++)
+		if(arr[i] === new String(v).valueOf())  
+			return true;
+	return false;
+};
+
+function updatePairsTable(tableFilters){
 	var scope = angular.element(document.getElementById("mainDiv")).scope();
 	
 	if(scope.status != "Successful response."){
 		setTimeout(function(){
-			updatePairsTable();
+			updatePairsTable(tableFilters);
 		}, 250);
 	}
     else{
 		removeAllTables("mainDiv");
-		var tbl = createPairsTable();
-		var length = (scope.rawOutput[0]).length;
-		var cellIdx;
-		var cell;
+		insertIntoPairsTable(tableFilters);
+	}
+}
 
-		for(var rowCounter = 0; rowCounter < length; rowCounter++){
-			var row = tbl.insertRow(rowCounter + 1);
+function insertIntoPairsTable(tableFilters){
+	var tbl = createPairsTable();
+	var scope = angular.element(document.getElementById("mainDiv")).scope();
+	var length = (scope.rawOutput[0]).length;
+	var row;
+	var cellIdx;
+	var cell;
+	var rowCounter = 1;
+	var isEqual;
+
+	for(var i = 1; i < length; i++){
+		isEqual = contains(tableFilters, scope.rawOutput[0][i][0]) || contains(tableFilters, scope.rawOutput[0][i][2])
+
+		if(tableFilters.length == 0 || isEqual){
+			row = tbl.insertRow(rowCounter);
 			cellIdx = 0;
 
 			// Table 1
 			cell = row.insertCell(cellIdx++);
 			cell.style.border = '1px solid black';
-			cell.innerHTML = scope.rawOutput[0][rowCounter][0];
+			cell.innerHTML = scope.rawOutput[0][i][0];
 
 			// Field 1
 			cell = row.insertCell(cellIdx++);
 			cell.style.wordWrap = 'break-word';
 			cell.style.wordBreak = 'break-all';
 			cell.style.border = '1px solid black';
-			cell.innerHTML = scope.rawOutput[0][rowCounter][1];
+			cell.innerHTML = scope.rawOutput[0][i][1];
 
 			// Field 1 Average
 			cell = row.insertCell(cellIdx++);
 			cell.style.border = '1px solid black';
-			cell.innerHTML = scope.rawOutput[1][rowCounter][0][1].toFixed(2);
+			cell.innerHTML = scope.rawOutput[1][i][0][1].toFixed(2);
 
 			// Field 1 SD
 			cell = row.insertCell(cellIdx++);
 			cell.style.border = '1px solid black';
-			cell.innerHTML = scope.rawOutput[1][rowCounter][1][1].toFixed(2);
+			cell.innerHTML = scope.rawOutput[1][i][1][1].toFixed(2);
 
 			// Table 2
 			cell = row.insertCell(cellIdx++);
 			cell.style.border = '1px solid black';
-			cell.innerHTML = scope.rawOutput[0][rowCounter][2];
+			cell.innerHTML = scope.rawOutput[0][i][2];
 
 			// Field 2
 			cell = row.insertCell(cellIdx++);
 			cell.style.wordWrap = 'break-word';
 			cell.style.wordBreak = 'break-all';
 			cell.style.border = '1px solid black';
-			cell.innerHTML = scope.rawOutput[0][rowCounter][3];
+			cell.innerHTML = scope.rawOutput[0][i][3];
 
 			// Field 2 Average
 			cell = row.insertCell(cellIdx++);
 			cell.style.border = '1px solid black';
-			cell.innerHTML = scope.rawOutput[1][rowCounter][2][1].toFixed(2);
+			cell.innerHTML = scope.rawOutput[1][i][2][1].toFixed(2);
 
 			// Field 2 SD
 			cell = row.insertCell(cellIdx++);
 			cell.style.border = '1px solid black';
-			cell.innerHTML = scope.rawOutput[1][rowCounter][3][1].toFixed(2);
+			cell.innerHTML = scope.rawOutput[1][i][3][1].toFixed(2);
 
 			// PCC
 			cell = row.insertCell(cellIdx++);
 			cell.style.border = '1px solid black';
 			cell.style.textAlign = 'right';
-			cell.innerHTML = scope.rawOutput[1][rowCounter][4][1].toFixed(4);;
+			cell.innerHTML = scope.rawOutput[1][i][4][1].toFixed(4);
 
 			// RCC
 			cell = row.insertCell(cellIdx++);
 			cell.style.border = '1px solid black';
 			cell.style.textAlign = 'right';
-			cell.innerHTML = scope.rawOutput[1][rowCounter][5][1].toFixed(4);;
+			cell.innerHTML = scope.rawOutput[1][i][5][1].toFixed(4);
+
+			rowCounter++;
 		}
 	}
 }
@@ -180,6 +261,12 @@ src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js">
 <div class="container-fluid" id="mainDiv">
 	<br>
 	<input type="button" ng-click="compute();" value="Compute All Pairs (Enter)" id="computeButton"><br><br>
+
+	<div class="container-fluid" id="checkboxDiv"/>
+
+	<!--Raw Output: {{rawOutput}}<br><br>-->
+	<!--Table List: {{tableList}}<br><br>-->
+	<!--Field List: {{fieldList}}<br><br>-->
 	Status: {{status}}<br><br>
 </div>
 <br>
