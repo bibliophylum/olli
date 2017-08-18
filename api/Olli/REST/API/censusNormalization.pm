@@ -46,6 +46,8 @@ my $innerNames = [
 	'Female'
 ];
 
+my $normalized = [];
+
 sub dbPrepare{
 	$dbh = DBI->connect($dsn,
 				$userid,
@@ -64,11 +66,33 @@ sub GET{
 	my $q = CGI->new;
 	my @munParam = $q->multi_param('munID');
 	my @charParam = $q->multi_param('charID');
-	my $chosenOutput = listSpecificNormalizedValues(0,\@charParam,\@munParam);
-	my $chosenOutput = rearrange($chosenOutput);
+	my $needCharsList = $q->param('needCharsList');
+	my $needValidCharsList = $q->param('needValidCharsList');
+	my $chosenOutput;
 
-    $response->data()->{'rawOutput'} = $chosenOutput;
-    return Apache2::Const::HTTP_OK ;
+	if(@{$normalized} == 0){
+		normalizeCensusValues();
+	}
+
+	if($needCharsList){
+		my $charsList = findCharIdNames();
+		$response->data()->{'charsList'} = $charsList;
+	}
+
+	if($needValidCharsList){
+		my $mutuallyValidChars = findMutuallyValidChars(\@munParam);
+		$chosenOutput = $mutuallyValidChars;
+
+		$response->data()->{'validCharsList'} = $chosenOutput;
+		return Apache2::Const::HTTP_OK ;
+	}
+	else{
+		$chosenOutput = listSpecificNormalizedValues(0,\@charParam,\@munParam, $response);
+		$chosenOutput = rearrange($chosenOutput);
+
+		$response->data()->{'rawOutput'} = $chosenOutput;
+		return Apache2::Const::HTTP_OK ;
+	}
 }
 
 sub munCensusSorting{
@@ -127,11 +151,11 @@ sub munCensusSorting{
 			&& $currentRow->[$m_yearIdx] eq '2011'
 			&& $currentRow->[$subDivIdx] != 9
 			){
-				if($currentRow->[$subDivIdx] == 9){
-					print "for mun 2, char $currentRow->[$characterIdIdx] is valid.\n";
-					print "year: " . $currentRow->[$m_yearIdx] . "\n";
-					exit 0;
-				}
+				# if($currentRow->[$subDivIdx] == 9){
+				# 	print "for mun 2, char $currentRow->[$characterIdIdx] is valid.\n";
+				# 	print "year: " . $currentRow->[$m_yearIdx] . "\n";
+				# 	exit 0;
+				# }
 
 			# $SQL = "select c.total from census as c inner join mun_cen on mun_cen.census_subdivision_id = c.subdivision_id and c.subdivision_id = '$currentRow->[$subDivIdx]' inner join municipalities as m on m.id = mun_cen.municipality_id";
 			# $sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
@@ -203,7 +227,7 @@ sub normalizeCensusValues{
 	# dbPrepare();
 
 	my @censusMunVals = munCensusSorting();
-	my $normalized; # Holds normalized values for each valid census characteristic subvalue for each valid municipality (range of 0 -> 1)
+	$normalized = []; # Holds normalized values for each valid census characteristic subvalue for each valid municipality (range of 0 -> 1)
 	my $charMinMax; # Holds min ([0]) and max ([1]) for each subvalue of each census characteristic.
 	my $currentPop; # Used in loops to reduce text and declarations.
 
@@ -213,11 +237,11 @@ sub normalizeCensusValues{
 			# print "Normalizing values of municipality $m_id\n";
 			# <STDIN>;
 
-			if($m_id == 2){
-				print "normalizeCensusValues sub (1): m_id of 2 is seen as valid!\n";
+			# if($m_id == 2){
+				# print "normalizeCensusValues sub (1): m_id of 2 is seen as valid!\n";
 				# print "Aborting!\n";
 				# exit 0;
-			}
+			# }
 
 			for(my $c_id = 1; $c_id < @{$censusMunVals[$m_id]}; $c_id++){
 				if(defined $censusMunVals[$m_id][$c_id]){
@@ -250,11 +274,11 @@ sub normalizeCensusValues{
 	# Applying first normalization step to census/municipality characteristic subvalues.
 	for(my $m_id = 1; $m_id < @censusMunVals; $m_id++){
 		if(defined $censusMunVals[$m_id]){
-			if($m_id == 2){
-				print "normalizeCensusValues sub (2): m_id of 2 is seen as valid!\n";
+			# if($m_id == 2){
+				# print "normalizeCensusValues sub (2): m_id of 2 is seen as valid!\n";
 				# print "Aborting!\n";
 				# exit 0;
-			}
+			# }
 			# print "Normalizing values of municipality $m_id\n";
 			for(my $c_id = 1; $c_id < @{$censusMunVals[$m_id]}; $c_id++){
 				if(defined $censusMunVals[$m_id][$c_id]){
@@ -278,7 +302,7 @@ sub normalizeCensusValues{
 			}
 		}
 	}
-	return $normalized;
+	# return $normalized;
 }
 
 # Calculates average of each (Total, Male, Female) across all valid censusMunVals, stores averages in similar structure to censusMunVals.
@@ -319,7 +343,7 @@ sub getTrueCensus2011Pops{
 
 	for(my $m_id = 1; $m_id < @{$censusMunVals}; $m_id++){
 		if(defined $censusMunVals->[$m_id]){
-			print "m_id: $m_id\n";
+			# print "m_id: $m_id\n";
 			$SQL = "select c.total from census as c inner join mun_cen on mun_cen.census_subdivision_id = c.subdivision_id and characteristics_id = '1' inner join municipalities as m on m.id = mun_cen.municipality_id and m.id = '$m_id'";
 			
 			$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
@@ -334,8 +358,8 @@ sub getTrueCensus2011Pops{
 # Then lists valid census characteristics for that municipality, lets the user choose however many they want.
 # Shows normalized values for (Total, Male, Female) for the given municipality's given characteristics.
 sub listSpecificNormalizedValues{
-	my ($printOutput, $charParams, $munParams) = @_;
-	my $normalized = normalizeCensusValues();
+	my ($printOutput, $charParams, $munParams, $response) = @_;
+	# $normalized = normalizeCensusValues();
 
 	my $munChoiceArr;
 	my $mutuallyValidChars;
@@ -345,64 +369,14 @@ sub listSpecificNormalizedValues{
 	my $more = 1; # Whether there is more user input to be received.
 
 	# If valid choices, use passed parameters as chosen municipality and census characteristics indices.
-	if(checkCharValidity($normalized, $charParams, $munParams)){
+	if(checkCharValidity($charParams, $munParams, $response)){
 		$munChoiceArr = $munParams;
 		@charChoiceArr = @{$charParams};
 	}
 	else{
-		return; # Produces an error instead of an infinite loop.
+		# $response->data()->{'status'} = $response->data()->{'status'} . "Invalid choices!\n";
+		return; # Error
 	}
-	# else{
-	# 	($munChoiceArr, $mutuallyValidChars) = findMutuallyValidChars($printOutput, $normalized, $munParams);
-
-	# 	for(my $c_id = 0; $c_id < @{$mutuallyValidChars}; $c_id++){
-	# 		if($mutuallyValidChars->[$c_id]){
-	# 			$SQL = "select id, value from census_characteristics where id = '$c_id'";
-	# 			$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
-	# 			$sth->execute() or die "Execute exception: $DBI::errstr";
-	# 			$charList->[@{$charList}] = $sth->fetchall_arrayref()->[0];
-	# 		}
-	# 	}
-
-	# 	# Prints all valid census characteristics (for the chosen municipality) for the user to choose from.
-	# 	print "\nPossible census characteristics:\n";
-	# 	for(my $n = 0; $n < @{$charList}; $n++){
-	# 		print $charList->[$n][0] . ": " . $charList->[$n][1] . "\n";
-	# 	}
-
-	# 	# Gets valid census characteristic id choices from user:
-	# 	# Currently does not protect from the same value occuring more than once in @charChoiceArr.
-	# 	print "\nContinue entering census characteristics by typing in one at a time from the list of the id's above. Enter \"end\" once you're finished.\n";
-	# 	do{
-	# 		print "\n(" . @charChoiceArr . ") Enter a valid characteristic id: ";
-	# 		$tempChoice = <STDIN>;
-	# 		chomp $tempChoice;
-	# 		trim($tempChoice);
-
-	# 		if((!looks_like_number($tempChoice))
-	# 			|| ! $mutuallyValidChars->[$tempChoice]
-	# 			|| $tempChoice < 1){
-			
-	# 			if(uc($tempChoice) eq uc("end")){
-	# 				$more = 0;
-	# 			}
-	# 			else{
-	# 				print "Not a valid characteristic id!\n";
-	# 			}
-	# 		}
-	# 		else{
-	# 			$tempChoice += 0; # Easy method of removing leading zeros, else the same characteristic id could be entered multiple times.
-	# 			if(!checkArrForElem(\@charChoiceArr, $tempChoice)){
-	# 				$charChoiceArr[@charChoiceArr] = $tempChoice;
-	# 				# push (@charChoiceArr, $charChoice);
-	# 			}
-	# 			else{
-	# 				print "Chosen characteristic id has already been recorded!\n";
-	# 			}
-	# 		}
-	# 	}while($more);
-	# 	print "\n";
-	# }
 
 	my $munName;
 	my $munNames;
@@ -423,7 +397,6 @@ sub listSpecificNormalizedValues{
 	# 					1: Total
 	# 					2: Male
 	# 					3: Female
-
 
 	if($printOutput){
 		print "Results:\n";
@@ -506,87 +479,25 @@ sub checkArrForElem{
 	return 0; # elem not found in arr
 }
 
+sub findCharIdNames{
+	$SQL = "select id, value from census_characteristics";
+	$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
+	$sth->execute() or die "Execute exception: $DBI::errstr";
+	return $sth->fetchall_arrayref();
+}
+
 # Allows the user to choose multiple valid municipalities, then finds all census characteristics that are valid across all chosen municipalities.
 # Returns the list of valid municipality choices and the list of census characteristics that are valid across all chosen municipalities.
 sub findMutuallyValidChars{
-	my ($printOutput, $normalized, $munParams) = @_;
-	
-	my $munList;
-	my $charList;
-	my $munChoice;
-	my $more = 1;
+	my ($munParams) = @_;
 	my $current_m_id;
-	my $mutuallyValidChars;
+	my $mutuallyValidChars = [];
 
 	# PATCHWORK, NOT OPTIMAL!
 	# Municipality id of 2 is getting through as valid, even though it should have been disregarded from the start. The reason for this is unknown.
-	undef $normalized->[2];
+	# undef $normalized->[2];
 
-	my $munChoiceArr = [];
-	
-	if(checkMunValidity($normalized, $munParams)){
-		$munChoiceArr = $munParams;
-	}
-	else{
-		# Gathers id and name from all valid municipalities.
-		for(my $m_id = 0; $m_id < @{$normalized}; $m_id++){
-			if(defined $normalized->[$m_id]){
-				# if($m_id == 2){
-				# 	print "findMutuallyValidChars: m_id of 2 is seen as valid!\n\n";
-					# print "Aborting!\n";
-					# exit 0;
-				# }
-				$SQL = "select id, name from municipalities where id = '$m_id'";
-				$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
-				$sth->execute() or die "Execute exception: $DBI::errstr";
-
-				$munList->[@{$munList}] = $sth->fetchall_arrayref()->[0];
-			}
-		}
-
-		if($printOutput){
-			# Prints all valid municipalities for the user to choose from.
-			print "Valid municipalities:\n";
-			for(my $n = 0; $n < @{$munList}; $n++){
-				print $munList->[$n][0] . ": " . $munList->[$n][1] . "\n";
-			}
-		}
-
-		print "\nContinue entering municipalities by typing in one at a time from the list of the id's above. Enter \"end\" once you're finished.\n";
-		do{
-			print "\n(" . @{$munChoiceArr} . ") Enter a valid municipality id: ";
-			$munChoice = <STDIN>;
-			chomp $munChoice;
-			trim($munChoice);
-
-			if((!looks_like_number($munChoice))
-				|| ! defined $normalized->[$munChoice]
-				|| $munChoice < 1){
-			
-				if(uc($munChoice) eq uc("end")){
-					if(@{$munChoiceArr} == 0){
-						print "Must enter at least one valid municipality id!\n";
-					}
-					else{
-						$more = 0;
-					}
-				}
-				else{
-					print "Not a valid characteristic id!\n";
-				}
-			}
-			else{
-				$munChoice += 0; # Easy method of removing leading zeros, else the same characteristic id could be entered multiple times.
-				if(!checkArrForElem($munChoiceArr, $munChoice)){
-					$munChoiceArr->[@{$munChoiceArr}] = $munChoice;
-					# push (@munChoiceArr, $munChoice);
-				}
-				else{
-					print "Chosen municipality id has already been recorded!\n";
-				}
-			}
-		}while($more);
-	}
+	my $munChoiceArr = $munParams;
 
 	# Uses max(id) instead of count(id) as there could possibly be gaps, but we address each census characteristic by the actual id.
 	$SQL = "select max(id) from census_characteristics";
@@ -608,12 +519,12 @@ sub findMutuallyValidChars{
 			}
 		}
 	}
-	return ($munChoiceArr, $mutuallyValidChars);
+	return $mutuallyValidChars;
 }
 
 # Returns 1 if the passed municipality id choices are valid, else returns 0.
 sub checkMunValidity{
-	my ($normalized, $munChoiceArr) = @_;
+	my ($munChoiceArr) = @_;
 
 	if(@{$munChoiceArr} < 1){
 		return 0;
@@ -634,24 +545,52 @@ sub checkMunValidity{
 
 # Returns 1 if the passed census characteristics and municipality choices are valid together, else returns 0.
 sub checkCharValidity{
-	my ($normalized, $charChoiceArr, $munChoiceArr) = @_;
+	my ($charChoiceArr, $munChoiceArr, $response) = @_;
 
-	if(! defined $charChoiceArr || ! defined $munChoiceArr || @{$charChoiceArr} < 1 || @{$munChoiceArr} < 1){
+	if(@{$charChoiceArr} < 1 || @{$munChoiceArr} < 1){
+		$response->data()->{'status'}[@{$response->data()->{'status'}}] = "Empty parameters!";
 		return 0; # Not valid or not specified
 	}
 
+	my $error = 0;
+
 	for(my $c_id_idx = 0; $c_id_idx < @{$charChoiceArr}; $c_id_idx++){
 		for(my $m_id_idx = 0; $m_id_idx < @{$munChoiceArr}; $m_id_idx++){
-			if(
-				! defined $charChoiceArr->[$c_id_idx]
-				|| ! defined $munChoiceArr->[$m_id_idx]
-				|| ! looks_like_number($charChoiceArr->[$c_id_idx])
-				|| ! looks_like_number($munChoiceArr->[$m_id_idx])
-				|| $charChoiceArr->[$c_id_idx] < 1
-				|| $munChoiceArr->[$m_id_idx] < 1
-				|| ! defined $normalized->[$munChoiceArr->[$m_id_idx]][$charChoiceArr->[$c_id_idx]]
-				){
-				return 0; # Not valid choices lists
+
+			if(! defined $munChoiceArr->[$m_id_idx]){
+				$response->data()->{'status'}[@{$response->data()->{'status'}}] = "Municipality choice of " . $munChoiceArr->[$m_id_idx] . " is not defined!";
+				$error = 1;
+			}
+			if(! defined $charChoiceArr->[$c_id_idx]){
+				$response->data()->{'status'}[@{$response->data()->{'status'}}] = "Characteristic choice of " . $charChoiceArr->[$c_id_idx] . " is not defined!";
+				$error = 1;
+			}
+			if(! looks_like_number($munChoiceArr->[$m_id_idx])){
+				$response->data()->{'status'}[@{$response->data()->{'status'}}] = "Municipality choice of " . $munChoiceArr->[$m_id_idx] . " is not a number!";
+				$error = 1;
+			}
+			if(! looks_like_number($charChoiceArr->[$c_id_idx])){
+				$response->data()->{'status'}[@{$response->data()->{'status'}}] = "Characteristic choice of " . $charChoiceArr->[$c_id_idx] . " is not a number!";
+				$error = 1;
+			}
+			if($munChoiceArr->[$m_id_idx] < 1){
+				$response->data()->{'status'}[@{$response->data()->{'status'}}] = "Characteristic choice of " . $munChoiceArr->[$m_id_idx] . " is < 1!";
+				$error = 1;
+			} elsif(! defined $normalized->[$munChoiceArr->[$m_id_idx]]){
+				$response->data()->{'status'}[@{$response->data()->{'status'}}] = "Municipality choice of " . $munChoiceArr->[$m_id_idx] . " doesn't exist!";
+				$error = 1;
+			}
+			if($charChoiceArr->[$c_id_idx] < 1){
+				$response->data()->{'status'}[@{$response->data()->{'status'}}] = "Municipality choice of " . $charChoiceArr->[$c_id_idx] . " is < 1!";
+				$error = 1;
+			}
+			if(! defined $normalized->[$munChoiceArr->[$m_id_idx]][$charChoiceArr->[$c_id_idx]]){
+				$response->data()->{'status'}[@{$response->data()->{'status'}}] = "Municipality choice of " . $munChoiceArr->[$m_id_idx] . " does not contain valid values for characteristic " . $charChoiceArr->[$c_id_idx] . "!";
+				$error = 1;
+			}
+
+			if($error){
+				return 0;
 			}
 		}
 	}
@@ -662,7 +601,7 @@ sub checkCharValidity{
 # Asks for the number of minimum/maximum census characteristics values to display, in sorted ascending/descending (separately). This is ordered by subvalue (Total).
 # Shows normalized values for (Total, Male, Female) for the given municipality.
 sub findMinMaxNCharVals{
-	my $normalized = normalizeCensusValues();
+	# $normalized = normalizeCensusValues();
 
 	my $SQL = "select id, name from municipalities";
 	$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
@@ -796,7 +735,7 @@ sub findMinMaxNCharVals{
 
 # Prints list returned by 'findSimilarValueChars' sub to the screen.
 sub listSimilarValueChars{
-	my ($printOutput, $normalized, $chosenMun, $chosenChar, $chosenSubvalue, $tolerance) = @_;
+	my ($printOutput, $chosenMun, $chosenChar, $chosenSubvalue, $tolerance) = @_;
 
 	if(! defined $normalized->[$chosenMun]){
 		print "ERROR: Given municipality not valid!\n";
@@ -807,7 +746,7 @@ sub listSimilarValueChars{
 		exit 0;
 	}
 
-	my $simList = findSimilarValueChars($printOutput, $normalized, $chosenMun, $chosenChar, $chosenSubvalue, $tolerance);
+	my $simList = findSimilarValueChars($printOutput, $chosenMun, $chosenChar, $chosenSubvalue, $tolerance);
 
 	$SQL = "select value from census_characteristics where id = '$chosenChar'";
 	$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
@@ -825,7 +764,7 @@ sub listSimilarValueChars{
 
 # Given a choice of municipality and subValue of a census characteristic, returns characteristic id and value of each subValue of every other characteristic for that municipality that is within +- $tolerance.
 sub findSimilarValueChars{
-	my ($printOutput, $normalized, $chosenMun, $chosenChar, $chosenSubvalue, $tolerance) = @_;
+	my ($printOutput, $chosenMun, $chosenChar, $chosenSubvalue, $tolerance) = @_;
 
 	if(! defined $normalized->[$chosenMun]){
 		print "ERROR: Given municipality not valid!\n";
@@ -875,5 +814,5 @@ sub trim {
 # Authorize the GET method.
 sub isAuth{
 	my ($self, $method, $req) = @_;
-    return $method eq 'GET';
+    return ($method eq 'GET');
 }
