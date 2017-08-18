@@ -15,7 +15,6 @@ olliApp.controller('munGroupingController', ['$scope', '$routeParams', 'munGroup
         munGroupingFactory.getValidMuns()
             .then(function (response){
                 $scope.munList = response.data.data.rawOutput;
-
             }, function (error){
                 $scope.status = "ERROR " + error.status;
             });

@@ -6,6 +6,11 @@ olliApp.controller('censusNormalizationController', ['$scope', '$routeParams', '
     $scope.charID = '';
     $scope.status = 'Waiting.';
     $scope.munList = "Empty";
+    $scope.needCharsList = true;
+    $scope.charsList = [];
+    $scope.needValidCharsList = true;
+    $scope.validCharsList = [];
+    $scope.rawOutput;
 
     ! function(){
         $scope.status = "Calling for valid municipalities.";
@@ -43,7 +48,8 @@ olliApp.controller('censusNormalizationController', ['$scope', '$routeParams', '
                         $scope.rawOutput = response.data.data.rawOutput;
                         $scope.status = "Successful response.";
                     }, function (error){
-                        $scope.status = "ERROR " + error.status;
+                        // $scope.status = "ERROR " + error.status;
+                        $scope.status = error.data.data.status;
                     });
             }
         }
@@ -55,6 +61,27 @@ olliApp.controller('censusNormalizationController', ['$scope', '$routeParams', '
         }
         $scope.charID = '';
         $scope.munID = '';
+    }
+
+    $scope.getValidChars = function(){
+        $scope.status = "Calling for valid chars list.";
+        $scope.rawOutput = 'No output.';
+        $scope.needValidCharsList = true;
+
+
+        var munArr = ($scope.munID).split(' ');
+        munArr = munArr.uniqueNumbers();        
+
+        cenFactory.getValidChars(munArr, $scope.needCharsList)
+            .then(function (response){
+                $scope.charsList = response.data.data.charsList;
+                $scope.validCharsList = response.data.data.validCharsList;
+                $scope.status = "Successful response.";
+            }, function (error){
+                $scope.status = "ERROR " + error.status;
+            });
+        $scope.needCharsList = false;
+        $scope.needValidCharsList = false;
     }
 
     Array.prototype.contains = function(v) {

@@ -4,9 +4,8 @@
 <script>
 document.addEventListener("keyup", function(event) {
     event.preventDefault();
-    if (event.keyCode == 13) {
+    if (event.keyCode == 13)
         document.getElementById("computeButton").click();
-    }
 });
 
 jQuery(function($){
@@ -22,14 +21,12 @@ $(document).ready(function(){
 // Waits for a successful response.
 function waitForElement(){
 	var status = angular.element(document.getElementById("mainDiv")).scope().status;
-	if(status == "Successful response."){
+	if(status == "Successful response.")
 		updateTables();
-	}
-	else{
+	else
 		setTimeout(function(){
 			waitForElement();
 		}, 250);
-	}
 }
 
 // Updates tables in 'mainDiv' div, called upon successful computation of normalized values.
@@ -38,19 +35,16 @@ function updateTables(){
 
 	var normList = angular.element(document.getElementById("mainDiv")).scope().rawOutput;
 	var length = (normList).length;
-	for(var i = 0; i < length; i++){
+	for(var i = 0; i < length; i++)
 		createTable(normList[i]);
-	}
 }
 
 // Removes all tables from the given div.
 function removeAllTables(givenDiv){
 	var tables = document.getElementById(givenDiv).getElementsByTagName("table");
-	for (var i = tables.length - 1; i >= 0; i -= 1){
-		if (tables[i]){
+	for (var i = tables.length - 1; i >= 0; i -= 1)
+		if (tables[i])
 			tables[i].parentNode.removeChild(tables[i]);
-		}
-	}
 }
 
 // Creates a table for the given municipality results.
@@ -110,25 +104,27 @@ function createTable(munVals){
 function updateMunTable(){
 	var munList = angular.element(document.getElementById("mainDiv")).scope().munList;
 	
-	if(munList == "Empty"){
+	if(munList == "Empty")
 		setTimeout(function() {
 			updateMunTable();
 		}, 250);
-	}
 	else{
 		removeAllTables("leftDiv");
 		var table = createMunTable();
-		var length = (munList).length;
+		var length = munList.length;
+		var row;
+		var cell;
 
 		for(var rowCounter = 0; rowCounter < length; rowCounter++){
-			var row = table.insertRow(rowCounter + 1);
-			var cell0 = row.insertCell(0);
-			cell0.style.border = '1px solid black';
-			var cell1 = row.insertCell(1);
-			cell1.style.border = '1px solid black';
+			row = table.insertRow(rowCounter + 1);
+			
+			cell = row.insertCell(0);
+			cell.style.border = '1px solid black';
+			cell.innerHTML = munList[rowCounter][0];
 
-			cell0.innerHTML = munList[rowCounter][0];
-			cell1.innerHTML = munList[rowCounter][1];
+			cell = row.insertCell(1);
+			cell.style.border = '1px solid black';
+			cell.innerHTML = munList[rowCounter][1];
 		}
 	}
 }
@@ -140,6 +136,7 @@ function createMunTable(){
     tbl.style.width  = '250px';
     tbl.style.border = '1px solid black';
 	tbl.style.marginBottom = '20px';
+	tbl.style.marginRight = '20px';
 
 	var rowIdx = 0;
 
@@ -160,6 +157,68 @@ function createMunTable(){
 	body.appendChild(tbl);
 	return tbl;
 }
+
+function updateCharTable(){
+	var charsList = angular.element(document.getElementById("mainDiv")).scope().charsList;
+	if(charsList.length == 0)
+		setTimeout(function() {
+			updateCharTable();
+		}, 250);
+	else{
+		var validCharsList = angular.element(document.getElementById("mainDiv")).scope().validCharsList;
+		removeAllTables('charDiv');
+		var table = createCharTable();
+		var numChars = validCharsList.length;
+		var row;
+		var cell;
+		var rowCounter = 1;
+
+		for(var i = 0; i < numChars; i++){
+			if(validCharsList[i] == 1){
+				row = table.insertRow(rowCounter);
+				
+				cell = row.insertCell(0);
+				cell.style.border = '1px solid black';
+				cell.innerHTML = charsList[i][0];
+
+				cell = row.insertCell(1);
+				cell.style.border = '1px solid black';
+				cell.innerHTML = charsList[i][1];
+
+				rowCounter++;
+			}
+		}
+	}
+}
+
+function createCharTable(){
+    var body = document.getElementById("charDiv"),
+        tbl = document.createElement('table'),
+		th = document.createElement('th');
+    tbl.style.width  = '250px';
+    tbl.style.border = '1px solid black';
+	tbl.style.marginBottom = '20px';
+	tbl.style.marginRight = '20px';
+
+	var rowIdx = 0;
+
+	var header = tbl.createTHead();
+	var row = header.insertRow(rowIdx++);
+	
+	var cell = row.insertCell(0);
+	cell.style.border = '1px solid black';
+	cell.innerHTML = "<b>ID</b>";
+
+	cell = row.insertCell(1);
+	cell.style.border = '1px solid black';
+	cell.innerHTML = "<b>Name</b>";
+
+	var mycap = tbl.createCaption();
+	mycap.innerHTML = "<b>Valid Characteristics</b>";
+
+	body.appendChild(tbl);
+	return tbl;
+}
 </script>
 
 <script
@@ -174,10 +233,14 @@ src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js">
 	Characteristic ID's: <input type="value" ng-model="charID" id="charTextbox"><br>
 	<br>
 	<input type="button" ng-click="getCensusValues()" value="Compute (Enter)" id="computeButton"><br><br>
+	<input type="button" ng-click="getValidChars()" onclick="setTimeout(updateCharTable, 100);" value="Get Valid Characteristics" id="charsButton"><br><br>
+	<!--Chars List: {{charsList}}<br><br>-->
+	<!--Valid Chars List: {{validCharsList}}<br><br>-->
 	Status: {{status}}<br><br>
 
 	<div style="float:left;" id="leftDiv"/>
-	<div style="float:right;" id="rightDiv"/>
+	<div style="float:left;" id='charDiv'/>
+	<div style="float:left;" id="rightDiv"/>
 </div>
 
 </body>

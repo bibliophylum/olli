@@ -36,7 +36,7 @@ function removeAllTables(givenDiv){
 	}
 }
 
-// Removes all tables from the given div.
+// Removes all elements from the given div.
 function removeAllElements(givenDiv){
 	var tables = document.getElementById(givenDiv).getElementsByTagName("table");
 	for (var i = tables.length - 1; i >= 0; i -= 1){
@@ -181,7 +181,6 @@ function updateLastChoices(){
 	while (body.firstChild)
 		body.removeChild(body.firstChild);
 
-
 	// Not an efficient approach, but it isn't likely to be demanding in its entirety.
 	var found;
 	for(var choiceIdx = 0; choiceIdx < lastChoice.length; choiceIdx++){
@@ -206,7 +205,7 @@ src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js">
 <div class="container-fluid" id="mainDiv">
 	You may enter multiple municipality ID's, with each ID separated by a space. (Valid values: munID = 600 609)<br><br>
 	Municipality ID: <input type="value" ng-model="munID" id="munTextbox"><br><br>
-	Last choices:<br>
+	Previous choices:<br>
 	<div class="container-fluid" id="lastChoicesDiv"/>
 	<br>
 	<input type="button" ng-click="group();" value="Compute (Enter)" id="computeButton"><br><br>

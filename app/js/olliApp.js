@@ -30,15 +30,15 @@ olliApp.config(function ($routeProvider,$locationProvider) {
 	})
 	.when('/censusNormalization', {
 	    controller: 'censusNormalizationController',
-	    templateUrl: 'partials/censusNormalization.html'
+	    templateUrl: 'partials/censusNormalization.html?v=8'
 	})
 	.when('/munGrouping', {
 	    controller: 'munGroupingController',
-	    templateUrl: 'partials/munGrouping.html'
+	    templateUrl: 'partials/munGrouping.html?v=9'
 	})
 	.when('/pairAnalysis', {
 	    controller: 'PairAnalysisController',
-	    templateUrl: 'partials/pairAnalysis.html'
+	    templateUrl: 'partials/pairAnalysis.html?v=10'
 	})
     .otherwise({ redirectTo: '/municipalities' });
 
@@ -135,6 +135,13 @@ olliApp.factory('cenFactory', ['$http', function($http) {
         return $http({
 			url: 'api/munGrouping',
 			method: "GET"});
+    };
+
+    cenFactory.getValidChars = function (munID, needCharsList){
+        return $http({
+			url: urlBase,
+			method: "GET",
+            params: {munID: munID, needValidCharsList: true, needCharsList: needCharsList}});
     };
 
     return cenFactory;
