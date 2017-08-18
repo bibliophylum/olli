@@ -6,6 +6,7 @@ olliApp.controller('munGroupingController', ['$scope', '$routeParams', 'munGroup
     $scope.status = 'Waiting.';
     $scope.rawOutput = '';
     $scope.munList = "Empty";
+    $scope.lastChoice = [];
 
     ! function(){
         $scope.status = "Calling for valid municipalities.";
@@ -39,6 +40,10 @@ olliApp.controller('munGroupingController', ['$scope', '$routeParams', 'munGroup
                     }, function (error){
                         $scope.status = "ERROR " + error.status;
                     });
+
+                $scope.lastChoice = [];
+                for(var i = 0; i < munArr.length; i++)
+            		$scope.lastChoice[i] = munArr[i];
             }
         }
         else

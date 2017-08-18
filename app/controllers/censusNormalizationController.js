@@ -35,9 +35,6 @@ olliApp.controller('censusNormalizationController', ['$scope', '$routeParams', '
             var munArr = ($scope.munID).split(' ');
             munArr = munArr.uniqueNumbers();
 
-            $scope.charID = '';
-            $scope.munID = '';
-
             if(charArr.length == 0 || munArr.length == 0)
                 $scope.status = "Invalid parameters!"
             else{
@@ -56,6 +53,8 @@ olliApp.controller('censusNormalizationController', ['$scope', '$routeParams', '
             else
                 $scope.status = "Empty parameter!";
         }
+        $scope.charID = '';
+        $scope.munID = '';
     }
 
     Array.prototype.contains = function(v) {

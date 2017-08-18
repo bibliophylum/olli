@@ -11,44 +11,38 @@ jQuery(function($){
 
 document.addEventListener("keyup", function(event) {
     event.preventDefault();
-    if (event.keyCode == 13) {
+    if (event.keyCode == 13)
         document.getElementById("computeButton").click();
-    }
 });
 
 function removeRows(tableID){
 	var table = document.getElementById(tableID);
-	while($("#" + tableID + " tr").length > 1){
+	while($("#" + tableID + " tr").length > 1)
 		table.deleteRow(1);
-	}
 }
 
 // Removes all tables from the given div.
 function removeAllTables(givenDiv){
 	var tables = document.getElementById(givenDiv).getElementsByTagName("table");
-	for (var i = tables.length - 1; i >= 0; i -= 1){
-		if (tables[i]){
+	for (var i = tables.length - 1; i >= 0; i -= 1)
+		if (tables[i])
 			tables[i].parentNode.removeChild(tables[i]);
-		}
-	}
 }
 
 function updateFilterList(){
 	var scope = angular.element(document.getElementById("mainDiv")).scope();
 
-	if(scope.status != "Successful response."){
+	if(scope.status != "Successful response.")
 		setTimeout(function(){
 			updateFilterList();
 		}, 250);
-	}
     else{
 		var tableList = scope.tableList;
 		var body = document.getElementById('checkboxDiv');
 
 		// Removes all elements from 'checkboxDiv' div.
-		while (body.firstChild) {
+		while (body.firstChild)
 			body.removeChild(body.firstChild);
-		}
 
 		var checkbox;
 		var label;
@@ -81,9 +75,8 @@ function updateFilterList(){
 // Is called if a filter method radio button is changed, calls to update checkbox filters, which then redraws the pairs list table.
 function filterMethodChange(){
 	var scope = angular.element(document.getElementById("mainDiv")).scope();
-	if(scope.status == "Successful response."){
+	if(scope.status == "Successful response.")
 		updateFilters(false);
-	}
 }
 
 function updateFilters(moreFiltered){
@@ -91,11 +84,9 @@ function updateFilters(moreFiltered){
 	var boxes = body.getElementsByTagName('input');
 	var tableFilters = [];
 	var filtersIdx = 0;
-	for(var i = 0; i < boxes.length; i++){
-		if(boxes[i].checked){
+	for(var i = 0; i < boxes.length; i++)
+		if(boxes[i].checked)
 			tableFilters[filtersIdx++] = boxes[i].name;
-		}
-	}
 	updatePairsTable(tableFilters);
 }
 
@@ -106,12 +97,10 @@ function contains(arr, v1, v2) {
 		var v2Valid = false;
 
 		for(var i = 0; i < arr.length; i++){
-			if(arr[i] === new String(v1).valueOf()){
+			if(arr[i] === new String(v1).valueOf())
 				v1Valid = true;
-			}
-			if(arr[i] === new String(v2).valueOf()){
+			if(arr[i] === new String(v2).valueOf())
 				v2Valid = true;
-			}
 		}
 		return v1Valid && v2Valid;
 	}
@@ -128,11 +117,10 @@ function contains(arr, v1, v2) {
 function updatePairsTable(tableFilters){
 	var scope = angular.element(document.getElementById("mainDiv")).scope();
 	
-	if(scope.status != "Successful response."){
+	if(scope.status != "Successful response.")
 		setTimeout(function(){
 			updatePairsTable(tableFilters);
 		}, 250);
-	}
     else{
 		removeAllTables("mainDiv");
 		insertIntoPairsTable(tableFilters);
@@ -154,15 +142,27 @@ function insertIntoPairsTable(tableFilters){
 	var allowSameTables = $('input[name=sameTableFilter]:checked').val() === 'allowSame';
 	var onlySameTables = $('input[name=sameTableFilter]:checked').val() === 'onlySame';
 
+	var PCC_lower = document.getElementById("PCC_lowerTolerance");
+	var PCC_upper = document.getElementById("PCC_upperTolerance");
+	var RCC_lower = document.getElementById("RCC_lowerTolerance");
+	var RCC_upper = document.getElementById("RCC_upperTolerance");
+
 	for(var i = 1; i < length; i++){
-		filterValid = contains(tableFilters, scope.rawOutput[0][i][0], scope.rawOutput[0][i][2]);
+		if(tableFilters.length != 0)
+			filterValid = contains(tableFilters, scope.rawOutput[0][i][0], scope.rawOutput[0][i][2]);
 
 		tablesValid =
 			allowSameTables
 			|| ((!notSameTables || (notSameTables && (scope.rawOutput[0][i][0] !== scope.rawOutput[0][i][2])))
 			&& (!onlySameTables || (onlySameTables && (scope.rawOutput[0][i][0] === scope.rawOutput[0][i][2]))));
 
-		if(tablesValid && (tableFilters.length == 0 || filterValid)){
+		tolerancesValid =
+			   (PCC_lower.value == null || PCC_lower.value == '' || (parseFloat(PCC_lower.value) <= parseFloat(scope.rawOutput[1][i][4][1])))
+			&& (PCC_upper.value == null || PCC_upper.value == '' || (parseFloat(PCC_upper.value) >= parseFloat(scope.rawOutput[1][i][4][1])))
+			&& (RCC_lower.value == null || RCC_lower.value == '' || (parseFloat(RCC_lower.value) <= parseFloat(scope.rawOutput[1][i][5][1])))
+			&& (RCC_upper.value == null || RCC_upper.value == '' || (parseFloat(RCC_upper.value) >= parseFloat(scope.rawOutput[1][i][5][1])));
+
+		if(tablesValid && tolerancesValid && (tableFilters.length == 0 || filterValid)){
 			row = tbl.insertRow(rowCounter);
 			cellIdx = 0;
 
@@ -225,6 +225,7 @@ function insertIntoPairsTable(tableFilters){
 			rowCounter++;
 		}
 	}
+	document.getElementById("totalPairsDiv").innerHTML = "Total Pairs: " + (rowCounter - 1);
 }
 
 function createPairsTable(){
@@ -303,17 +304,25 @@ src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js">
 		Filter Methods:<br>
 		<div style='width:200px;'>
 			<div class="container-fluid" style='border:1px solid black;'>
-				<input type="radio" name='filterMethod' value='AND' checked='true' onchange="filterMethodChange();"> ANDing<br>
-				<input type="radio" name='filterMethod' value='OR' onchange="filterMethodChange();"> ORing<br>
-			</div>
-			<br>
-			<div class="container-fluid" style='border:1px solid black;'>
 				<input type="radio" name="sameTableFilter" value='notSame' onchange="filterMethodChange();"> Not same tables<br>
 				<input type="radio" name="sameTableFilter" value='allowSame' onchange="filterMethodChange();" checked='true'> Allow same tables<br>
 				<input type="radio" name="sameTableFilter" value='onlySame' onchange="filterMethodChange();"> Only same tables<br>
 			</div>
+			<br>
+			<div class="container-fluid" style='border:1px solid black;'>
+				<input type="radio" name='filterMethod' value='AND' checked='true' onchange="filterMethodChange();"> ANDing<br>
+				<input type="radio" name='filterMethod' value='OR' onchange="filterMethodChange();"> ORing<br>
+			</div>
+			<br>
 		</div>
+		PCC lower tolerance: <input type="number" id='PCC_lowerTolerance'><br>
+		PCC upper tolerance: <input type="number" id='PCC_upperTolerance'><br>
 		<br>
+		RCC lower tolerance: <input type="number" id='RCC_lowerTolerance'><br>
+		RCC upper tolerance: <input type="number" id='RCC_upperTolerance'><br>
+		<br>
+		<input type="button" id="updateTolerancesButton" value="Update Tolerances" onclick="filterMethodChange();">
+		<br><br>
 	</div>
 	<div class="container-fluid" id="checkboxDiv"/>
 
@@ -323,6 +332,7 @@ src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js">
 	<div class="container-fluid">
 		Status: {{status}}<br><br>
 	</div>
+	<div class="container-fluid" id="totalPairsDiv"/><br>
 </div>
 <br>
 

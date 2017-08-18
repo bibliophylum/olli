@@ -36,6 +36,16 @@ function removeAllTables(givenDiv){
 	}
 }
 
+// Removes all tables from the given div.
+function removeAllElements(givenDiv){
+	var tables = document.getElementById(givenDiv).getElementsByTagName("table");
+	for (var i = tables.length - 1; i >= 0; i -= 1){
+		if (tables[i]){
+			tables[i].parentNode.removeChild(tables[i]);
+		}
+	}
+}
+
 function updateCensusTable(){
 	var scope = angular.element(document.getElementById("mainDiv")).scope();
 	
@@ -68,6 +78,7 @@ function updateCensusTable(){
 			cell2.innerHTML = scope.rawOutput[rowCounter][1][2];
 			cell3.innerHTML = scope.rawOutput[rowCounter][1][3];
 		}
+		updateLastChoices();
 	}
 }
 
@@ -160,6 +171,30 @@ function createMunTable(){
 	body.appendChild(tbl);
 	return tbl;
 }
+
+function updateLastChoices(){
+	var munList = angular.element(document.getElementById("leftDiv")).scope().munList;
+	var lastChoice = angular.element(document.getElementById("leftDiv")).scope().lastChoice;
+	var body = document.getElementById("lastChoicesDiv");
+	var t;
+
+	while (body.firstChild)
+		body.removeChild(body.firstChild);
+
+
+	// Not an efficient approach, but it isn't likely to be demanding in its entirety.
+	var found;
+	for(var choiceIdx = 0; choiceIdx < lastChoice.length; choiceIdx++){
+		found = false;
+		for(var munIdx = 0; munIdx < munList.length && !found; munIdx++)
+			if(munList[munIdx][0] == lastChoice[choiceIdx]){
+				found = true;
+				t = document.createTextNode(lastChoice[choiceIdx] + ' (' + munList[munIdx][1] + ')');
+				body.appendChild(t);
+				body.appendChild(document.createElement('br'));
+			}
+	}
+}
 </script>
 
 <script
@@ -170,7 +205,9 @@ src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js">
 
 <div class="container-fluid" id="mainDiv">
 	You may enter multiple municipality ID's, with each ID separated by a space. (Valid values: munID = 600 609)<br><br>
-	Municipality ID: <input type="value" ng-model="munID" id="munTextbox"><br>
+	Municipality ID: <input type="value" ng-model="munID" id="munTextbox"><br><br>
+	Last choices:<br>
+	<div class="container-fluid" id="lastChoicesDiv"/>
 	<br>
 	<input type="button" ng-click="group();" value="Compute (Enter)" id="computeButton"><br><br>
 	Status: {{status}}<br><br>
