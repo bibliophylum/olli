@@ -4,10 +4,33 @@
 $( document ).ready(function() {
     // NOTE: leaflet uses [ lat, long ], but GeoJSON uses [ long, lat ].
     // Copy the point from the geojson file, but switch them here:
-    var map = L.map('mapid').setView([ 50.3021654, -98.0323209 ], 6);  // coords of Portage la Prairie, from munis.json
+    var map = L.map('mapid', {
+		minZoom: 5,
+		maxZoom: 14,
+		center: [ 50.3021654, -98.0323209 ], // coords of Portage la Prairie, from munis.json
+		zoom: 6
+	});
+
+	var response;
+	var jsonResponse;
+	var currentYear = '2011';
+
+	! function(){
+		var url = '/api/munMapping';
+		var xmlHttp = new XMLHttpRequest();
+		xmlHttp.onreadystatechange = function() { 
+			if (xmlHttp.readyState == 4 && xmlHttp.status == 200){
+				response = xmlHttp.responseText;
+				jsonResponse = JSON.parse(response)["data"]["rawOutput"];
+				// alert(jsonResponse);
+			}
+		}
+		xmlHttp.open("GET", url, true); // true for asynchronous 
+		xmlHttp.send(null);
+	}();
 
 	geojson = L.geoJson(geoMunData, {
-		style: function (feature) { // Style option
+		style: function (feature) {
 			return {
 			'weight': 1,
 			'color': 'black',
@@ -23,8 +46,7 @@ $( document ).ready(function() {
 			'weight': 1,
 			'color': 'black'
 			}
-		}//,
-		// onEachFeature: onEachFeature
+		}
 	}).addTo(map);
 
 	geojson = L.geoJson(geoSimpleWater, {
@@ -34,8 +56,7 @@ $( document ).ready(function() {
 			'color': 'navy',
 			'fillColor': 'blue'
 			}
-		}//,
-		// onEachFeature: onEachFeature
+		}
 	}).addTo(map);
 
 	// control that shows state info on hover
@@ -43,17 +64,26 @@ $( document ).ready(function() {
 
 	info.onAdd = function (map) {
 		this._div = L.DomUtil.create('div', 'info');
+		this._div.style.padding = '6px 8px';
+		this._div.style.background = 'rgba(255,255,255,0.85)';
+		this._div.style.boxShadow = '0 0 15px rgba(0,0,0,0.2)';
+		this._div.style.borderRadius = '5px';
 		this.update();
 		return this._div;
 	};
 
 	info.update = function (props) {
-		this._div.innerHTML = (props ?
-			'<h4><b>' + props.COMMONAME1 + '</b></h4>' : '<h4><b>Hover over a municipality</b><h4>');
-		this._div.style.color = 'red';
-			// '<h4>US Population Density</h4>' +  (props ?
-			// '<br>' + props.COMMONAME1 + '</b><br />'// + props.density + ' people / mi<sup>2</sup>'
-			// : 'Hover over a municipality');
+		var containsIdx = -1;
+		if(props && jsonResponse != null)
+			containsIdx = arrContains(jsonResponse, props);
+		this._div.innerHTML =
+			(props ?
+			'<h4><b>' + props.COMMONAME1 + '</b></h4>'
+			+ (containsIdx != -1 ? '<h5><b>Found, index of ' + containsIdx + 
+			'<br>Mun ID: ' + jsonResponse[containsIdx][0] +
+			'<br>Designation: ' + jsonResponse[containsIdx][2] + '</b></h5>':
+			'<h5><b>Not found<b></h5>'): 
+			'<h4><b>Hover over a municipality</b><h4>');
 	};
 	info.addTo(map);
 
@@ -68,9 +98,8 @@ $( document ).ready(function() {
 			// fillOpacity: 0.7
 		});
 
-		if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+		if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge)
 			layer.bringToFront();
-		}
 		info.update(layer.feature.properties);
 	}
 
@@ -86,9 +115,8 @@ $( document ).ready(function() {
 			// 'fillColor': 'yellow'
 		})
 
-		if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+		if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge)
 			layer.bringToFront();
-		}
 		info.update();
 	}
 
@@ -104,11 +132,19 @@ $( document ).ready(function() {
 		});
 	}
 
+	// If arr is defined and contains the correct values, returns index of matching values within arr, else returns -1.
+    function arrContains(arr, props) {
+        for(var i = 0; i < arr.length; i++)
+            if(arr[i] != null && parseInt(arr[i][1]) == parseInt(props.LOCALID) && arr[i][2] == props.DESIGNATN && currentYear == arr[i][3])
+				return i;
+        return -1;
+    };
+
 	// map.attributionControl.addAttribution('Population data &copy; <a href="http://census.gov/">US Census Bureau</a>');
 
 	// var legend = L.control({position: 'bottomright'});
 	// legend.onAdd = function (map) {
-		
+
 	// 	var div = L.DomUtil.create('div', 'info legend'),
 	// 		grades = [0, 10, 20, 50, 100, 200, 500, 1000],
 	// 		labels = [],
