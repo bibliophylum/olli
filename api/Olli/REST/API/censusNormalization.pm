@@ -11,6 +11,14 @@
 		- Crude, but it works for both multiple municipalities and census characteristics when valid.
 		- More robust error handling and input validation to come in future versions.
 
+	V02 (2017.08.18):
+		- Only calculates normalized values once, uses saved version for future requests.
+		- Purging of unnecessary code.
+		- Error handling and feedback more robust.
+
+	V03 (2017.08.22):
+		- Calculates normalized values upon censusNormalization.html load, rather than upon first request.
+
 =end comment
 =cut
 
@@ -66,38 +74,40 @@ sub GET{
 	my $q = CGI->new;
 	my @munParam = $q->multi_param('munID');
 	my @charParam = $q->multi_param('charID');
+	my $needNormalized = $q->param('needNormalized');
 	my $needCharsList = $q->param('needCharsList');
 	my $needValidCharsList = $q->param('needValidCharsList');
 	my $chosenOutput;
 
-	if(@{$normalized} == 0){
+
+	if($needNormalized){
 		normalizeCensusValues();
 	}
-
-	if($needCharsList){
-		my $charsList = findCharIdNames();
-		$response->data()->{'charsList'} = $charsList;
-	}
-
-	if($needValidCharsList){
-		my $mutuallyValidChars = findMutuallyValidChars(\@munParam);
-		$chosenOutput = $mutuallyValidChars;
-
-		$response->data()->{'validCharsList'} = $chosenOutput;
-		return Apache2::Const::HTTP_OK ;
-	}
 	else{
-		$chosenOutput = listSpecificNormalizedValues(0,\@charParam,\@munParam, $response);
-		$chosenOutput = rearrange($chosenOutput);
+		if(@{$normalized} == 0){
+			normalizeCensusValues();
+		}
+		if($needCharsList){
+			my $charsList = findCharIdNames();
+			$response->data()->{'charsList'} = $charsList;
+		}
+		if($needValidCharsList){
+			my $mutuallyValidChars = findMutuallyValidChars(\@munParam);
+			$chosenOutput = $mutuallyValidChars;
 
-		$response->data()->{'rawOutput'} = $chosenOutput;
-		return Apache2::Const::HTTP_OK ;
+			$response->data()->{'validCharsList'} = $chosenOutput;
+		}
+		else{
+			$chosenOutput = listSpecificNormalizedValues(0,\@charParam,\@munParam, $response);
+			$chosenOutput = rearrange($chosenOutput);
+
+			$response->data()->{'rawOutput'} = $chosenOutput;
+		}
 	}
+	return Apache2::Const::HTTP_OK ;
 }
 
 sub munCensusSorting{
-	# dbPrepare();
-
 	my $SQL = "select census_year.value as cen_year_value,
 	c.total as c_total, c.male as c_male, c.female as c_female, c.division_id as c_division_id, c.subdivision_id as c_subdivision_id,
 	m.id as m_id, m.year as m_year, m.name as m_name, m.population as m_population,
@@ -224,8 +234,6 @@ sub linkLibsMuns{
 
 # This gives normalized values that are per capita for each municipality, and allows us to compare between municipalities.
 sub normalizeCensusValues{
-	# dbPrepare();
-
 	my @censusMunVals = munCensusSorting();
 	$normalized = []; # Holds normalized values for each valid census characteristic subvalue for each valid municipality (range of 0 -> 1)
 	my $charMinMax; # Holds min ([0]) and max ([1]) for each subvalue of each census characteristic.
@@ -234,15 +242,6 @@ sub normalizeCensusValues{
 	# Finding max and min for each census characteristic subvalue.
 	for(my $m_id = 1; $m_id < @censusMunVals; $m_id++){
 		if(defined $censusMunVals[$m_id]){
-			# print "Normalizing values of municipality $m_id\n";
-			# <STDIN>;
-
-			# if($m_id == 2){
-				# print "normalizeCensusValues sub (1): m_id of 2 is seen as valid!\n";
-				# print "Aborting!\n";
-				# exit 0;
-			# }
-
 			for(my $c_id = 1; $c_id < @{$censusMunVals[$m_id]}; $c_id++){
 				if(defined $censusMunVals[$m_id][$c_id]){
 					# print "m_id $m_id\'s currentPop: $currentPop\n";
@@ -261,10 +260,6 @@ sub normalizeCensusValues{
 								$charMinMax->[$c_id][$inner][1] = $censusMunVals[$m_id][$c_id][0][$inner]/$currentPop;
 							}
 						}
-						# if($charMinMax->[$c_id][$inner][1] > 1.1){
-						# 	print "m_id: $m_id, [$c_id][$inner][1] = $charMinMax->[$c_id][$inner][1]\n";
-						# 	<STDIN>;
-						# }
 					}
 				}
 			}
@@ -274,12 +269,6 @@ sub normalizeCensusValues{
 	# Applying first normalization step to census/municipality characteristic subvalues.
 	for(my $m_id = 1; $m_id < @censusMunVals; $m_id++){
 		if(defined $censusMunVals[$m_id]){
-			# if($m_id == 2){
-				# print "normalizeCensusValues sub (2): m_id of 2 is seen as valid!\n";
-				# print "Aborting!\n";
-				# exit 0;
-			# }
-			# print "Normalizing values of municipality $m_id\n";
 			for(my $c_id = 1; $c_id < @{$censusMunVals[$m_id]}; $c_id++){
 				if(defined $censusMunVals[$m_id][$c_id]){
 					for(my $inner = 1; $inner < 4; $inner++){
@@ -291,11 +280,6 @@ sub normalizeCensusValues{
 							$normalized->[$m_id][$c_id][$inner] = 
 								((($censusMunVals[$m_id][$c_id][0][$inner]/$currentPop)-$charMinMax->[$c_id][$inner][0]) /
 								($charMinMax->[$c_id][$inner][1] - $charMinMax->[$c_id][$inner][0]));
-
-							# if($m_id == 609 && $c_id == 69){
-							# 	print "c_id: $c_id.$inner, pop: $currentPop, val: $censusMunVals[$m_id][$c_id][0][$inner], norm: $normalized->[$m_id][$c_id][$inner], min: $charMinMax->[$c_id][$inner][0], max: $charMinMax->[$c_id][$inner][1]\n";
-							# 	<STDIN>;
-							# }
 						}
 					}
 				}
@@ -318,20 +302,20 @@ sub censusCalcAvgChars{
 					for(my $inner = 1; $inner < 4; $inner++){
 						$charAvgs->[$c_id][$inner] += $censusMunVals->[$m_id][$c_id][0][$inner];
 						$charNums->[$c_id]++;
-						# print "charAvgs->[$c_id] = $charAvgs->[$c_id]\n";
 					}
 				}
 			}
 		}
 	}
+
 	for(my $c_id = 1; $c_id < @{$charAvgs}; $c_id++){
 		if(defined $charNums->[$c_id]){
 			for(my $inner = 1; $inner < 4; $inner++){
 				$charAvgs->[$c_id][$inner] = $charAvgs->[$c_id][$inner]/$charNums->[$c_id];
-				# print "charAvgs->[$c_id][$inner] = $charAvgs->[$c_id][$inner]\n";
 			}
 		}
 	}
+
 	return $charAvgs;
 }
 
@@ -343,9 +327,9 @@ sub getTrueCensus2011Pops{
 
 	for(my $m_id = 1; $m_id < @{$censusMunVals}; $m_id++){
 		if(defined $censusMunVals->[$m_id]){
-			# print "m_id: $m_id\n";
-			$SQL = "select c.total from census as c inner join mun_cen on mun_cen.census_subdivision_id = c.subdivision_id and characteristics_id = '1' inner join municipalities as m on m.id = mun_cen.municipality_id and m.id = '$m_id'";
-			
+			$SQL = "select c.total from census as c
+				inner join mun_cen on mun_cen.census_subdivision_id = c.subdivision_id and characteristics_id = '1'
+				inner join municipalities as m on m.id = mun_cen.municipality_id and m.id = '$m_id'";
 			$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
 			$sth->execute() or die "Execute exception: $DBI::errstr";
 			$census2011Pops->[$m_id] = $sth->fetchall_arrayref()->[0][0];

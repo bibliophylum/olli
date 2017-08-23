@@ -843,8 +843,6 @@ sub censusMunComputePairPCC{
 		}
 	}
 
-
-
 	for(my $innerVal = 1; $innerVal < 4; $innerVal++){
 		$censusAvgsArr->[$innerVal] /= $censusMunNumValid;
 		# print "censusAvgsArr->[$innerVal]: $censusAvgsArr->[$innerVal]\n";

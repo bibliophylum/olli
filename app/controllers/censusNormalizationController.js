@@ -19,7 +19,12 @@ olliApp.controller('censusNormalizationController', ['$scope', '$routeParams', '
         cenFactory.getValidMuns()
             .then(function (response){
                 $scope.munList = response.data.data.rawOutput;
+            }, function (error){
+                $scope.status = "ERROR " + error.status;
+            });
 
+        cenFactory.calcNormalized(true)
+            .then(function (response){
             }, function (error){
                 $scope.status = "ERROR " + error.status;
             });
@@ -42,7 +47,7 @@ olliApp.controller('censusNormalizationController', ['$scope', '$routeParams', '
 
             if(charArr.length == 0 || munArr.length == 0)
                 $scope.status = "Invalid parameters!"
-            else{
+            else
                 cenFactory.getValues(charArr, munArr)
                     .then(function (response){
                         $scope.rawOutput = response.data.data.rawOutput;
@@ -51,7 +56,6 @@ olliApp.controller('censusNormalizationController', ['$scope', '$routeParams', '
                         // $scope.status = "ERROR " + error.status;
                         $scope.status = error.data.data.status;
                     });
-            }
         }
         else{
             if($scope.charId == '' && $scope.munID == '')

@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html>
 
+<script
+src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js">
+</script>
+<script src="/libs/sorttable/sorttable.js"></script>
+
 <script>
 document.addEventListener("keyup", function(event) {
     event.preventDefault();
@@ -50,8 +55,7 @@ function removeAllTables(givenDiv){
 // Creates a table for the given municipality results.
 function createTable(munVals){
     var body = document.getElementById("rightDiv"),
-        tbl = document.createElement('table'),
-		th = document.createElement('th');
+        tbl = document.createElement('table');
     tbl.style.width  = '500px';
     tbl.style.border = '1px solid black';
 	tbl.style.marginBottom = '20px';
@@ -131,8 +135,7 @@ function updateMunTable(){
 
 function createMunTable(){
     var body = document.getElementById("leftDiv"),
-        tbl = document.createElement('table'),
-		th = document.createElement('th');
+        tbl = document.createElement('table');
     tbl.style.width  = '250px';
     tbl.style.border = '1px solid black';
 	tbl.style.marginBottom = '20px';
@@ -167,7 +170,8 @@ function updateCharTable(){
 	else{
 		var validCharsList = angular.element(document.getElementById("mainDiv")).scope().validCharsList;
 		removeAllTables('charDiv');
-		var table = createCharTable();
+		var body = document.getElementById("charDiv");
+		var tbl = createCharTable();
 		var numChars = validCharsList.length;
 		var row;
 		var cell;
@@ -175,7 +179,7 @@ function updateCharTable(){
 
 		for(var i = 0; i < numChars; i++){
 			if(validCharsList[i] == 1){
-				row = table.insertRow(rowCounter);
+				row = tbl.insertRow(rowCounter);
 				
 				cell = row.insertCell(0);
 				cell.style.border = '1px solid black';
@@ -188,22 +192,33 @@ function updateCharTable(){
 				rowCounter++;
 			}
 		}
+		// tbl.className = 'sortable';
+		// sorttable.makeSortable(document.getElementById('tbl_asdf'));
+		sorttable.makeSortable(tbl);
+		body.appendChild(tbl);
+		// sorttable.makeSortable(tbl);
+		// sorttable.makeSortable(document.getElementById('testTableID'));
 	}
 }
 
 function createCharTable(){
-    var body = document.getElementById("charDiv"),
-        tbl = document.createElement('table'),
-		th = document.createElement('th');
+    var body = document.getElementById("charDiv");
+	// body.style.overflow = 'scroll';
+	// body.style.height = '500px';
+    var tbl = document.createElement('table');
     tbl.style.width  = '250px';
     tbl.style.border = '1px solid black';
 	tbl.style.marginBottom = '20px';
 	tbl.style.marginRight = '20px';
-
-	var rowIdx = 0;
+	// tbl.style.overflow = 'scroll';
+	// tbl.style.height = '500px';
+	// tbl.setAttribute('class', 'sortable');
+	// tbl.className = 'sortable';
+	// tbl.classList.add('sortable');
+	// tbl.id = 'tbl_asdf';
 
 	var header = tbl.createTHead();
-	var row = header.insertRow(rowIdx++);
+	var row = header.insertRow(0);
 	
 	var cell = row.insertCell(0);
 	cell.style.border = '1px solid black';
@@ -216,24 +231,61 @@ function createCharTable(){
 	var mycap = tbl.createCaption();
 	mycap.innerHTML = "<b>Valid Characteristics</b>";
 
-	body.appendChild(tbl);
 	return tbl;
 }
-</script>
 
-<script
-src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js">
+function doMakeSortable(){
+	// var body = document.getElementById("testDiv");
+	// var tbl = document.createElement('table');
+	var tbl = document.getElementById('testTableID');
+
+
+	var header = tbl.createTHead();
+	var row = header.insertRow(0);
+	
+	var cell = row.insertCell(0);
+	// cell.style.border = '1px solid black';
+	cell.innerHTML = "test1";
+
+	// cell = row.insertCell(1);
+	// cell.style.border = '1px solid black';
+	// cell.innerHTML = "test2";
+
+	row = tbl.insertRow(1);
+
+	cell = row.insertCell(0);
+	// cell.style.border = '1px solid black';
+	cell.innerHTML = '1';
+
+	// cell = row.insertCell(1);
+	// cell.style.border = '1px solid black';
+	// cell.innerHTML = '54';
+
+	row = tbl.insertRow(2);
+
+	cell = row.insertCell(0);
+	// cell.style.border = '1px solid black';
+	cell.innerHTML = '2';
+
+	// cell = row.insertCell(1);
+	// cell.style.border = '1px solid black';
+	// cell.innerHTML = '5324';
+	
+	sorttable.makeSortable(tbl);
+	// body.appendChild(tbl);
+}
 </script>
 
 <body>
 
 <div class="container-fluid" id="mainDiv">
-	You may enter multiple ID's for each, with each ID separated by a space. (Valid values: muns = 600 609, chars = 20 40)<br><br>
+	You may enter multiple ID's for each, with each ID separated by a space.<br><br>
 	Municipality ID's: &nbsp;&nbsp;&nbsp;<input type="value" ng-model="munID" id="munTextbox"><br>
 	Characteristic ID's: <input type="value" ng-model="charID" id="charTextbox"><br>
 	<br>
 	<input type="button" ng-click="getCensusValues()" value="Compute (Enter)" id="computeButton"><br><br>
 	<input type="button" ng-click="getValidChars()" onclick="setTimeout(updateCharTable, 100);" value="Get Valid Characteristics" id="charsButton"><br><br>
+	<!--<input type="button" onclick="doMakeSortable();" value="Make Sortable" id="sortableButton"><br><br>-->
 	<!--Chars List: {{charsList}}<br><br>-->
 	<!--Valid Chars List: {{validCharsList}}<br><br>-->
 	Status: {{status}}<br><br>
@@ -241,6 +293,17 @@ src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js">
 	<div style="float:left;" id="leftDiv"/>
 	<div style="float:left;" id='charDiv'/>
 	<div style="float:left;" id="rightDiv"/>
+
+	<!--<div style="float:left;" id="testDiv"/>-->
+	<!--<table id='testTableID'/>-->
+	<!--<table id='testTableID'>
+		<thead>
+			<tr><td>asdf</td></tr>
+		</thead>
+		<tr><td>asdf2</td></tr>
+		<tr><td>asdf1</td></tr>
+		<tr><td>fdsa</td></tr>
+	</table>-->
 </div>
 
 </body>

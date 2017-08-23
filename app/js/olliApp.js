@@ -141,7 +141,15 @@ olliApp.factory('cenFactory', ['$http', function($http) {
         return $http({
 			url: urlBase,
 			method: "GET",
-            params: {munID: munID, needValidCharsList: true, needCharsList: needCharsList}});
+            params: {munID: munID, needValidCharsList: true,
+                needCharsList: needCharsList}});
+    };
+
+    cenFactory.calcNormalized = function (needNormalized){
+        return $http({
+			url: urlBase,
+			method: "GET",
+            params: {needNormalized: needNormalized}});
     };
 
     return cenFactory;
