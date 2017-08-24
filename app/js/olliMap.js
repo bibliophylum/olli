@@ -133,18 +133,18 @@ $( document ).ready(function() {
 		});
 	}
 
-	// Doesn't do anything spectacular yet, placeholder.
+	// Takes different actions depending on the current partial and validity of chosen municipality (whether it is linked to the db)
 	function getMun(e){
 		var layer = e.target;
 		var munResponse;
 		var containsIdx = arrContains(jsonResponse, layer.feature.properties);
+		var split = window.location.href.split('/');
 		if(containsIdx != -1){
-			var split = window.location.href.split('/');
 			if(split[split.length - 1] == 'municipalities'
 			|| split[split.length - 2] == 'municipalities')
 				window.location.href = '/municipalities/'+jsonResponse[containsIdx][0];
 
-			if(split[split.length - 1] == 'censusNormalization'
+			else if(split[split.length - 1] == 'censusNormalization'
 			|| split[split.length - 1] == 'munGrouping'){
 				if(document.getElementById('munTextbox').value == '')
 					document.getElementById('munTextbox').value += jsonResponse[containsIdx][0];
@@ -154,6 +154,11 @@ $( document ).ready(function() {
 				angular.element(document.getElementById('munTextbox')).trigger('input');
 			}
 		}
+
+		if(split[split.length - 1] == 'pairAnalysis'
+			|| split[split.length - 1] == 'libraries'
+			|| split[split.length - 2] == 'libraries')
+				zoomToFeature(e);
 	}
 
 	// If arr is defined and contains the correct values, returns index of matching values within arr, else returns -1.

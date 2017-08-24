@@ -181,12 +181,12 @@ function insertIntoPairsTable(tableFilters){
 			// Field 1 Average
 			cell = row.insertCell(cellIdx++);
 			cell.style.border = '1px solid black';
-			cell.innerHTML = scope.rawOutput[1][i][0][1].toFixed(2);
+			cell.innerHTML = Math.round(scope.rawOutput[1][i][0][1]*100)/100;
 
 			// Field 1 SD
 			cell = row.insertCell(cellIdx++);
 			cell.style.border = '1px solid black';
-			cell.innerHTML = scope.rawOutput[1][i][1][1].toFixed(2);
+			cell.innerHTML = Math.round(scope.rawOutput[1][i][1][1]*100)/100;
 
 			// Table 2
 			cell = row.insertCell(cellIdx++);
@@ -203,24 +203,24 @@ function insertIntoPairsTable(tableFilters){
 			// Field 2 Average
 			cell = row.insertCell(cellIdx++);
 			cell.style.border = '1px solid black';
-			cell.innerHTML = scope.rawOutput[1][i][2][1].toFixed(2);
+			cell.innerHTML = Math.round(scope.rawOutput[1][i][2][1]*100)/100;
 
 			// Field 2 SD
 			cell = row.insertCell(cellIdx++);
 			cell.style.border = '1px solid black';
-			cell.innerHTML = scope.rawOutput[1][i][3][1].toFixed(2);
+			cell.innerHTML = Math.round(scope.rawOutput[1][i][3][1]*100)/100;
 
 			// PCC
 			cell = row.insertCell(cellIdx++);
 			cell.style.border = '1px solid black';
 			cell.style.textAlign = 'right';
-			cell.innerHTML = scope.rawOutput[1][i][4][1].toFixed(4);
+			cell.innerHTML = Math.round(scope.rawOutput[1][i][4][1]*100)/100;
 
 			// RCC
 			cell = row.insertCell(cellIdx++);
 			cell.style.border = '1px solid black';
 			cell.style.textAlign = 'right';
-			cell.innerHTML = scope.rawOutput[1][i][5][1].toFixed(4);
+			cell.innerHTML = Math.round(scope.rawOutput[1][i][5][1]*100)/100;
 
 			rowCounter++;
 		}
