@@ -128,8 +128,32 @@ $( document ).ready(function() {
 		layer.on({
 			mouseover: highlightFeature,
 			mouseout: resetHighlight,
-			click: zoomToFeature
+			// click: zoomToFeature
+			click: getMun
 		});
+	}
+
+	// Doesn't do anything spectacular yet, placeholder.
+	function getMun(e){
+		var layer = e.target;
+		var munResponse;
+		var containsIdx = arrContains(jsonResponse, layer.feature.properties);
+		if(containsIdx != -1){
+			var split = window.location.href.split('/');
+			if(split[split.length - 1] == 'municipalities'
+			|| split[split.length - 2] == 'municipalities')
+				window.location.href = '/municipalities/'+jsonResponse[containsIdx][0];
+
+			if(split[split.length - 1] == 'censusNormalization'
+			|| split[split.length - 1] == 'munGrouping'){
+				if(document.getElementById('munTextbox').value == '')
+					document.getElementById('munTextbox').value += jsonResponse[containsIdx][0];
+				else
+					document.getElementById('munTextbox').value += ' ' + jsonResponse[containsIdx][0];
+
+				angular.element(document.getElementById('munTextbox')).trigger('input');
+			}
+		}
 	}
 
 	// If arr is defined and contains the correct values, returns index of matching values within arr, else returns -1.

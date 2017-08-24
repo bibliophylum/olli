@@ -76,7 +76,6 @@ sub GET {
     $response->data()->{'contributions'} = $libs_aref;
     $response->data()->{'census_year'} = $census_year;
     $response->data()->{'census'} = \@census;
-#    $response->data()->{'census'} = \@census;
     return Apache2::Const::HTTP_OK ;
 }
 

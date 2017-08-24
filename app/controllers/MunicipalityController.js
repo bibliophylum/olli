@@ -22,13 +22,14 @@ olliApp.controller('MunicipalityController', ['$scope', '$routeParams', 'munFact
 				$scope.contributions = response.data.data.contributions;
 				$scope.census = response.data.data.census;
 
+				// Below code is throwing errors, cannot set visible of undefined.
 				// set visibility of each subset
-				angular.forEach( $scope.census, function(value, topic) {
-				$scope.census.topic.visible = false;
-				angular.forEach( $scope.census.topic, function(v2,ord) {
-					$scope.census.topic.ord.visible = false;
-				});
-				});
+				// angular.forEach( $scope.census, function(value, topic) {
+				// $scope.census.topic.visible = false;
+				// angular.forEach( $scope.census.topic, function(v2,ord) {
+				// 	$scope.census.topic.ord.visible = false;
+				// });
+				// });
 
 				// zoom the map to this municipality
 				

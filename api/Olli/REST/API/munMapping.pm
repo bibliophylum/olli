@@ -31,13 +31,31 @@ sub dbPrepare{
 sub GET {
 	my ($self, $request, $response) = @_ ;
 	dbPrepare();
-	my $chosenOutput = getMunMapping();
+	my $q = CGI->new;
+	my $munParam = ($q->param('munID'))[0];
+	my $chosenOutput;
+
+	if(defined $munParam){
+		$chosenOutput = getSpecificMunData();
+	}
+	else{
+		$chosenOutput = getMunMapping();
+	}
+	
 	$response->data()->{'rawOutput'} = $chosenOutput;
 	$dbh->disconnect;
 	return Apache2::Const::HTTP_OK ;
 }
 
 sub getMunMapping{
+	$SQL = "select * from mun_geo_gis";
+	$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
+	$sth->execute() or die "Execute exception: $DBI::errstr";
+	my $munMapping = $sth->fetchall_arrayref();
+	return $munMapping;
+}
+
+sub getSpecificMunData{
 	$SQL = "select * from mun_geo_gis";
 	$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
 	$sth->execute() or die "Execute exception: $DBI::errstr";
