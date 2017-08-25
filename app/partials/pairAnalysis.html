@@ -91,7 +91,7 @@ function updateFilters(moreFiltered){
 }
 
 function contains(arr, v1, v2) {
-	// Both table names must be within the filters list
+	// ANDing selected: both table names must be within the filters list
 	if($('input[name=filterMethod]:checked').val() === 'AND'){
 		var v1Valid = false;
 		var v2Valid = false;
@@ -105,7 +105,7 @@ function contains(arr, v1, v2) {
 		return v1Valid && v2Valid;
 	}
 
-	// Only one table name must be within the filters list
+	// ORing selected: only one table name must be within the filters list
 	else{
 		for(var i = 0; i < arr.length; i++)
 			if(arr[i] === new String(v1).valueOf() || arr[i] === new String(v2).valueOf())
@@ -134,7 +134,7 @@ function insertIntoPairsTable(tableFilters){
 	var row;
 	var cellIdx;
 	var cell;
-	var rowCounter = 1;
+	var rowCounter = 1; // Set to 1 due to header row.
 	var filterValid;
 	var tablesValid;
 
@@ -236,7 +236,6 @@ function createPairsTable(){
 	tbl.style.marginBottom = '20px';
 
 	var cellIdx = 0;
-
 	var header = tbl.createTHead();
 	var row = header.insertRow(0);
 	
@@ -286,10 +285,6 @@ function createPairsTable(){
 	body.appendChild(tbl);
 	return tbl;
 }
-</script>
-
-<script
-src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js">
 </script>
 
 <body>

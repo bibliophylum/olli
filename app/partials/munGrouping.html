@@ -124,11 +124,10 @@ function createCensusTable(){
 function updateMunTable(){
 	var munList = angular.element(document.getElementById("leftDiv")).scope().munList;
 	
-	if(munList == "Empty"){
+	if(munList == "Empty")
 		setTimeout(function() {
 			updateMunTable();
 		}, 250);
-	}
 	else{
 		removeAllTables("leftDiv");
 		var table = createMunTable();
@@ -227,16 +226,12 @@ function updateLastChoices(){
 }
 </script>
 
-<script
-src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js">
-</script>
-
 <body>
 
 <div class="container-fluid" id="mainDiv">
 	You may enter multiple municipality ID's, with each ID separated by a space.<br>
 	You may also choose a municipality on the map to add it to the list.<br>
-	You may also click on a municipality ID within the Valid Municipalities table or Previous Choices list to add it to the list.<br><br>
+	You may also click on a municipality within the Valid Municipalities table or Previous Choices list to add it to the list.<br><br>
 	Municipality ID: <input type="value" ng-model="munID" id="munTextbox"><br><br>
 	Previous Choices:<br>
 	<div class="container-fluid" id="lastChoicesDiv"/>

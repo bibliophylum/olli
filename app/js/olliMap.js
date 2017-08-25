@@ -139,10 +139,18 @@ $( document ).ready(function() {
 		var munResponse;
 		var containsIdx = arrContains(jsonResponse, layer.feature.properties);
 		var split = window.location.href.split('/');
-		if(containsIdx != -1){
+
+		if(split[split.length - 1] == 'pairAnalysis'
+			|| split[split.length - 1] == 'libraries'
+			|| split[split.length - 2] == 'libraries')
+				zoomToFeature(e);
+
+		else if(containsIdx != -1){
 			if(split[split.length - 1] == 'municipalities'
-			|| split[split.length - 2] == 'municipalities')
-				window.location.href = '/municipalities/'+jsonResponse[containsIdx][0];
+			|| split[split.length - 2] == 'municipalities'){
+				var scope = angular.element(document.getElementById('leftpane')).scope();
+				scope.$apply(angular.element(scope.location.path('municipalities/' + jsonResponse[containsIdx][0])));
+			}
 
 			else if(split[split.length - 1] == 'censusNormalization'
 			|| split[split.length - 1] == 'munGrouping'){
@@ -152,13 +160,13 @@ $( document ).ready(function() {
 					document.getElementById('munTextbox').value += ' ' + jsonResponse[containsIdx][0];
 
 				angular.element(document.getElementById('munTextbox')).trigger('input');
+
+				if(split[split.length - 1] == 'censusNormalization'){
+					angular.element(document.getElementById('mainDiv')).scope().getValidChars();
+					window.parent.updateCharTable();
+				}
 			}
 		}
-
-		if(split[split.length - 1] == 'pairAnalysis'
-			|| split[split.length - 1] == 'libraries'
-			|| split[split.length - 2] == 'libraries')
-				zoomToFeature(e);
 	}
 
 	// If arr is defined and contains the correct values, returns index of matching values within arr, else returns -1.

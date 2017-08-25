@@ -2,7 +2,10 @@
 // Routing/configuration
 
 
-var olliApp = angular.module('olliModule',['ngRoute']);
+var olliApp = angular.module('olliModule',['ngRoute'])
+.run(function($rootScope, $location){
+    $rootScope.location = $location;
+});
 
 //-----------------------------------------------------------------------
 olliApp.config(function ($routeProvider,$locationProvider) {
@@ -48,7 +51,7 @@ olliApp.config(function ($routeProvider,$locationProvider) {
     
     // use the HTML5 History API
     $locationProvider.html5Mode(true);
-});	     
+});
 
 //-----------------------------------------------------------------------
 olliApp.factory('munFactory', ['$http', function($http) {

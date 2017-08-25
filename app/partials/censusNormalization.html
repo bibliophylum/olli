@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html>
 
-<script
-src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js">
-</script>
 <script src="/libs/sorttable/sorttable.js"></script>
 
 <script>
@@ -108,11 +105,10 @@ function createTable(munVals){
 function updateMunTable(){
 	var munList = angular.element(document.getElementById("leftDiv")).scope().munList;
 	
-	if(munList == "Empty"){
+	if(munList == "Empty")
 		setTimeout(function() {
 			updateMunTable();
 		}, 250);
-	}
 	else{
 		removeAllTables("leftDiv");
 		var table = createMunTable();
@@ -139,6 +135,8 @@ function updateMunTable(){
 					document.getElementById('munTextbox').value += ' ' + val;
 
 				angular.element(document.getElementById('munTextbox')).trigger('input');
+				angular.element(document.getElementById('mainDiv')).scope().getValidChars();
+				updateCharTable();
 			});
 		}
 	}
@@ -302,7 +300,7 @@ function doMakeSortable(){
 <div class="container-fluid" id="mainDiv">
 	You may enter multiple ID's for each, with each ID separated by a space.<br>
 	You may also choose a municipality on the map to add it to the list.<br>
-	You may also click on an ID within either the Valid Municipalities or Valid Characteristics tables to add it to the appropriate list.<br><br><br>
+	You may also click on a row within either the Valid Municipalities or Valid Characteristics tables to add the ID to the appropriate list.<br><br><br>
 	Municipality ID's: &nbsp;&nbsp;&nbsp;<input type="value" ng-model="munID" id="munTextbox"><br>
 	Characteristic ID's: <input type="value" ng-model="charID" id="charTextbox"><br>
 	<br>
