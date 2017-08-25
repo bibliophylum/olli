@@ -9,7 +9,7 @@
 
 <div class="container-fluid">
   <div class="row"> <!-- bootstrap classes -->
-    <div class="col-md-2">
+    <div class="col-md-4" style="padding-left: 30px;">
       <div id="municipality">
 	<h2>Municipality</h2>
 	<table border="1" cellpadding="10">
@@ -31,8 +31,8 @@
       </div>
     </div>
 
-    <div class="col-md-10">
-      <div id="contributions" style="padding-left: 30px;">
+    <div class="col-md-6">
+      <div id="contributions">
 	<h2>Contributions</h2>
 	<table border="1" cellpadding="10">
 	  <thead>
@@ -56,14 +56,14 @@
   </div><!-- row -->
   
   <div class="row">
-    <div class="col-md-2">
+    <div class="col-md-4">
       <div id="census_year">
 	<h2>Census year: {{ census_year.year }}</h2>
 	<p>{{ census_year.year }} is the most recent census year for "{{ municipalityDetails.name }}, {{ municipalityDetails.year }}"</p>
       </div>
     </div>
 
-    <div class="col-md-10">
+    <div class="col-md-10" style="margin-bottom: 40px">
       <div id="census">
 	<h2>Census data</h2>
 

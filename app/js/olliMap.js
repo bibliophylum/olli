@@ -121,39 +121,39 @@ $( document ).ready(function() {
 	}
 
 	function zoomToFeature(e) {
-		map.fitBounds(e.target.getBounds());
+		map.fitBounds(e.target.getBounds(), {padding: [75, 75]});
 	}
 
 	function onEachFeature(feature, layer) {
 		layer.on({
 			mouseover: highlightFeature,
 			mouseout: resetHighlight,
-			// click: zoomToFeature
-			click: getMun
+			click: munAction
 		});
 	}
 
 	// Takes different actions depending on the current partial and validity of chosen municipality (whether it is linked to the db)
-	function getMun(e){
+	function munAction(e){
 		var layer = e.target;
 		var munResponse;
 		var containsIdx = arrContains(jsonResponse, layer.feature.properties);
 		var split = window.location.href.split('/');
 
 		if(split[split.length - 1] == 'pairAnalysis'
-			|| split[split.length - 1] == 'libraries'
-			|| split[split.length - 2] == 'libraries')
+		|| split[split.length - 1] == 'libraries'
+		|| split[split.length - 2] == 'libraries')
 				zoomToFeature(e);
 
 		else if(containsIdx != -1){
 			if(split[split.length - 1] == 'municipalities'
 			|| split[split.length - 2] == 'municipalities'){
+				zoomToFeature(e);
 				var scope = angular.element(document.getElementById('leftpane')).scope();
 				scope.$apply(angular.element(scope.location.path('municipalities/' + jsonResponse[containsIdx][0])));
 			}
 
 			else if(split[split.length - 1] == 'censusNormalization'
-			|| split[split.length - 1] == 'munGrouping'){
+				 || split[split.length - 1] == 'munGrouping'){
 				if(document.getElementById('munTextbox').value == '')
 					document.getElementById('munTextbox').value += jsonResponse[containsIdx][0];
 				else

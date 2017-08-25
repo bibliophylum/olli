@@ -24,7 +24,7 @@ $(document).ready(function(){
 function waitForElement(){
 	var status = angular.element(document.getElementById("mainDiv")).scope().status;
 	if(status == "Successful response.")
-		updateTables();
+		updateResultsTables();
 	else
 		setTimeout(function(){
 			waitForElement();
@@ -32,13 +32,13 @@ function waitForElement(){
 }
 
 // Updates tables in 'mainDiv' div, called upon successful computation of normalized values.
-function updateTables(){
+function updateResultsTables(){
 	removeAllTables('rightDiv');
 
 	var normList = angular.element(document.getElementById("mainDiv")).scope().rawOutput;
 	var length = (normList).length;
 	for(var i = 0; i < length; i++)
-		createTable(normList[i]);
+		createResultsTable(normList[i]);
 }
 
 // Removes all tables from the given div.
@@ -50,7 +50,7 @@ function removeAllTables(givenDiv){
 }
 
 // Creates a table for the given municipality results.
-function createTable(munVals){
+function createResultsTable(munVals){
     var body = document.getElementById("rightDiv"),
         tbl = document.createElement('table');
     tbl.style.width  = '500px';
@@ -211,30 +211,18 @@ function updateCharTable(){
 				rowCounter++;
 			}
 		}
-		// tbl.className = 'sortable';
-		// sorttable.makeSortable(document.getElementById('tbl_asdf'));
 		sorttable.makeSortable(tbl);
 		body.appendChild(tbl);
-		// sorttable.makeSortable(tbl);
-		// sorttable.makeSortable(document.getElementById('testTableID'));
 	}
 }
 
 function createCharTable(){
     var body = document.getElementById("charDiv");
-	// body.style.overflow = 'scroll';
-	// body.style.height = '500px';
     var tbl = document.createElement('table');
     tbl.style.width  = '250px';
     tbl.style.border = '1px solid black';
 	tbl.style.marginBottom = '20px';
 	tbl.style.marginRight = '20px';
-	// tbl.style.overflow = 'scroll';
-	// tbl.style.height = '500px';
-	// tbl.setAttribute('class', 'sortable');
-	// tbl.className = 'sortable';
-	// tbl.classList.add('sortable');
-	// tbl.id = 'tbl_asdf';
 
 	var header = tbl.createTHead();
 	var row = header.insertRow(0);
@@ -252,47 +240,6 @@ function createCharTable(){
 
 	return tbl;
 }
-
-function doMakeSortable(){
-	// var body = document.getElementById("testDiv");
-	// var tbl = document.createElement('table');
-	var tbl = document.getElementById('testTableID');
-
-
-	var header = tbl.createTHead();
-	var row = header.insertRow(0);
-	
-	var cell = row.insertCell(0);
-	// cell.style.border = '1px solid black';
-	cell.innerHTML = "test1";
-
-	// cell = row.insertCell(1);
-	// cell.style.border = '1px solid black';
-	// cell.innerHTML = "test2";
-
-	row = tbl.insertRow(1);
-
-	cell = row.insertCell(0);
-	// cell.style.border = '1px solid black';
-	cell.innerHTML = '1';
-
-	// cell = row.insertCell(1);
-	// cell.style.border = '1px solid black';
-	// cell.innerHTML = '54';
-
-	row = tbl.insertRow(2);
-
-	cell = row.insertCell(0);
-	// cell.style.border = '1px solid black';
-	cell.innerHTML = '2';
-
-	// cell = row.insertCell(1);
-	// cell.style.border = '1px solid black';
-	// cell.innerHTML = '5324';
-	
-	sorttable.makeSortable(tbl);
-	// body.appendChild(tbl);
-}
 </script>
 
 <body>
@@ -305,8 +252,7 @@ function doMakeSortable(){
 	Characteristic ID's: <input type="value" ng-model="charID" id="charTextbox"><br>
 	<br>
 	<input type="button" ng-click="getCensusValues()" value="Compute (Enter)" id="computeButton"><br><br>
-	<input type="button" ng-click="getValidChars()" onclick="setTimeout(updateCharTable, 100);" value="Get Valid Characteristics" id="charsButton"><br><br>
-	<!--<input type="button" onclick="doMakeSortable();" value="Make Sortable" id="sortableButton"><br><br>-->
+	<input type="button" ng-click="getValidChars()" onclick="setTimeout(updateCharTable, 100);" value="Manually Get Valid Characteristics" id="charsButton"><br><br>
 	<!--Chars List: {{charsList}}<br><br>-->
 	<!--Valid Chars List: {{validCharsList}}<br><br>-->
 	Status: {{status}}<br><br>
@@ -314,17 +260,6 @@ function doMakeSortable(){
 	<div style="float:left;" id="leftDiv"/>
 	<div style="float:left;" id='charDiv'/>
 	<div style="float:left;" id="rightDiv"/>
-
-	<!--<div style="float:left;" id="testDiv"/>-->
-	<!--<table id='testTableID'/>-->
-	<!--<table id='testTableID'>
-		<thead>
-			<tr><td>asdf</td></tr>
-		</thead>
-		<tr><td>asdf2</td></tr>
-		<tr><td>asdf1</td></tr>
-		<tr><td>fdsa</td></tr>
-	</table>-->
 </div>
 
 </body>
