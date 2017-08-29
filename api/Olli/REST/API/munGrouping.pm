@@ -94,7 +94,6 @@ sub munGrouping{
 	my ($munChoiceArr) = @_;
 	my $censusMunVals = munCensusSorting();
 	my $censusSums;
-	my $chosenMunIdx = 0;
 
 	if(@{$munChoiceArr} == 0){
 		# print "ERROR! No chosen municipalities!\n";
@@ -106,22 +105,23 @@ sub munGrouping{
 		exit;
 	}
 
-	for(my $m_id = 1; $m_id < @{$censusMunVals}; $m_id++){
-		if(defined $munChoiceArr->[$chosenMunIdx] && $m_id == $munChoiceArr->[$chosenMunIdx]){
-			if(defined $censusMunVals->[$m_id]){
-				for(my $c_id = 1; $c_id < @{$censusMunVals->[$m_id]}; $c_id++){
-					if(defined $censusMunVals->[$m_id][$c_id]){
-						for(my $inner = 1; $inner < 4; $inner++){
-							$censusSums->[$c_id][$inner] += $censusMunVals->[$m_id][$c_id][0][$inner];
+	for(my $chosenMunIdx = 0; $chosenMunIdx < @{$munChoiceArr}; $chosenMunIdx++){
+		for(my $m_id = 1; $m_id < @{$censusMunVals}; $m_id++){
+			if(defined $munChoiceArr->[$chosenMunIdx] && $m_id == $munChoiceArr->[$chosenMunIdx]){
+				if(defined $censusMunVals->[$m_id]){
+					for(my $c_id = 1; $c_id < @{$censusMunVals->[$m_id]}; $c_id++){
+						if(defined $censusMunVals->[$m_id][$c_id]){
+							for(my $inner = 1; $inner < 4; $inner++){
+								$censusSums->[$c_id][$inner] += $censusMunVals->[$m_id][$c_id][0][$inner];
+							}
 						}
 					}
 				}
+				else{
+					# print "ERROR! Invalid municipality within loop!\n";
+					exit;
+				}
 			}
-			else{
-				# print "ERROR! Invalid municipality within loop!\n";
-				exit;
-			}
-			$chosenMunIdx++;
 		}
 	}
 
