@@ -34,7 +34,8 @@ $( document ).ready(function() {
 			return {
 			'weight': 1,
 			'color': 'black',
-			'fillColor': 'yellow'
+			'fillColor': 'yellow',
+			'fillOpacity': 0.2
 			}
 		},
 		onEachFeature: onEachFeature
@@ -90,13 +91,24 @@ $( document ).ready(function() {
 	function highlightFeature(e) {
 		var layer = e.target;
 
-		layer.setStyle({
-			weight: 5,
-			// color: '#666',
-			color: 'blue',
-			dashArray: ''//,
-			// fillOpacity: 0.7
-		});
+		if(layer.feature.properties.DESIGNATN == 'Rural Municipality')
+			layer.setStyle({
+				weight: 5,
+				color: 'orange',
+				dashArray: '',
+				fillColor: 'yellow',
+				fillOpacity: 0.4
+			});
+		else
+
+			layer.setStyle({
+				weight: 5,
+				// color: '#666',
+				color: 'blue',
+				dashArray: '',
+				fillColor: 'blue',
+				fillOpacity: 0.4
+			});
 
 		if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge)
 			layer.bringToFront();
@@ -111,8 +123,9 @@ $( document ).ready(function() {
 
 		layer.setStyle({
 			'weight': 1,
-			'color': 'black'//,
-			// 'fillColor': 'yellow'
+			'color': 'black',
+			'fillColor': 'yellow',
+			fillOpacity: 0.2
 		})
 
 		if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge)
