@@ -13,7 +13,7 @@ $( document ).ready(function() {
 
 	var response;
 	var jsonResponse;
-	var currentYear = '2011';
+	// var currentYear = '2011';
 
 	! function(){
 		var url = '/api/munMapping';
@@ -172,7 +172,7 @@ $( document ).ready(function() {
 	// If arr is defined and contains the correct values, returns index of matching values within arr, else returns -1.
     function arrContains(arr, props) {
         for(var i = 0; i < arr.length; i++)
-            if(arr[i] != null && parseInt(arr[i][1]) == parseInt(props.LOCALID) && arr[i][2] == props.DESIGNATN && currentYear == arr[i][3])
+            if(arr[i] != null && parseInt(arr[i][1]) == parseInt(props.LOCALID) && arr[i][2] == props.DESIGNATN)// && currentYear == arr[i][3])
 				return i;
         return -1;
     };
