@@ -32,31 +32,20 @@ sub GET {
 	my ($self, $request, $response) = @_ ;
 	dbPrepare();
 	my $q = CGI->new;
-	my $munParam = ($q->param('munID'))[0];
+	# my $munParam = ($q->param('munID'));
 	my $chosenOutput;
-
-	if(defined $munParam){
-		$chosenOutput = getSpecificMunData();
-	}
-	else{
-		$chosenOutput = getMunMapping();
-	}
-	
+	$chosenOutput = getMunMapping();
 	$response->data()->{'rawOutput'} = $chosenOutput;
 	$dbh->disconnect;
 	return Apache2::Const::HTTP_OK ;
 }
 
 sub getMunMapping{
-	$SQL = "select * from mun_geo_gis";
-	$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
-	$sth->execute() or die "Execute exception: $DBI::errstr";
-	my $munMapping = $sth->fetchall_arrayref();
-	return $munMapping;
-}
-
-sub getSpecificMunData{
-	$SQL = "select * from mun_geo_gis";
+	$SQL = "select municipality_id, gis_local_id, designation, mun_geo_gis.year, population
+	from mun_geo_gis
+	left join municipalities on
+	mun_geo_gis.municipality_id = municipalities.id
+	and mun_geo_gis.year = municipalities.year";
 	$sth = $dbh->prepare($SQL) or die "Prepare exception: $DBI::errstr!";
 	$sth->execute() or die "Execute exception: $DBI::errstr";
 	my $munMapping = $sth->fetchall_arrayref();

@@ -37,6 +37,12 @@ my $dsn = "dbi:Pg:database=$database;host=localhost;port=5432";
 my $userid = "olli";
 my $password = "olli";
 
+my $censusMunVals = [];
+
+# dbPrepare();
+# my $censusMunVals = munCensusSorting();
+# munGrouping([600]);
+
 sub dbPrepare{
 	$dbh = DBI->connect($dsn,
 				$userid,
@@ -70,7 +76,7 @@ sub GET{
 }
 
 sub getValidMunList{
-	my $censusMunVals = munCensusSorting();
+	$censusMunVals = munCensusSorting();
 	my $validMunList;
 	my $listIdx = 0;
 	my $name;
@@ -92,8 +98,9 @@ sub getValidMunList{
 
 sub munGrouping{
 	my ($munChoiceArr) = @_;
-	my $censusMunVals = munCensusSorting();
+	# my $censusMunVals = munCensusSorting();
 	my $censusSums;
+	my $currentMun;
 
 	if(@{$munChoiceArr} == 0){
 		# print "ERROR! No chosen municipalities!\n";
@@ -105,23 +112,28 @@ sub munGrouping{
 		exit;
 	}
 
+	# print "Length of censusMunVals: " . @{$censusMunVals} . "\n";
+	# print (defined $censusMunVals->[$munChoiceArr->[0]]);
+
 	for(my $chosenMunIdx = 0; $chosenMunIdx < @{$munChoiceArr}; $chosenMunIdx++){
-		for(my $m_id = 1; $m_id < @{$censusMunVals}; $m_id++){
-			if(defined $munChoiceArr->[$chosenMunIdx] && $m_id == $munChoiceArr->[$chosenMunIdx]){
-				if(defined $censusMunVals->[$m_id]){
-					for(my $c_id = 1; $c_id < @{$censusMunVals->[$m_id]}; $c_id++){
-						if(defined $censusMunVals->[$m_id][$c_id]){
-							for(my $inner = 1; $inner < 4; $inner++){
-								$censusSums->[$c_id][$inner] += $censusMunVals->[$m_id][$c_id][0][$inner];
-							}
-						}
+		$currentMun = $munChoiceArr->[$chosenMunIdx];
+		# print "currentMun: " . $currentMun . "\n";
+		if(defined $censusMunVals->[$currentMun]){
+			for(my $c_id = 1; $c_id < @{$censusMunVals->[$currentMun]}; $c_id++){
+				# print "c_id: " . $c_id . "\n";
+				if(defined $censusMunVals->[$currentMun][$c_id]){
+					for(my $inner = 1; $inner < 4; $inner++){
+						$censusSums->[$c_id][$inner] += $censusMunVals->[$currentMun][$c_id][0][$inner];
 					}
 				}
-				else{
-					# print "ERROR! Invalid municipality within loop!\n";
-					exit;
-				}
+				# else{
+				# 	print $currentMun . "." . $c_id . " not defined!\n";
+				# }
 			}
+		}
+		else{
+			# print "ERROR! Invalid municipality within loop!\n";
+			exit;
 		}
 	}
 
@@ -180,7 +192,7 @@ sub munCensusSorting{
 	my $m_popIdx = firstidx { $_ eq 'm_population'} @$arrNames;
 	my $m_yearIdx = firstidx { $_ eq 'm_year'} @$arrNames;
 
-	my @censusMunVals; # Holds all valid data in standard format
+	my @vals; # Holds all valid data in standard format
 	my @currentArr; # Temporary storage of array to be pushed to @censusMunVals
 	my $currentRow; # Temporary storage of tuple
 	my $current_m_id;
@@ -224,13 +236,13 @@ sub munCensusSorting{
 			$current_m_id = $arr->[$n][$m_idIdx];
 			$current_char_id = $currentRow->[$characterIdIdx];
 
-			push @{$censusMunVals
+			push @{$vals
 				[$current_m_id]
 				[$current_char_id]},
 				@currentArr;
 		}
 	}
-	return \@censusMunVals;
+	return \@vals;
 }
 
 # Takes an array and element, returns whether the element is present within the array.

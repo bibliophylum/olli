@@ -79,11 +79,15 @@ $( document ).ready(function() {
 			containsIdx = arrContains(jsonResponse, props);
 		this._div.innerHTML =
 			(props ?
-			'<h4><b>' + props.COMMONAME1 + '</b></h4>'
-			+ (containsIdx != -1 ? '<h5><b>Found, index of ' + containsIdx + 
-			'<br>Mun ID: ' + jsonResponse[containsIdx][0] +
-			'<br>Designation: ' + jsonResponse[containsIdx][2] + '</b></h5>':
-			'<h5><b>Not found<b></h5>'): 
+			'<h4><b>' + props.COMMONAME1 + '</b></h4>' +
+			(containsIdx != -1 ?
+			'<h5>Mun ID: ' + jsonResponse[containsIdx][0] +
+			'<br>Designation: ' + jsonResponse[containsIdx][2] +
+			'<br>Population: ' + jsonResponse[containsIdx][4] +
+			'</b></h5>'
+			:
+			'<h5><b>Not found<b></h5>')
+			: 
 			'<h4><b>Hover over a municipality</b><h4>');
 	};
 	info.addTo(map);

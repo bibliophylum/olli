@@ -162,13 +162,16 @@ insert INTO mun_geo_gis values (607,437,'Town',2011);   --Town of Neepawa
 insert INTO mun_geo_gis values (608,325,'Village',2011);   --Village of Glenboro
 insert INTO mun_geo_gis values (609,0,'City',2011);	--City of Winnipeg
 
-insert INTO mun_geo_gis values (903,145,'Rural Municipality',2015);	--RM of Lorne
-insert INTO mun_geo_gis values (904,145,'Rural Municipality',2015);	--RM of Louise
-insert INTO mun_geo_gis values (869,133,'Rural Municipality',2015);   --RM of Grey
+
+-- Inserting pairings of a year that we don't have census values for leads to errors.
+
+-- insert INTO mun_geo_gis values (903,145,'Rural Municipality',2015);	--RM of Lorne
+-- insert INTO mun_geo_gis values (904,145,'Rural Municipality',2015);	--RM of Louise
+-- insert INTO mun_geo_gis values (869,133,'Rural Municipality',2015);   --RM of Grey
 -- insert INTO mun_geo_gis values (872,,'',2015);   --Municipality of Boissevain-Morton
-insert INTO mun_geo_gis values (883,127,'Rural Municipality',2015);   --Municipality of Emerson-Franklin
+-- insert INTO mun_geo_gis values (883,127,'Rural Municipality',2015);   --Municipality of Emerson-Franklin
 -- insert INTO mun_geo_gis values (884,,'',2015);   --RM of West Interlake
--- =insert INTO mun_geo_gis values (889,,'',2015);   --Flin Flon Extended Boundaries
+-- insert INTO mun_geo_gis values (889,,'',2015);   --Flin Flon Extended Boundaries
 -- insert INTO mun_geo_gis values (900,,'',2015);   --Cartwright-Roblin Municipality
-insert INTO mun_geo_gis values (901,196,'Rural Municipality',2015);   --RM of Killarney-Turle Mountain
+-- insert INTO mun_geo_gis values (901,196,'Rural Municipality',2015);   --RM of Killarney-Turle Mountain
 -- insert INTO mun_geo_gis values (910,,'',2015);   --Municipality of Swan Valley West
