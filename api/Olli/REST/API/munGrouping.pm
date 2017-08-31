@@ -39,10 +39,6 @@ my $password = "olli";
 
 my $censusMunVals = [];
 
-# dbPrepare();
-# my $censusMunVals = munCensusSorting();
-# munGrouping([600]);
-
 sub dbPrepare{
 	$dbh = DBI->connect($dsn,
 				$userid,
@@ -62,7 +58,11 @@ sub GET{
 	my @munParam = $q->multi_param('munID');
 	my $chosenOutput;
 
-	# If muns not specified, gets list of id and name of all valid muns.
+	if(@{$censusMunVals} == 0){
+		$censusMunVals = munCensusSorting();
+	}
+
+	# If mun IDs not specified, gets a list of id and name of all valid muns.
 	if(! defined $munParam[0]){
 		$chosenOutput = getValidMunList();
 	}
@@ -76,7 +76,6 @@ sub GET{
 }
 
 sub getValidMunList{
-	$censusMunVals = munCensusSorting();
 	my $validMunList;
 	my $listIdx = 0;
 	my $name;
@@ -98,7 +97,6 @@ sub getValidMunList{
 
 sub munGrouping{
 	my ($munChoiceArr) = @_;
-	# my $censusMunVals = munCensusSorting();
 	my $censusSums;
 	my $currentMun;
 
@@ -112,23 +110,15 @@ sub munGrouping{
 		exit;
 	}
 
-	# print "Length of censusMunVals: " . @{$censusMunVals} . "\n";
-	# print (defined $censusMunVals->[$munChoiceArr->[0]]);
-
 	for(my $chosenMunIdx = 0; $chosenMunIdx < @{$munChoiceArr}; $chosenMunIdx++){
 		$currentMun = $munChoiceArr->[$chosenMunIdx];
-		# print "currentMun: " . $currentMun . "\n";
 		if(defined $censusMunVals->[$currentMun]){
 			for(my $c_id = 1; $c_id < @{$censusMunVals->[$currentMun]}; $c_id++){
-				# print "c_id: " . $c_id . "\n";
 				if(defined $censusMunVals->[$currentMun][$c_id]){
 					for(my $inner = 1; $inner < 4; $inner++){
 						$censusSums->[$c_id][$inner] += $censusMunVals->[$currentMun][$c_id][0][$inner];
 					}
 				}
-				# else{
-				# 	print $currentMun . "." . $c_id . " not defined!\n";
-				# }
 			}
 		}
 		else{
@@ -193,7 +183,7 @@ sub munCensusSorting{
 	my $m_yearIdx = firstidx { $_ eq 'm_year'} @$arrNames;
 
 	my @vals; # Holds all valid data in standard format
-	my @currentArr; # Temporary storage of array to be pushed to @censusMunVals
+	my @currentArr; # Temporary storage of array to be pushed to @vals
 	my $currentRow; # Temporary storage of tuple
 	my $current_m_id;
 	my $current_char_id;

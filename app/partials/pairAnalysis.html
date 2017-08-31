@@ -225,7 +225,9 @@ function insertIntoPairsTable(tableFilters){
 			rowCounter++;
 		}
 	}
-	document.getElementById("totalPairsDiv").innerHTML = "Total Pairs: " + (rowCounter - 1);
+	// document.getElementById("totalPairsDiv").innerHTML = "Total Pairs: " + (rowCounter - 1);
+	var mycap = tbl.createCaption();
+	mycap.innerHTML = "<b>Pairs List (" + (rowCounter - 1) + ")</b>";
 }
 
 function createPairsTable(){
@@ -279,9 +281,6 @@ function createPairsTable(){
 	cell.style.border = '1px solid black';
 	cell.innerHTML = "<b>RCC</b>";
 
-	var mycap = tbl.createCaption();
-	mycap.innerHTML = "<b>Pairs List</b>";
-
 	body.appendChild(tbl);
 	return tbl;
 }
@@ -324,7 +323,7 @@ function createPairsTable(){
 	<!--Table List: {{tableList}}<br><br>-->
 	<!--Field List: {{fieldList}}<br><br>-->
 	<div class="container-fluid">
-		Status: {{status}}<br><br>
+		Status: {{status}}<br>
 	</div>
 	<div class="container-fluid" id="totalPairsDiv"/><br>
 </div>
